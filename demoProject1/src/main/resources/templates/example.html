@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정적자원 (js css img) 연결하기</title>
+  <link rel="stylesheet" href="/css/ex.css">  
+
+  <!-- 경로는 항상 static 폴더가 기준 => css파일 경로를 작성해라 -->
+
+</head>
+<body>
+  <div class="container" >
+    <h1>정적자원 css, js, img연결 테스트</h1>
+    <img src="/images/cats/cat1.jpg" alt="">
+    <img src="/images/cats/cat2.jpg" alt="">
+    <img src="/images/cats/cat3.jpg" alt="">
+    <img src="/images/cats/cat4.jpg" alt="">
+    <img src="/images/cats/cat5.jpg" alt="">
+
+    <button id="btn">JS 연결 테스트</button>
+  </div>
+
+  <!-- static 폴더 기준으로 js파일의 경로를 작성 -->
+
+  <script src="/js/ex.js"></script>
+
+</body>
+
+</html>

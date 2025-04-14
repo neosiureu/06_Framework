@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서버로 파라미터를 제출한다</title>
+</head>
+<body>
+  <h1>서버로 파라미터를 제출한다</h1>
+  <h2> 파라미터를 제출할 수 있는 방법</h2>
+
+  <h3>1) HttpServletRequest.getParameter("key") => value가 반환</h3>
+
+  <form action="/param/test1" method="post">
+
+    이름: <input type="text" name="inputName"> <br><hr>
+    나이: <input type="number" name="inputAge"> <br><hr>
+    주소: <input type="text" name="inputAddress"> <br><hr>
+
+    <!-- param에 test1을 매핑해주는 컨트롤러는 있다! ParameterController.java 내에 만들어놓음
+     다만 그 클래스 하에는 param하에 test1을 매핑할 메서드는 없으니 매핑을 위해 만들어놓기로 함 -->
+
+    <button>제출하기</button>
+  </form>
+
+</body>
+</html>
