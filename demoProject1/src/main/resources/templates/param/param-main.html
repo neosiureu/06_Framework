@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서버로 파라미터 제출하기</title>
+</head>
+<body>
+    <h1>서버로 파라미터 제출하기</h1>
+
+  <h3>1.HttpServletRequest.getParameter("key") 이용</h3>
+  <form action="/param/test1" method="post">
+    이름 : <input type="text" name="inputName"> <br>
+    나이 : <input type="number" name="inputAge"> <br>
+    주소 : <input type="text" name ="inputAddress"> <br>
+
+    
+    <button>제출하기</button>
+  </form>
+</body>
+</html>

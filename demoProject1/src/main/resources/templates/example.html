@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정적 자원(jss,css,image) 연결</title>
+
+ 
+ <!-- static 폴더 기준으로 css 파일 경로를 작성-->
+  <link rel="stylesheet" href="/css/ex.css">
+</head>
+<body>
+  
+  <div class="container">
+    <h1>정적 자원 연결 테스트</h1>
+
+    <img src="/images/cats/cat1.jpg">
+    <img src="/images/cats/cat2.jpg">
+    <img src="/images/cats/cat3.jpg">
+    <img src="/images/cats/cat4.jpg">
+    <img src="/images/cats/cat5.jpg">
+
+    <button id="btn">JS 연결 테스트</button>
+  </div>
+
+  <!-- static 폴더를 기준으로 js 파일 경로 작성-->
+  <script src="/js/ex.js"></script>
+</body>
+</html>
