@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>서버로 파라미터를 제출한다</title>
 </head>
+
 <body>
   <h1>서버로 파라미터를 제출한다</h1>
   <h2> 파라미터를 제출할 수 있는 방법</h2>
@@ -13,15 +15,92 @@
 
   <form action="/param/test1" method="post">
 
-    이름: <input type="text" name="inputName"> <br><hr>
-    나이: <input type="number" name="inputAge"> <br><hr>
-    주소: <input type="text" name="inputAddress"> <br><hr>
+    이름: <input type="text" name="inputName"> <br>
+    <hr>
+    나이: <input type="number" name="inputAge"> <br>
+    <hr>
+    주소: <input type="text" name="inputAddress"> <br>
+    <hr>
 
     <!-- param에 test1을 매핑해주는 컨트롤러는 있다! ParameterController.java 내에 만들어놓음
      다만 그 클래스 하에는 param하에 test1을 매핑할 메서드는 없으니 매핑을 위해 만들어놓기로 함 -->
 
     <button>제출하기</button>
   </form>
+
+  <h3>2. @RequsetParam 어노테이션의 이용
+    낱개 또는 여러개의 파라미터를 얻어올 수 있다. 일단 낱개
+  </h3>
+
+  <!-- ParameterController이라는 @가 붙은 RequestMapping한 클래스가 있으므로 /test2를 매핑하는 메서드를 만들면 된다 -->
+   
+  <form action="/param/test2" method="post">
+    책 제목: <input type="text" name="title"> <br>
+    저자: <input type="text" name="writer"> <br>
+    가격: <input type="number" name="price"> <br>
+    출판사: <input type="text" name="publisher"> <br>
+
+    <button> 제출하기 </button>
+
+  </form>
+
+
+  <hr>
+
+  <h3>
+    3. @RequsetParam 어노테이션의 이용하여 파라미터를 이용하는데
+    여러개, 즉 같은 name속성값을 갖는 여러 태그가 있을 때 어떻게 제출할지 생각해보자.
+  </h3>
+
+
+  <form action="/param/test3" method="post">
+    색상: 
+    Red <input type="checkbox" name="color", value="Red">
+    Green <input type="checkbox" name="color", value="Green">
+    Blue <input type="checkbox" name="color", value="Blue">
+
+    <!-- name이 필수인지 아닌지 생각해보자 -->
+
+
+    <br><br>
+
+    과일:
+    Apple <input type="checkbox" name="fruit" value="Apple">
+    Banana <input type="checkbox" name="fruit" value="Banana">
+    Orange <input type="checkbox" name="fruit" value="Orange">
+
+
+    <br><br>
+
+    상품명: <input type="text" name="productName">
+    <br><br>
+    유통기한: <input type="date" name="expriationDate">
+
+    <button> 제출하기 </button>
+
+  </form>
+
+
+  <hr>
+
+
+  <h3> 4. @ModelAttribute를 이용하여 파라미터를 얻어오자
+  </h3>
+
+  <form action="/param/test4" method="post">
+
+    ID: <input type="text" name="memberId"> <br>
+    
+    PW: <input type="password" name="memberPw"> <br>
+
+    Name: <input type="text" name="memberName"> <br>
+
+    AGE: <input type="number" name="memberAge"> <br>
+
+    <button> 제출하기 </button>
+
+  </form>
+
 
 </body>
 </html>

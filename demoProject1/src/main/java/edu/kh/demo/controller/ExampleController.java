@@ -3,17 +3,9 @@ package edu.kh.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @Controller // IOC: 요청에 대한 응답, 제어 역할을 명시하면서 Bean에 등록까지 한다
-public class ExampleController {
-	
-	
-//	@GetMapping("/example")
-	
-	
-	
-	
-	
+public class ExampleController {	
+//	@GetMapping("todo")
 	@GetMapping("example") // 앞으로는 '/'를 맨 앞에 쓰지 마라 (배포 단계에서의 빌드 오류)
 	public String exampleMethod() {
 		
@@ -35,17 +27,16 @@ public class ExampleController {
 		// classpath:/templates/example.html
 		
 		return "example";
+		// 일종의 a옆 href form옆 action
 		
 		/*
-		 * 
-		 * 0) RequstMapping("주소")
+		 * 안쓰긴 하지만) RequstMapping("주소") => 속성을 이용하면 get post를 명시할 수 있다
 		 * 
 		 * 1) GetMapping("주소") => Get(조회)방식의 요청을 매핑
-		 * 
 		 * 2) PostMapping("주소") => Post (삽입)방식의 요청을 매핑
 		 * 
 		 * 기타) 
-		 * @ RunMapping("주소") => Put (수정)방식의 요청을 매핑, 단 form a태그에서 요청할 수 없다. 오직 js에서의 비동기 요청시에만 사용
+		 * @ PutMapping("주소") => Put (수정)방식의 요청을 매핑, 단 form a태그에서 요청할 수 없다. 오직 js에서의 비동기 요청시에만 사용
 		 * @ DeleteMapping("주소")  => Delete (삭제)방식의 요청을 매핑
 		 * */
 	}

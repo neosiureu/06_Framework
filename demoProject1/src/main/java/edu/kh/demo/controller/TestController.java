@@ -54,12 +54,9 @@ public class TestController {
 		// 사실 "test"대신 실제로는 생략된 접두사, 접미사가 있음 
 		// => classpath:/templates/가 접두사로서 생략. 
 		// .html이 접미사로서 생략
-		// classpath = src/main/resources
+		// classpath = src/main/resources		
 		
-		
-		
-		
-		// 정 바꾸고 싶다면 접두사, 접미사, forward하는 설정은 View Resolver 객체가 담당하므로 그를 조절해야 함
+		// 이 접두사와 접미사는 고정이며 정 바꾸고 싶다면 접두사, 접미사, forward하는 설정은 View Resolver 객체가 담당하므로 그를 조절해야 함
 		
 		
 		// 1) 클라이언트의 get 요청 (test) 
