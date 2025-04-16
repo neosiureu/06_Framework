@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프 예제2</title>
+</head>
+
+<body>
+  <h1>타임리프 예제2</h1>
+  <h3>요청 위임 된 리퀘스트에 존재하는 파라미터 출력하기</h3>
+
+  <!-- req에 실려있는 파라미터들이 존재 (이름, 나이 등의 파라미터) -->
+
+
+  <pre>
+    ${param.key}
+    - 리퀘스트로 온 req에 존재하는 파라미터 값을 얻어와 출력한다.
+    - 쉽게 말해 url의 쿼리스트링 (GET)이나 form data (POST)로 전달 된 파라미터 값을 
+    직접 req라는 객체에 세팅하지 않아도 바로 접근 가능하도록 하는 명령어
+  </pre>
+
+  <pre>
+  제출하기 버튼을 누른 후에 request객체를 생성 => 그 req 안에서 컨트롤러 안에서 getParameter를 
+  그 컨트롤러가 포워딩을 할 것이다 (리다이렉트면 무효)
+  그 req안에 있는 것을 forward한 HTML 화면에서 쓸 때 ${param.key}를 사용
+
+  즉 main.html => 컨트롤러 => 그 다음 페이지에서 ${param.key}를 쓰면 해당하는 value를 반환 (각 키는 main.html에서의 name값)
+  </pre>
+
+  <ul>
+    <li th:text="${param.inputName}">제출된 이름</li>
+    <li th:text="${param.inputAge}">제출된 나이</li>
+    <!-- 같은 name속성, 즉 같은 키를 가진 파라미터들은 배열형으로 전달. 다시 말해 여러개 클릭하면 []에 묶여서 나온다고 (쿼리스트링에도 &으로 표시) -->
+    <li th:text="${param.color}">체크된 색상</li>
+
+
+    <!-- 반복할 대상인 배열이나 리스트 자체가 존재하지 않으면 foreach가 포함된 li태그 자체를 실행하지 않는다  -->
+    <li th:each="c: ${param.color}" th:text="${c}"></li>
+    <!-- c에 해당하는 값들이 한번씩 찍힌다 -->
+
+    <!--만일 전달된 파라미터 값이 없으면 null인데 빈 문자열과 같다고 취급함 -->
+
+  </ul>
+
+  <hr><br>
+
+
+  <pre>
+    복습: th:text = "속성값"
+    해당 태그에 속성값을 내용으로서 출력
+
+    - 단 html용으로 존재하는 태그 및 특수문자를 해석하지 않음
+
+
+    th:utext = "속성값"
+    해당 태그에 속성값을 내용으로서 출력
+
+    - 이건 html용으로 존재하는 태그 및 특수문자를 해석
+
+
+  </pre>
+
+  <div>
+    <h4> th:text는 HTML태그를 해석하지 않는다</h4>
+    <th:block th:text = "${str}">str</th:block>
+  </div>
+
+  <div>
+    <h4> th:utext는 HTML태그를 해석한다</h4>
+    <th:block th:utext = "${str}">str</th:block>
+  </div>
+
+
+
+<br><br>
+
+  <pre>
+    th:text="|문자열|"과 같이하면 해당 요소의 내용으로 문자열과 변수값을 이어서 출력한다
+  </pre>
+
+  <p th:text="|th:text의 str => ${str}|"> </p>
+  <p th:utext="|th:utext의 str => ${str}|"> </p>
+
+  <p th:text="${str}+짠"></p>
+
+  
+  th:text나 th:utext가 길어서 대신하는 특수기호를 [[...]]와 같이 만들어놨다 안에는 키가 들어간다
+  th:text == [[...]]
+  th:utext == [(...)] 
+
+
+  <p>입력받은 이름: [[${param.inputName}]] </p>
+  [(${str})]
+
+
+<hr>  
+
+<h1>messages.properties값 출력하기</h1>
+
+<h3 th:text="#{app.name}"> 앱 이름</h3>
+<img th:src="#{user.default.image}"> 
+
+
+
+
+
+
+
+
+
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+</body>
+
+</html>

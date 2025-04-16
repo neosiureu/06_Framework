@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프 예제3</title>
+</head>
+
+<body>
+  <h1>타임리프 예제3</h1>
+
+  <h3>링크 (url 조합에 사용하는 Spring El은 ( @{})</h3>
+
+  <ul>
+    <li>
+      <a href="/board">게시판(/board)</a>
+    </li>
+
+    <li>
+      <a href="/board?key=제목&query=검색어">게시판(/board)</a>
+    </li>
+
+
+    <!-- 타임 리프를 이용한 쿼리스트링 작성법 -->
+    <li>
+      <a th:href="@{/board(key=${key}, query = ${query}  )}">게시판</a>
+      <!-- 타입 리프가 있으니 th: -->
+      <!-- 쿼리스트링이 있으면 ()로 감싸야 함  -->
+      <!-- /board?key=제목&query=검색어와 같이 해석된다,  -->
+    </li>
+
+    <!-- 타임 리프를 이용한 요청 주소 작성법, 즉 쿼리스트링 ? 앞에 있는 부분을 작성 -->
+
+    <li>
+      <a th:href="@{/example/ex3/{no}(no=${boardNo})}">/example/ex3/10</a>
+    </li>
+
+    <li>
+      pathVariable: 주소 중 일부분을 변수값처럼 사용한다
+      <ul>
+
+        <li>
+          <a href="/example/ex3/1">/example/ex3/1</a>
+        </li>
+
+        <li>
+          <a href="/example/ex3/2">/example/ex3/2</a>
+        </li>
+
+        <li>
+          <a th:href="@{/example/ex3/{path}(path='10+20')}">/example/ex3/10+20</a>
+        </li>
+
+
+        <!-- 123을 눌러서 같은 페이지로 이동한다면 메서드 3개를 만드는 것은 비효율적 -->
+      </ul>
+    </li>
+  </ul>
+
+</body>
+
+</html>

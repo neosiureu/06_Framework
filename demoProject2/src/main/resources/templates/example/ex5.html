@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프 예제5</title>
+  <style>
+    .red{color: red;}
+    .green{color: green;}
+    .deco {text-decoration: underline;}
+
+  </style>
+</head>
+<body>
+  <h1>타임리프 예제5</h1>
+
+  <h3>th:inline = "javascript" 라는 속성</h3>
+
+  반드시 script태그 내에 지정해야 한다. 타임리프 문법으로 출력된 내용이나 값을 JS에 알맞은 타입으로 변환한다
+  
+
+
+  <h3 id="message"></h3>
+  <h3 id="num1"></h3>
+
+  컨트롤러에서 값을 얻어와서 h3사이에 넣는 문제
+
+
+  <h3> th:classappen속성- 요소에 class 속성값을 동적으로 추가</h3>
+  
+  <h4 class="red" th:classappend="deco">th:classappend 테스트 중...</h4>
+  <!-- 동적으로 red클래스를 가지고있던 h4에 deco클래스 -->
+  <h4 th:classappend="red">th:classappend 테스트 중...</h4>
+  <!-- 아무것도 없던거에도 추가 가능 -->
+
+
+  <!-- 쓰자면 조건을 만족시키는 경우에 css를 적용시키고 싶다면 -->
+
+  <!-- num1이 10000보다 클 경우에 green으로 출력 아닌 경우에 red로 출력 -->
+
+
+  <!-- ${num1 gt 10000} > 기호 -->
+  <!-- ${num1 lt 10000} < 기호 -->
+  
+
+  <h4 class="deco" th:classappend="${num1 gt 10000} ? green : red" >th:classappend 테스트 중...</h4>
+
+
+  <h3>안전탐색연산자 ${객체?.필드}</h3>
+
+  <!-- 객체가 null이 아닐때만 뒤의 필드를 수행한다-->
+
+  <pre>
+    객체가 null인지 판단 후 null이 아닌 경우에만 수행
+  </pre>
+
+  <h4 th:text="${member?.memberNo}">학번: </h4>
+  <!-- 이 앞 값 자체가 null이 되어 innerText에 들어가는 셈 -->
+
+  <h4 th:text = "${std?.studentNo}">학번</h4>
+
+
+
+  <hr>
+
+  <h2>번호 발생기 시퀀스 객채</h2>
+  <h3>${#numbers.sequence(시작,끝, [,step])}:  <-------번호를 발생시킨다</h3>
+
+  <pre>
+    -시작부터 끝까지 번호로만 이루어진 숫자 배열 생성
+
+    ex) ${#numbers.sequence(1,5)} => 배열로 [1,2,3,4,5]
+
+    [why sequence?]
+    속성 중 th:each는 향상된 for문 형태이기에 일반 for문의 형태로 동작 (시작에서 끝까지 몇씩 증가하면서 반복하지 못하기 때문에 이를 해결하기 위해 시퀀스를 가져다가 사용)
+  </pre>
+
+  아래는 10의자리의 홀수입니다.
+
+  <ul>
+    <!-- 11부터 시작해서 20까지 2씩 증가하며 반복하는 li태그 출력 -->
+     <!-- 배열만 발생시키므로 어차피 th:each를 돌려야 한다 -->
+ 
+     <li th:each="i :${#numbers.sequence(11,20,2)}",
+     th:text="|테스트 ${i}|">
+     </li>
+
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script th:inline = "javascript">
+    // -> 타임리프에서 자바스크립트 코드를 동적으로 처리할 수 있도록 하는 속성
+    // -> 스크립트 태그 내부에서 타임리프의 변수나 연산을 사용할 수 있게 한다.
+    // HTML파일 독립실행 시  js내부 타임리프 코드를 오류로 발생시키지 않기 위함
+
+    // -> 타임리프의 네추럴 템플릿의 특징 덕분
+    // -> 네추럴 템플릿? HTML파일을 단독으로 브라우저에서 열었을 때도 정적 콘텐츠로 정상 확인할 수 있게 하는 타임리프 기능
+
+
+    const message = /*[[${message}]]*/"message값";
+    const num1 = /*[[${num1}]] */  100;
+ 
+    document.querySelector("#message").innerText = message;
+    document.querySelector("#num1").innerText = num1;
+
+  </script>
+
+</body>
+</html>
