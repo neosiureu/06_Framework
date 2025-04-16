@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프예제3</title>
+</head>
+<body>
+  <h1>타임리프에제3</h1>
+  
+  <h3>링크(url) 조합에 사용되는 Spring EL ( @{} )</h3>
+
+  <ul>
+    <li>
+      <a href="/board">게시판(/board)</a>
+    </li>
+
+    <li>
+      <a href="/board?key=제목&query=검색어">게시판(/board)</a>
+    </li>
+
+    <!--** 타임리프를 이용한 쿼리스트링 작성법 **-->
+    <li>
+      <a th:href="@{/board(key=${key}, query=${query})}">게시판(/board)</a>
+                    <!--/board?key=제목&query=검색어-->
+    </li>
+
+    <!--** 타임리프를 이용한 요청 주소 작성법 **-->
+    <li>
+      <a th:href="@{/example/ex3/{number}(number=${boardNo})}">/example/ex3/10</a>
+                                  <!--number는 변수명일뿐  상관없음 
+                                       {test}(test=${boardNo}) 도해도됨    -->
+    </li>
+
+    <li>
+      PathVariable : 주소 중 일부분으 변수값 처럼 사용
+      <ul>
+       
+        <li>
+          <a href="/example/ex3/1">/example/ex3/1</a>
+        </li>
+
+        <li>
+          <a href="/example/ex3/2">/example/ex3/2</a>
+        </li>
+
+        <li>
+          <a href="/example/ex3/3">/example/ex3/3</a>
+        </li>
+     
+      
+      </ul>
+
+
+  </ul>
+  
+</body>
+</html>

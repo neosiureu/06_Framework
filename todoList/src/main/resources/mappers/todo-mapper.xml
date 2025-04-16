@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="">
+	<!-- namespace: 연결할 DAO(==Mapper 인터페이스)의 경로를 작성 (필수로 작성!!!) 
+		패키지 경로를 포함한 전체 이름으로 작성
+	-->
+
+<!--  아래 태그는 mapper.xml 파일 생성하자마자 삭제!
+  <cache-ref namespace=""/>
+   -->
+  <!-- 해당 태그는 무조건 삭제!! -->
+ <!--<cache-ref namespace=""/>-->
+ <!-- 수행 하려는 SQL 구문 태그 작성-->
+ 
+ 
+ <select id="" parameterType="" resultType="">SQL 작성</select>
+ <insert id="" parameterType="">SQL 작성</insert>
+ <update id="" parameterType="">SQL 작성</update>
+ <delete id="" parameterType="">SQL 작성</delete>
+  
+</mapper>

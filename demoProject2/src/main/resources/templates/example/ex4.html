@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프 예제 4</title>
+</head>
+<body>
+  <h1>타임리프 예제 4</h1>
+    
+  <h3>타임리프 조건문 [1] = th:if / th:unless</h3>
+
+  <pre>
+   th:if = ${조건식}
+   - 조건식이 true 인 경우에만 해당 속성이 작성된 요소를 화면에 출력
+
+   th:unless = ${조건식}
+   -조건식이 false 인 경우에만 해당 속성이 작성된 요소를 화면에 출력
+  </pre>
+
+  <th:block th:if="${std == null}">
+    <h4>std 없음</h4>
+  </th:block>
+
+  <th:block th:unless="${std == null}">
+    <h4>std있음!!</h4>
+  </th:block>
+
+  <hr>
+
+  <h3>th:if / th:unless 조건식에 변수명/ 값 하나만 작성</h3>
+
+  <pre>
+    조건식에 작성된 값이 있으면 -> true
+    조건식에 작성된 값이 없으면 -> false
+  </pre>
+  
+  <h4 th:if="${std}">std있음!!!</h4>
+  <h4 th:unless="${std}">std없음...</h4>
+
+  <h4 th:if="${temp}">temp있음!!!</h4>
+  <h4 th:unless="${temp}">temp없음...</h4>
+
+  <hr><hr>
+
+  <h3>타임리프 조건문 [2] - th:switch / th:case</h3>
+
+  <th:block th:switch="${num}">
+    <h3 th:case="100">100 이다</h3>
+    <h3 th:case="200">200 이다</h3>
+    <h3 th:case="300">300 이다</h3>
+    <h3 th:case="400">400 이다</h3>
+    <h3 th:case="500">500 이다</h3>
+     <!--"*" 은 default 이다-->
+    <h3 th:case="*">나머지</h3>
+  </th:block>
+
+  <hr> 
+
+  <h3>삼항 연산자</h3>
+  <pre>
+    - 타임리프 속성 (th:)에 
+    삼항 연산자 (조건식 ? 참인경우 : 거짓인경우) 작성가능
+  </pre>
+
+  <h4 th:text="${std.age == 30} ? '서른' : '서른아님'">삼항 연산자</h4>
+
+  <h3>Elvis 연산자 ( ?: )</h3>
+  <pre>
+     [작성법]
+     값 ?: 값이 없을 때
+
+     - 삼항 연산자에서 조건식 자리에 값 (변수)만 작성
+      (== , != 등의 연산자 사용 X)
+
+      - 왼쪽 값이 존재하면 해당 값을 출력 ,없으면 우변을 출력
+  </pre>
+  
+  <p th:text="${member} ?: '회원데이터 없음'"></p>
+  <p th:text="${std} ?: '학생데이터 없음'"></p>
+
+  <hr>
+
+  <h3>No-Operation 연산자 ( 값 ?: _ )</h3>
+
+  <pre>
+    - 왼쪽 값이 없을경우 타임리프 코드를 해석하지 않는 연산자
+
+    - 타임리프 코드 해석 X 
+    -> 일반 HTML 태그로 동작
+    -> HTML 태그 사이 내용이 화면에 출력
+  </pre>
+
+  <p th:text ="${member} ?: _">회원 데이터 없음</p>
+  <p th:text ="${std} ?: _">학생 데이터 없음</p>
+
+  
+</body>
+</html>

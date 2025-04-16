@@ -81,6 +81,58 @@
       </th:block>
     </ul>
 
+    <hr>
+
+    <h3>DTO 객체 출력하기</h3>
+
+    <ul>
+      <li th:text ="${std}">std 객체</li>
+      <li th:text ="${std.studentNo}">학번</li>
+      <li th:text="${std.name}">이름</li>
+      <li th:text="${std.age}">나이</li>
+    </ul>
+
+    <hr>
+
+    <pre>
+      th:object 속성
+
+      - 해당 태그 내에서 지정된 객체의 필드를 쉽게 접근할 수 있게 해주는 속성
+      - *{} : th:object 속성에 지정된 객체의 필드에 접근할때 사용하는작성법
+
+    </pre>
+
+    <h4>th:object 사용</h4>
+
+    <ul th:object="${std}">
+      <li th:text="*{studentNo}">학번</li>
+      <li th:text="*{name}">이름</li>
+      <li th:text="*{age}">나이</li>
+    </ul>
+
+    <hr>
+    
+    <h3>DTO가 담긴 List 출력하기</h3>
+
+    <table border="1"> 
+      <thead>
+        <tr>
+          <th>학번</th>
+          <th>이름</th>
+          <th>나이</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!--th :each가 설정된 태그부터 반복(tr 태그부터 반복)-->
+        <tr th:each="std : ${stdList}" th:object="${std}">
+          <td th:text="*{studentNo}">학번</td>
+          <td th:text="*{name}">이름</td>
+          <td th:text="*{age}">나이</td>
+        </tr>
+      </tbody>
+    </table>
+
 
 </body>
 </html>

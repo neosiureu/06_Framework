@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타임리프예제2</title>
+</head>
+<body>
+   <h1>타임리프 예제2</h1>
+
+   <h3>요청 위임된 request에 존재하는 파라미터 출력하기</h3>
+
+   <pre>
+    ${param.key}
+
+    - request 존재하는 parameter 값 얻어와 출력
+    - 요청 URL에 쿼리스트링 (GET)이나 폼 데이터(POST)로 전달된 파라미터값을
+      직접 req 세팅하지 않아도 바로 접근할 수 있도록 해줌
+
+   </pre>
+
+   
+    <li th:text="${param.inputName}">제출된 이름</li>
+    <li th:text="${param.inputAge}">제출된 나이</li>
+    
+    <!-- 같은 name 속성값(key)를 가진 파라미터는 배열로 전달-->
+    <li th:text="${param.color}">체크된 색상</li>
+   
+    <!--전달된 파라미터 값이 없으면 null == 빈문자열-->
+    <!--타임리프에서는 null 값을 빈 문바열("")로 처리함-->
+
+    <!--반복할 배열 /리스트가 존재하지 않으면 반복문 실행 안함-->
+    <li th:each="c : ${param.color}" th:text="${c}"></li>
+
+   </ul>
+
+   <hr>
+
+   <h3>th:text / th:utext</h3>
+   <pre>
+     th:text= "속성값"
+     -해당 태그에 "속성값"을 내용으로 출력
+     -단, html 태그, 특수문자 해석 X (innerText)
+
+     th:utext = "속성값"
+     - 해당 태그에 "속성값"을 내용으로 출력
+     - 단, html태그, 특수문자 해석 O (innerHTML)
+   </pre>
+
+   <div>
+    <h4>th:text(html 태그해석 X)</h4>
+   <th:block th:text ="${str}">th:text</th:block>
+  </div>
+   
+  <div>
+    <h4>th:utext(html 태그해석 O)</h4>
+    <th:block th:utext ="${str}">th:utext</th:block>
+   </div>
+
+   <hr>
+
+   <h3>
+    th:text /th:utext 출력 시
+    변수에 저장된 값이 아닌 임의 내용 작성해보기
+   </h3>
+
+   <pre>
+    th:text="|문자열${}|"
+     = 해당 요소의 내용으로 "문자열" + 변수값 출력
+   </pre>
+
+   <p th:text="|th:text의 str => ${str}|"></p>
+   <p th:text="| ${str} th:text의 str =>|"></p>
+
+   <p th:utext="|th:text의 str => ${str}|"></p>
+    <!--해석됫기떄문에 아래층에 찍힘-->
+   <p th:text="${str} + 짠"></p>
+
+   <hr>
+
+   <h3>th:text / th:utext 대신하는 특수 기호 (괄호)</h3>
+   <!--
+    th:text == [[...]]
+    th:utext == [(...)]
+   -->
+  
+   <p>입력받은 이름:[[${param.inputName}]]</p>
+
+   [(${str})]
+
+   <hr>
+   
+   <h1>messages.properties 값 출력하기</h1>
+
+   <h3 th:text="#{app.name}">앱 이름</h3>
+   <img th:src="#{user.default.image}" style="width: 300px;">
+    
+   
+
+
+       
+
+
+
+
+  </body>
+</html>
