@@ -1,0 +1,10 @@
+<!-- 타입리프 값을  JS에 맞게 사용-->
+ <script th:inline="javascript">
+    const message = /*[[${message}]]*/ "전달 받은 메시지";
+            // 전달받은 message 가 없다면 null
+
+    if(message != null){
+      alert(message);
+    }
+    
+ </script>
