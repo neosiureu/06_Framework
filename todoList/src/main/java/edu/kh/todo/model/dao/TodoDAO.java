@@ -7,7 +7,7 @@ import edu.kh.todo.model.mapper.TodoMapper;
 
 @Repository // DAO 계층 역할 명시 + @Bean으로 등록해 줌
 public class TodoDAO {
-	// 마이바티스를 사용할 때는 DAO만으로 안 되며 그냥 @Mapper만을 이용하는 경우가 대부분 (Mapper+Repository를 둘 다 사용할 수도 있다)
+	// 마이바티스를 사용할 때는 DAO만으로는 DB에 연결이 안 되며 그냥 @Mapper만을 이용하는 경우가 대부분 (Mapper+Repository를 둘 다 사용할 수도 있다)
 	// Repository만 있으면 불가능  => Repositoy 어노테이션은 SQL을 해석하지 못하기 때문
 	
 	

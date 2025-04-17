@@ -1,76 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TodoList - Boot</title>
-<link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
+
 <body>
   <h1>Todo List</h1>
-  <p>todoNo가 1인 할 일 제목 조회:</p>
+  <p th:text="${testTitle}">todoNo가 1인 할 일 제목 조회</p>
 
-  <p th:text = "${testTitle}">todo가 1인 할일 조회</p>
+  <form action="/todo/add" method="post">
+    <h4>할 일 추가</h4>
+    <div>
+      제목 : <input type="text" name="todoTitle">
+    </div>
+    <div>
+      <textarea cols="50" rows="5" name="todoContent" placeholder="상세 내용"></textarea>
+    </div>
+    <button>추가하기</button>
+  </form>
 
- 
   <hr>
 
-
-  <h3>전체 Todo 개수 / 완료된 Todo 개수 내용</h3>
-
-  <!--${#lists} : 타입리프에서 제공하는 객체로 .size라는 메서드가 존재
-  ${#lists.size(todoList)}
-  
-  -->
-
-
-  <!-- 할 일 전부 가져오기 -->
-
-  <h3 th:text = "| 전체 Todo 개수: ${#lists.size(todoList)}개 / 
-  완료된 Todo개수: ${completeCount} 개|"></h3>
+  <!-- ${#lists.size(todoList)} -->
+  <h3 th:text="|전체 Todo 개수 : ${#lists.size(todoList)}개 / 
+   완료된 Todo 개수 : ${completeCount}개|">전체 Todo 개수/완료된 Todo 개수 내용
+  </h3>
 
   <table border="1">
-    <thead>  
+    <thead>
       <tr>
-        <th> 행 번호</th>
-        <th> 할 일 번호</th>
-        <th> 할일 제목</th>
-        <th> 완료 여부</th>
-        <th> 등록 날짜</th>
+        <th>행 번호</th>
+        <th>할 일 번호</th>
+        <th>할 일 제목</th>
+        <th>완료 여부</th>
+        <th>등록 날짜</th>
       </tr>
     </thead>
 
-    <tbody>   
-
-      <!-- 반복 상태 변수
-       현재 반복중인 객체와 반복정보를 저장중인 타임리프 변수
-       변수명은 자유이나 iterStat 으로 주로 변수명을 지정한다.
-
-       작성법:
-       th: each = "todo", iterStat : ${todoList}"
-
-
-
-      -->
-
-      <tr th:each = "todo, iterStat : ${todoList}" th:object = "${todo}"> <!-- todo가 바꿔치기 -->
-        <td th:text="${iterStat.count}" > 행 번호</td>
-        <td th:text="*{todoNo}"> 할 일 번호</td> <!-- object에 실어놓은 결과는 필드명만 -->
-        <td> 
-          <a th:text="*{todoTitle}"> 할일 제목 </a>
+    <tbody>
+      <!-- 
+			반복 상태 변수 (현재 반복중인 객체와 반복 정보를 저장중인 타임리프 변수)
+			변수명은 자유지만 보통 iterStat
+			
+			작성법
+			th:each="todo, iterStat : ${todoList}"
+		-->
+      <tr th:each="todo, iterStat : ${todoList}" th:object="${todo}">
+        <td th:text="${iterStat.count}">행 번호</td>
+        <td th:text="*{todoNo}">할 일 번호</td>
+        <td>
+          <a th:href="@{/todo/detail(todoNo=*{todoNo})}"
+          th:text="*{todoTitle}">할 일 제목</a>
         </td>
-        <td th:text="*{complete}"> 완료 여부</td>
-        <td th:text="*{regDate}"> 등록 날짜</td>
+        <td th:text="*{complete}">완료 여부(Y/N)</td>
+        <td th:text="*{regDate}">등록일</td>
       </tr>
-
-
     </tbody>
-
-
   </table>
-  <!-- 할 일 추가  -->
 
-
+  <!-- templates/ 기준 
+      replace시 마치 컨트롤러에서 리턴할 때 쓰는 타임리프의 접두사,접미사 빼고 작성! 
+  -->
+  <th:block th:replace="~{common/footer}"></th:block>
 
 </body>
+
 </html>

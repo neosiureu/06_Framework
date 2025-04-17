@@ -17,10 +17,4 @@
 		<!-- 위 설정을 통해 가령 자바의 memberId는 DB컬럼명 MEMBER_ID가 같다고 인식할 수 있음 -->
 		
 	</settings>
-
-
-
-
-
-
 </configuration>

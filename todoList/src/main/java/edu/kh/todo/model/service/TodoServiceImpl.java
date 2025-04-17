@@ -12,19 +12,18 @@ import edu.kh.todo.model.dao.TodoDAO;
 import edu.kh.todo.model.dto.Todo;
 import edu.kh.todo.model.mapper.TodoMapper;
 
-
-// @Transactional => 트랜잭션 처리를 수행하라고 지시하는 어노테이션. 이제 커밋과 롤백을 하지 않고 Spring에게 위임하는 어노테이션
-// 에러가 안 났으면 알아서 커밋, 에러가 나면 롤백
-// 만약 인자로 아무것도 안 쓰는 경우 기본값: Service 내부 코드를 수행 중 Runtime Exception 발생 시 rollback
-// 따라서 최상위 예외인 Exception을 처리하여 rollback함 => 어떤 예외가 발생했을 때 rollback할지 지정하는 속성이다.
+// @Transactional 
+// - 트랜잭션 처리를 수행하라고 지시하는 어노테이션
+// - 정상 코드 수행 시 COMMIT
+// - 기본값 : Service 내부 코드 수행 중 RuntimeException 발생 시 rollback
+// rollbackFor 속성 : 어떤 예외가 발생했을 때 rollback 할 지 지정하는 속성
 // Exception.class == 모든 예외 발생 시 rollback 하겠다
 
+@Transactional(rollbackFor = Exception.class)
+@Service  // 비즈니스 로직(데이터가공, 트랜잭션 처리등) 역할 명시 + Bean 등록
+public class TodoServiceImpl implements TodoService{
 
-@Transactional(rollbackFor = Exception.class)  
-@Service // (비즈니스 로직, 즉 데이터 가공이나 트랜잭션 처리 등을 명시함과 동시에 Bean에 등록한다. 즉 @Bean안해도 됨)
-public class TodoServiceImpl implements TodoService {
-	
-	@Autowired // todoDAO와 같은 타입이거나 상속관계인 빈을 SPC에서 찾아서 넣어준다 (DI한다)
+	@Autowired // TodoDAO와 같은 타입/상속관계 Bean 의존성 주입(DI)
 	private TodoDAO dao;
 	
 	@Autowired
@@ -32,31 +31,19 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public String testTitle() {
-		// TODO Auto-generated method stub
 		return dao.testTitle();
 	}
-	// 커넥션 생성 + 커넥션 반납 (수저통 관리자가 알아서 관리함)
-	// 데이터가공
-	// 트랜잭션 관리 @Transactional(rollbackFor = Exception.class)  
 
 	@Override
 	public Map<String, Object> selectAll() {
-		// TODO Auto-generated method stub
 		
-		// 할일의 목록을 조회하고 
-		// 완료된 할일 개수를 조회하며
-		// 이 둘의 값을 맵으로 묶어 반환한다
+		// 1. 할 일 목록 조회
+		List<Todo> todoList = mapper.selectAll();
 		
-		
-		
-		// 할일의 목록을 조회하고 
-		List <Todo> todoList = mapper.selectAll();
-		// 완료된 할일 개수를 조회하며
+		// 2. 완료된 할 일 개수 조회
 		int completeCount = mapper.getCompleteCount();
 		
-				// 이 둘의 값을 맵으로 묶어 반환한다
-		
-		
+		// 3. 위 두개 결과값을 Map으로 묶어서 반환
 		Map<String, Object> map = new HashMap<>();
 		
 		map.put("todoList", todoList);
@@ -64,6 +51,27 @@ public class TodoServiceImpl implements TodoService {
 		
 		return map;
 	}
-	
 
+	@Override
+	public int addTodo(String todoTitle, String todoContent) {
+		
+		// 마이바티스에서 SQL에 전달할 수 있는 파라미터 개수는 오직 1개!!!
+		// -> todoTitle, todoContent 여러개인 파라미터를 전달하려면 
+		//    Todo DTO로 묶어서 전달하면 된다!
+		Todo todo = new Todo();
+		todo.setTodoTitle(todoTitle);
+		todo.setTodoContent(todoContent);
+		
+		return mapper.addTodo(todo);
+	} 
+	
+	@Override
+	public Todo todoDetail(int todoNo) {
+		return mapper.todoDetail(todoNo);
+	}
+	
+	
+	
+	
+	
 }
