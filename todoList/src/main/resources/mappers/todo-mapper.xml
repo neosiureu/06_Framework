@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="">
+<mapper namespace="edu.kh.todo.model.mapper.TodoMapper">
 <!-- 연결할 DAO(Mapper 인터페이스) 의 경로를 작성함 (작성하지 않으면 오류) 
 패키지 경로를 포함한 풀 네임으로 작성해야 한다.-->
 	<!-- 파일을 생성한 직후 cache-ref namespace= 으로 시작하는 태그를 삭제해라 -->
-  
-  
-  
-  
   
   
   <!-- sql구문을 태그로서 작성 entry key:value가 아님! 태그 자체가 달라짐 
@@ -18,7 +14,60 @@
   
   -->
   
- 
   
+  
+   <!--  함수의 이름을 아이디에 -->
+ <select id="testTitle" resultType="string" >
+ SELECT TODO_TITLE FROM TB_TODO 
+ WHERE TODO_NO = 1
+ </select>
+ 
+ <!-- 
+ 
+ <select> 태그 속성 => 
+ -속성1) id = ""  
+ 태그를 식별하는 값. 연결된 Mapper의 메서드명과 동일하게 작성하여 연결
+ 
+ - 속성2) resultType = "" 
+ 조회결과 한줄을 저장하여 반환할 변수나 객체자료형을 지정
+ 조회결과가 여러행이면
+ 행 별로 변수나 객체 자료형으로 저장 후 모아서 List형으로 반환
+ 
+ 
+ if) 많은 행이 나오면 
+ 가령 SELECT * FROM TB_TODO
+ 모든 행을 Todo로 담아서 각 행에 맞는 List로 반환
+
+  -->
+  
+  
+  
+  <!-- 할일 목록조회 -->
+  
+  <select id="selectAll" resultType="Todo"> SELECT TODO_NO, TODO_TITLE, COMPLETE,
+TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') REG_DATE
+FROM TB_TODO
+ORDER BY TODO_NO</select>
+
+ <!--  조회결과가 여러행이면
+ 행 별로 변수나 객체 자료형으로 저장 후 모아서 List형으로 반환 
+ 행별로 담아줄 것이 무엇인지 생각해보면 Todo라는 한 행임 -->
+
+<!-- setTypeAlias에서 이미 지정해놨기 때문에 경로를 다 안써도 됨 (DBConfig파일에 잘 설정해둬서)-->
+ 
+ 
+ 
+ <!-- 완료된 할일 개수를 조회하는  -->
+ 
+ 
+ <select id="getCompleteCount" resultType="_int" >
+ SELECT COUNT(*) 
+		FROM TB_TODO
+		WHERE COMPLETE = 'Y' 
+ </select>
+ 
+ 
+ 
+ 
 </mapper>
 

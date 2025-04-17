@@ -35,6 +35,16 @@
   <!-- 속성값 안에 있지만 마치 innerText처럼 해석된다 -->
   <hr><br>
 
+
+
+
+
+
+
+
+
+
+
   <h3>단일 값 출력</h3>
   <pre>
     th:block 태그 => 타입리프에서는 유일하게 th:block만 제공한다 
@@ -48,7 +58,9 @@
   productName:
   <th:block th:text="${productName}">상품명</th:block>
   <!-- => 스팬 태그는 남아있음 -->
-  vs <span th:text="${productName}">상품명</span>
+  vs 
+  
+  <span th:text="${productName}">상품명</span>
   <!-- => 스팬 태그까지 사라진 결과  -->
 
   <br>
@@ -80,6 +92,18 @@
 
   <hr>
 
+
+
+
+
+
+
+
+
+
+
+
+
   <h4>th:each속성의 사용</h4>
   <ul>
     <th:block th:each="fruit :${fruitList}">
@@ -90,6 +114,19 @@
   </ul>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+  
   <h3>DTO객체 출력하기</h3>
 
   <ul>

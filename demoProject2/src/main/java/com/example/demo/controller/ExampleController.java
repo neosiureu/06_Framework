@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j // log.console()을 이용하기 위해 필요하다 (로그 객체 자동 생성을 위함)
 public class ExampleController {
 	
-	
 	@RequestMapping("ex1")
 	public String ex1(HttpServletRequest req, Model model) {
 		
@@ -40,9 +39,6 @@ public class ExampleController {
 		model.addAttribute("test2", "model을 이용해 전달한 값");
 		// 위 둘은 동일한 동작을 한다. 다만 장점은 세션 범위로 변할 수 있다는 점
 		
-		
-		
-		
 		// --------------------------------------------------------------------//
 		
 		// 단일 값(숫자 또는 문자열만) Model을 이용해서 html로 전달
@@ -58,9 +54,6 @@ public class ExampleController {
 		fruitList.add("바나나");
 		
 		model.addAttribute("fruitList" , fruitList);
-		
-		
-		
 		
 		Student std = new Student();
 		std.setAge(10);
@@ -81,12 +74,21 @@ public class ExampleController {
 		
 		model.addAttribute("stdList",stdList);// example/ex1.html로 전달 완료
 		
-		
-		
-		
-		
 		return "example/ex1";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	//DTO 객체를 model에 실어서 html로 전달
@@ -106,6 +108,18 @@ public class ExampleController {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//ex3/1은 여기서 몾찾음 ex3/2 ex3/3도 모름
 
 	@GetMapping("ex3")
@@ -116,8 +130,6 @@ public class ExampleController {
 		
 		return "example/ex3";
 	}
-	
-	
 	
 	@GetMapping("ex3/{path:.+}") // <- 여기들어간 것은 변수명
 	public String pathVariableTest(@PathVariable("path") String path) {
@@ -137,6 +149,17 @@ public class ExampleController {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@GetMapping("ex4")
 	public String ex4(Model model) {
 		
@@ -149,6 +172,14 @@ public class ExampleController {
 				
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
