@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="|${todo.todoNo}번 할일 수정|">수정화면</title>
+  <link rel="stylesheet" href="/css/update.css">
+</head>
+
+<body>
+
+  <h1 th:text="|${todo.todoNo}번 할일 수정|"></h1>
+
+  <!-- 수정 후에 제출해야 하므로 폼 태그로 보낸다 -->
+  <form action="/todo/update" method="post">
+    <!-- todo라는 자원의 주소는 항상 똑같이 하고 그 하위 폴더로 동작에 대한 주소를 적는 것이 규칙 -->
+
+    <div>
+      제목: <input type="text" name="todoTitle" th:value="${todo.todoTitle}">
+    </div>
+
+    <div>
+      <!-- textarea에 값을 세팅하고 싶으면 시작과 종료 태그 사이에 작성해야 한다. 
+     시작 태그에 작성하는 input대신에
+    input과는 달리 th:value가 아닌 th:text에 작성해야 한다 -->
+      <textarea name="todoContent" cols="50" rows="5" placeholder="상세내용..." th:text="${todo.todoContent}">
+      <!-- th:value가 아닌 th:text로 해야 태그 사이에 내용이 들어온다 -->
+    </textarea>
+    </div>
+    <!-- todoNo이 숨겨져 있어야 한다. content만 작성하면 어떤 번호의 todoNo을 수정할지 주긴 해야하지만 숨겨둬야 한다 -->
+    <input type="hidden" name="todoNo" th:value="${todo.todoNo}">
+    <!-- 왜 param이 가능한가? 수정에 대한 쿼리스트링 부분에 해당 숫자가 있기 때문 
+   가령 todoNo = 1 이라고 하면 param.todoNo라고 하면 1이 값으로 넘어옴
+  -->
+    <button>수정하기</button>
+  </form>
+
+  
+  <th:block th:replace="~{common/footer}"></th:block>
+
+
+
+</body>
+
+</html>

@@ -71,7 +71,43 @@ public class TodoServiceImpl implements TodoService{
 	}
 	
 	
+	@Override
+	public int changeComplete(Todo todo) {
+		
+
+		return mapper.changeComplete(todo) ;
+	}
 	
+	@Override
+	public int todoUpdate(Todo todo) {
+		
+		return mapper.todoUpdate(todo);
+	}
+	
+	@Override
+	public int todoDelete(Todo todo) {
+
+		return mapper.todoDelete(todo);
+	}
+
+	
+	@Override
+	public int getTotalCount() {
+	
+		return mapper.getTotalCount();
+	}
+
+	@Override
+	public int getCompleteCount() {
+		// TODO Auto-generated method stub
+		return mapper.getCompleteCount(); 
+	} //이미 위에 했었음
+
+	@Override
+	public List<Todo> selectList() {
+		// TODO Auto-generated method stub
+		return mapper.selectAll();
+	}
 	
 	
 }
