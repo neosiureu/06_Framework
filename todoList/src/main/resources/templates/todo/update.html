@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="|${todo.todoNo}번 할 일 수정|">todo수정페이지</title>
+  <link rel="stylesheet" href="/css/update.css">
+</head>
+<header >
+  <div>
+    <button> 뒤로가기</button>
+  </div>
+  
+  <h1 th:text="|${todo.todoNo}번 할 일 수정|"></h1>
+  
+  <div
+  ></div>
+</header>
+
+<body>
+ 
+ 
+  
+  <hr>
+
+  <form action="/todo/update" method="post">
+    <div>
+      제목 : <input type="text" name="todoTitle" th:value="${todo.todoTitle}">
+    </div>
+      
+    <div>
+      <!--textareat에 값을 세팅하고 싶으면 시작, 종료 태그 사이에 작성해야하므로
+             th:value가 아닌 th:text에 작성해야한다!
+             -->
+        <textarea name="todoContent" 
+        cols="50" 
+        rows="5"
+        placeholder="상세내용"
+        th:text="${todo.todoContent}"></textarea>
+      </div>
+
+      <!--할 일 번호를 숨겨둠-->
+      <input type="hidden" name="todoNo" th:value="${todo.todoNo}">
+     
+      
+        
+       <button >수정하기</button>
+      
+       
+  </form>
+     
+</body>
+  
+  <th:block th:replace="~{common/footer}"></th:block>
+</body>
+</html>

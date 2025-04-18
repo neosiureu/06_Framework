@@ -23,4 +23,7 @@ public class MainController {
        // -> classpath:/templates/common/main.html
        return "common/main";
     }
+ 
+    
+    
 }

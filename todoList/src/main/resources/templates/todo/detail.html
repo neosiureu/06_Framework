@@ -19,11 +19,18 @@
       <td>[[${todo.regDate}]]</td>
     </tr>
     
+    <!-- data-*(아무거나 와도됨) 
+       - 데이터에 대한 확장성을 고혀아여 설계된 속성
+       - js에서 요소. dataset 을 이용해 해당 값을 얻어갈 수 있음. 
+    -->
     <tr>
       <th>완료 여부</th>
       
       <td>
-        <button type="button" class="complete-btn" th:text="${todo.complete}">완료 여부</button>
+        <button type="button" class="complete-btn" 
+        th:text="${todo.complete}"
+        th:data-todo-no="${todo.todoNo}">
+          완료 여부</button>
       </td>
     </tr>
 
@@ -35,10 +42,15 @@
   </table>
 
   <button id="goToList">목록으로</button>
-  <button id="updateBtn">수정</button>
-  <button id="deleteBtn">삭제</button>
+  <button id="updateBtn" th:data-todo-no="${todo.todoNo}">수정</button>
+  <button id="deleteBtn" th:data-todo-no="${todo.todoNo}">삭제</button>
 
-  <th:block th:replace="~{common/footer}"></th:block>
   
+
+ 
+  
+  <!--spring에서 정작원 요청(접근) 시 static 폴더 기준으로 작성 -->
+  <script src="/js/detail.js"></script>
+  <th:block th:replace="~{common/footer}"></th:block>
 </body>
 </html>

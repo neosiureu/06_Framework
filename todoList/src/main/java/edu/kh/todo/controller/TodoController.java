@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.todo.model.dto.Todo;
 import edu.kh.todo.model.service.TodoService;
+import jakarta.servlet.RequestDispatcher;
 
 @Controller // 요청 / 응답 제어 역할 명시 + Bean 등록
 @RequestMapping("/todo") // "/todo" 로 시작하는 모든요청 매핑
@@ -79,6 +80,128 @@ public class TodoController {
 		
 	}
 	
+	// /todo/changeComplete?todoNo=4&complete=y
+	/** 완료 여부 변경
+	 * @param todo : 커맨드 객체(@ModelAttribute 생략)
+	 *               - 파라미터의 key 와 Todo 객체의 필드명이 일치하면
+	 *               - 일치하는 필드값이 파라미터의 value 값으로 세팅 된 상태
+	 *               - 즉, todoNo와 complete 두 필드가 세팅완료된상태
+	 * @return
+	 */
+	@GetMapping("changeComplete")
+	public String changeComplete(Todo todo, RedirectAttributes ra) {
+								//@ModelAttribute
+		
+		// 변경 서비스 호출
+		
+		int result = service.changeComplete(todo);
+		
+		// 변경 성공 시 : "변경 성공!"
+		// 변경 실패 시 : "변경 실패 "
+		
+		String message = null;
+		
+		if(result > 0) message = "변경성공";
+		else           message = "변경 실패..";
+		
+		ra.addFlashAttribute("message", message);
+		
+		
+		// 상대경로 (현재 위치 중요 !!!)
+		// 현재 주소 : /todo/changeComplete
+		// 재요청 주소 : /todo/detail
+		return"redirect:detail?todoNo=" + todo.getTodoNo();
+		
+		
+	}
+	
+	/** 수정 화면 전환 요청
+	 * @return
+	 */
+	@GetMapping("update")
+	public String todoUpdate(@RequestParam("todoNo") int todoNo ,
+			                               Model model) {
+	
+		// 상세 조회 서비스 호출 (재활용) -> 수정화면에 출력할 기존 내용 
+		Todo todo = service.todoDetail(todoNo);
+		
+		model.addAttribute("todo",todo);
+		
+		//classpath:templates/todo/update.html 로 forward
+		return "todo/update";
 	
 }
+
+	@PostMapping("update")
+	public String todoUpdate(Todo todo, RedirectAttributes ra) {
+		
+		// 수정 서비스 호출 후 결과 반환받기
+		
+		int result = service.todoUpdate(todo);
+		
+		String message = null;
+		String path    = "redirect:";
+		
+		
+		if(result >0) {
+			// 상세조회로 리다이텍트
+			message = "할일 수정성공";
+			path += "/todo/detail?todoNo=" + todo.getTodoNo();
+		}
+		else         {
+			message = "할일 수정 실패 ..";
+			path += "/todo/update?todoNo=" + todo.getTodoNo();
+		}
+		
+		ra.addFlashAttribute("message",message);
+		
+		return path;
+	}
+
+	@GetMapping("delete")
+	public String todoDelete(Todo todo,RedirectAttributes ra) {
+		
+		int result = service.todoDelete(todo);
+		
+		String message = null;
+		String path = "redirect:";
+		
+		
+		if(result > 0) {
+			message = "삭제성공";
+			path +="/";
+		}
+		else {
+			message="삭제실패";
+			path +="todo/detail?todoNo=" + todo.getTodoNo();
+		}
+		
+		ra.addFlashAttribute("message",message);
+		
+		return path;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

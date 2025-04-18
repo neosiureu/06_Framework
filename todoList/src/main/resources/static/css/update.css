@@ -65,3 +65,9 @@ footer {
   color: #666;
   font-size: 14px;
 }
+
+header {
+  display: flex;
+}
+
+
