@@ -176,13 +176,7 @@ public class TodoController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	@GetMapping("delete")
 	public String todoDelete(@ModelAttribute Todo todo, RedirectAttributes ra ) {

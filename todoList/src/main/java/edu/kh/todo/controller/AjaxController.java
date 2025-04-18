@@ -1,9 +1,5 @@
 package edu.kh.todo.controller;
-
-
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import edu.kh.todo.model.dto.Todo;
 import edu.kh.todo.model.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +22,6 @@ import lombok.extern.slf4j.Slf4j;
  * 컨트롤러 메서드의 반환 값을 비동기로 요청했던 html이나 js파일 부분에 값을 그대로 돌려보낼 것이다.
  * 
  * 해당 어노테이션이 붙은 컨트롤러의 메서드는 리턴에 작성된 값이 포워드, 리다이렉트와 전혀 무관
- * 
- * 
- * 
- * 
  * 
  * */
 
@@ -135,6 +126,4 @@ public class AjaxController {
 	 *스프링부트에는 내장 되어 있음.
 	 *
 	 */
-	
-
 }
