@@ -92,8 +92,7 @@ public class TodoController {
 	 * @return 
 	 */
 	@GetMapping("changeComplete")
-	public String changeComplete(@ModelAttribute Todo todo, RedirectAttributes ra) {
-		
+	public String changeComplete(@ModelAttribute Todo todo, RedirectAttributes ra) {	
 		// 서비스의 호출 => DML의 일종을 하고 싶음
 		
 		int result = service.changeComplete(todo);
@@ -153,7 +152,7 @@ public class TodoController {
 		
 		int result = service.todoUpdate(todo);
 		
-		String path;
+		String path ="";
 		String message = null;
 		
 		if(result>0) {

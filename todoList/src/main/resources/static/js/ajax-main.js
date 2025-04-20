@@ -92,12 +92,13 @@ function getTotalCount() { // 함수의 정의
 
   fetch("/ajax/totalCount")
     // /ajax/totalCount라는 컨트롤러가 있는 서버로 get방식 요청을 보내겠다
-    // fetch한줄을 통해 서버에서 응답을 받으면 response라는 매개변수로 넘어오는데 응답을 text형식으로 변환하는 콜백함수임
-    // 매개변수 response => 서버가 클라이언트에게 돌려준 비동기 요청에 대한 응답이 담긴 객체
-    .then((response) => {
+    // fetch한줄을 통해 서버에서 응답을 받으면 response라는 매개변수로 넘어오는데 
+    .then((response) => { //그 응답을 text형식으로 변환하는 콜백함수임
+      // 매개변수 response => 서버가 클라이언트에게 돌려준 비동기 요청에 대한 응답이 담긴 객체
       console.log(response)
       return response.text()
-    }) // 응답 데이터를 문자 또는 숫자 형태로 변환한 결과를 가지는 promise 객체를 반환한다. 다만 서버에서 온 것이 단일 값이기 때문에 text라는 함수로 소환할 수 있다
+    }) // 응답 데이터를 문자 또는 숫자 형태로 변환한 결과를 가지는 promise 객체를 반환한다. 
+    // 다만 서버에서 온 것이 단일 값이기 때문에 text라는 함수로 소환할 수 있다
     // response.text()라 하면 아직 그 개수를 알 수 없음. promise안에 담긴 상태이기 떄문에 상자에 담겨있는 셈
     // 첫 요청에 대한 응답 데이터를 가지고 {}를 한다. 
     // 주로 return으로 response.text() response.json()
@@ -214,7 +215,7 @@ const selectTodoList = () => {
       // 이때는 JSON.parse(String)를 이용하여 JS Object타입으로 변환이 가능하다.
       // Strng => JS Object
 
-      // 반대로 JSON.stringify(JS Object) 
+      // 반대의 함수도 있다다 JSON.stringify(JS Object) 
       // JS Object => String
 
 
@@ -226,8 +227,6 @@ const selectTodoList = () => {
 
 
       // 기존에 출력되어있던 할일 목록은 사라져야 한다
-
-
       tbody.innerHTML = "";
 
 
@@ -319,10 +318,24 @@ const selectTodoList = () => {
 
 
 const selectTodo = (url) => {
-  url = `/ajax/detail?todoNo=${todoNo}` 
-  
-  
-}
+
+  fetch(url)
+    .then(response => response.json())
+    .then(result => {
+
+      // 받아온 todo 객체를 모달창에 채워넣는다
+
+      popupTodoNo.innerText = result.todoNo;
+      popupTodoTitle.innerText =result.todoTitle;
+      popupComplete.innerText = result.complete;
+      popupRegDate.innerText = result.regDate;
+      popupTodoContent.innerText = result.todoContent;
+
+      // 숨겨져 있던 popupLayer를 보여준다
+      popupLayer.classList.remove("popup-hidden");
+
+    });
+};
 
 
 getTotalCount();

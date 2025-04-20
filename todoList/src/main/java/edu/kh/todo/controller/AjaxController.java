@@ -92,6 +92,28 @@ public class AjaxController {
 	
 		
 		return result;
+		
+		/* @RequestBody
+		 * 비동기 요청 시 전달되는 데이터 중 body부분에 포함된 요청 데이터를 
+		 * 알맞은 Java객체 타입으로 바인딩하는 어노테이션
+		 * 기본적으로 요청받은 데이터가 JSON 형식일 것으로 예상함
+		 * JS는 Java로 제출할 경우 처음에는 
+		 * @RequestBody는 출발지가 JSON이기를 기대한다. 알아서 TODO와 같은 형식으로 바꿔준다.
+		 * 그 주체는 HTTPMessageConvertor
+		 * Spring에서 비동기 통신 시 전달받은 데이터의 자료형, 응답하는 데이터의 자료형을
+		 * 알맞은 형태로 가공하고 변환해주는 객체이다.
+		 * 
+		 * Java     <----------------------------> JS
+		 * 문자열, 숫자                              Text
+		 * Map                 JSON               JS Object
+		 * DTO                 JSON               JS Object	
+		 *
+		 *
+		 *
+		 *Spiring에서 HTTPMessageConvertor가 작동하기 위해서는 jackson-data0bind 라이브러리가 필요한데
+		 *스프링부트에는 내장 되어 있음.
+		 *
+		 */
 	}
 	
 	
@@ -105,25 +127,5 @@ public class AjaxController {
 	}
 	
 	
-	/* @RequestBody
-	 * 비동기 요청 시 전달되는 데이터 중 body부분에 포함된 요청 데이터를 
-	 * 알맞은 Java객체 타입으로 바인딩하는 어노테이션
-	 * 기본적으로 요청받은 데이터가 JSON 형식일 것으로 예상함
-	 * JS는 Java로 제출할 경우 처음에는 
-	 * @RequestBody는 출발지가 JSON이기를 기대한다. 알아서 TODO와 같은 형식으로 바꿔준다.
-	 * 그 주체는 HTTPMessageConvertor
-	 * Spring에서 비동기 통신 시 전달받은 데이터의 자료형, 응답하는 데이터의 자료형을
-	 * 알맞은 형태로 가공하고 변환해주는 객체이다.
-	 * 
-	 * Java     <----------------------------> JS
-	 * 문자열, 숫자                           Text
-	 * Map                 JSON               JS Object
-	 * DTO                 JSON               JS Object	
-	 *
-	 *
-	 *
-	 *Spiring에서 HTTPMessageConvertor가 작동하기 위해서는 jackson-data0bind 라이브러리가 필요한데
-	 *스프링부트에는 내장 되어 있음.
-	 *
-	 */
+	
 }
