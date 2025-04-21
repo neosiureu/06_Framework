@@ -2,10 +2,13 @@ package edu.kh.todo.controller;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import edu.kh.todo.model.dto.Todo;
 import edu.kh.todo.model.service.TodoService;
@@ -127,5 +130,50 @@ public class AjaxController {
 	}
 	
 	
+	
+	/** 할일 상세 조회 페이지로 Todo객체 리턴
+	 * @return
+	 */
+	@ResponseBody
+	// 그대로 뷰 단으로 돌아가라
+	@GetMapping("detail")
+	public Todo selectTodo(@RequestParam("todoNo") int todoNo) { //Todo todo로 바꿔도 된다.
+		// 비동기식임에도 불구하고 @RequestBody가 아니라 @RequestParam
+		// fetch옵션 중 body부분에 값이 정의된 것은 아니기 때문
+		return service.todoDetail(todoNo);
+		// dto객체인 Todo를 JSON으로 변환해줌
+		// HttpMessageConvertor
+	}
+	
+	
+	@ResponseBody
+	@DeleteMapping("delete")
+	public int todoDelete(@RequestBody int todoNo) {
+		return service.todoDelete(todoNo);
+
+	}
+	
+	@PutMapping("changeComplete")
+	@ResponseBody
+	public int changeComplete(@RequestBody Todo todo) {
+		
+		return service.changeComplete(todo);
+	}
+	
+	
+	/** 할일 수정
+	 * @return
+	 */
+	
+	@ResponseBody
+	@PutMapping("update")
+	public int todoUpdate(@RequestBody Todo todo) {
+		// 필드명과 
+		// js객체를 JSON으로 변환한 뷰 단에서의 키가 일치하는지 항상 체크해야 한다
+		
+		return service.todoUpdate(todo);
+	
+		
+	}
 	
 }

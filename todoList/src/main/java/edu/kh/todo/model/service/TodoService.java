@@ -64,6 +64,8 @@ public interface TodoService {
 	 * @return completeCount
 	 */
 	List<Todo> selectList();
+
+	int todoDelete(int todoNo);
 	
 }
 

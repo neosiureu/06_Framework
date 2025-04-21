@@ -108,6 +108,12 @@ public class TodoServiceImpl implements TodoService{
 		// TODO Auto-generated method stub
 		return mapper.selectAll();
 	}
+
+	@Override
+	public int todoDelete(int todoNo) {
+		// TODO Auto-generated method stub
+		return mapper.todoDelete(todoNo);
+	}
 	
 	
 }

@@ -256,20 +256,22 @@ const selectTodoList = () => {
           if (key === 'todoTitle') {
             const a = document.createElement("a") // <a>를 생성
             a.innerText = todo[key]; //todo["todoTitle"]
-            a.href = "/ajax/detail?todoNo=" + todo.todoNO;
+            a.href = "/ajax/detail?todoNo=" + todo.todoNo;
             td.append(a);
             tr.append(td);
 
 
 
             // a태그 클릭 시 페이지 이동을 막고 비동기 요청으로 돌릴 수 있다.
-            a.addEventListener("click", e => {
-            e.preventDefault(); // 기본적으로 주어지는 이벤트를 막는다.
+            e.addEventListener("click", e => {
+              e.preventDefault(); // 기본적으로 주어지는 이벤트를 막는다.
 
 
-              // 미구현: 할일을 상세 조회하는 비동기 요청 함수를 호출한다
+              // 아래에서 구현할  selectTodo()함수 : 할일을 상세 조회하는 비동기 요청 함수를 호출한다
 
               selectTodo(e.target.href) // a태그가 가진 속성 값을 매개변수로 전달
+              // selectTodo('/ajax/detail?todoNo=17');
+
 
             })
             continue;
@@ -292,21 +294,18 @@ const selectTodoList = () => {
 
       }
 
-
-
-
     })
 
 
 }
 
 
-// url = e.target.href = '/ajax...'
+// 
 // 비동기로 할일을 상세 조회하는 함수
 // const selectTodo(url) => {
-//   // 매개변수 url = "/ajax/detail/todoNo=1"과 같은 문자열
+// 매개변수 url = "/ajax/detail/todoNo=1"과 같은 문자열
 
-  
+
 
 
 //   // fetch 요청 시 url을 이용하게 된다.
@@ -316,32 +315,275 @@ const selectTodoList = () => {
 
 // }
 
+//const url = '/ajax/detail/?todoNo='+todoNO;
 
 const selectTodo = (url) => {
 
   fetch(url)
     .then(response => response.json())
-    .then(result => {
+    .then(todo => {
+      console.log(todo);
 
-      // 받아온 todo 객체를 모달창에 채워넣는다
+      // 받아온 todo 객체를 모달창에 채워넣는다.
 
-      popupTodoNo.innerText = result.todoNo;
-      popupTodoTitle.innerText =result.todoTitle;
-      popupComplete.innerText = result.complete;
-      popupRegDate.innerText = result.regDate;
-      popupTodoContent.innerText = result.todoContent;
+      // popup layer에 조회된 값을 출력
 
-      // 숨겨져 있던 popupLayer를 보여준다
+      popupTodoNo.innerText = todo.todoNo; // 할일 번호
+      popupTodoTitle.innerText = todo.todoTitle; // 할일 제목
+      popupComplete.innerText = todo.complete; //완료여부
+      popupRegDate.innerText = todo.regDate; // 등록일
+      popupTodoContent.innerText = todo.todoContent; // 할일 내용
+
+      // 숨겨져 있던 popupLayer를 보여준다.  class의 성질을 없앤다. 
       popupLayer.classList.remove("popup-hidden");
+      //  <div id="popupLayer" class="popup-hidden">이었으니 
+      // popup-hidden이라는 클래스를 없애면 css를 보면 display-none성질이 있었기에 이러한 기능이 가능
+
+
+
+      // 추가로 update layer가 열려있다면 숨기기. 
+      // 수정화면과 상세화면 중 오직 하나만 열려있게끔 만들기 위함
+      updateLayer.classList.add("popup-hidden"); // 수정화면을 display-none으로
+
+
 
     });
 };
 
 
+
+popupClose.addEventListener("click", () => {
+  popupLayer.classList.add("popup-hidden");
+
+});
+
+
+
+// 삭제버튼 클릭 시
+deleteBtn.addEventListener('click', () => {
+  // 취소 클릭시에는 아무것도 하지 않는다. 취소버튼을 누를 시 콜백함수를 종료
+
+  if (!confirm('정말 삭제하시겠습니까?')) {
+    return;
+  }
+
+
+  // 삭제할 할일의 번호를 얻어온다.
+  const todoNo = popupTodoNo.innerText;
+
+  // 삭제에 대한 비동기요청
+
+  fetch("/ajax/delete", {
+    method: "DELETE", //delete방식요청은 @DelteMapping으로 처리한다
+    headers: { "Content-Type": "application/json" },
+    body: todoNo // 단일 값만 컨틀롤러로 가는 것은 JSON형태로 자동변환되어 간다. JSON.stringify(todoNo)라고 명시하는 것이 옳지만 이렇게 해도 됨
+  })
+    .then(resp => resp.text())
+    .then(result => {
+      console.log(result);
+
+      if (result > 0) {
+        alert('삭제되었습니다');
+        popupLayer.classList.add('popup-hidden');
+
+        getTotalCount();
+        getCompleteCount();
+        selectTodoList();
+
+
+        // 전체, 완료된 할일 개수를 다시 조회
+        // 할일 목록을 다시 조회
+      }
+
+      else {
+        alert('삭제를 실패하였습니다')
+
+      }
+    })
+});
+
+
+
+
+// 완료여부 변경
+changeComplete.addEventListener('click',()=>{
+  // 변경할 할일 번호를 얻어온다 + 완료여부 현재 Y라면 N으로, N이라면 Y로
+
+  const todoNo = popupTodoNo.innerText;
+  const complete = popupComplete.innerText==='Y' ? 'N' : 'Y';
+
+  // sql수행에 필요한 저 둘을 서버단으로 보내기 위해 js객체로 만들고 그것을 JSON으로 또 변환하여 보낸다 
+
+  const obj  = {
+    "todoNo" : todoNo,
+    "complete" : complete
+  }
+
+  // 가령 {    "todoNo" : 2,"complete" : 'Y'}꼴로
+
+  // 비동기로 완료여부 변경 요청 => 수정은 put요청을 보내게 됨 (delete get post뿐 아니라 put이라는 매핑 방식이 있다)
+
+  fetch('/ajax/changeComplete',{
+    method : "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(obj)
+
+  })
+  .then(resp=>resp.text()) //1이나 0
+  .then(result=> {
+    if(result>0) {
+      // update된 DB의 데이터들을 다시 조회해서 화면에 출력한다? 이는 서버에 부담을 준다.
+      // selectTodo(); => 서버 부하가 큰 방법
+
+
+      // Y와 N여부만 바꾸고 끝내는 방식
+      popupComplete.innerText= complete;
+
+      // 현재 완료된 todo개수에서 +1이나 -1만 하면 됨
+
+
+      const count = Number(completeCount.innerText);
+       // 가령 "2"가 소환되므로 숫자 2로 바꾸겠다. 
+       
+       if(complete ==='Y') completeCount.innerText = count+1; // N => Y 일 때
+       else completeCount.innerText = count-1; // Y => N일 때
+
+
+       // 수정화면 뿐 아니라
+       // 메인화면에서도 수정해야 함
+       selectTodoList(); // 그냥 이렇게 리스트를 재호출해도 된다. (비용적 이득)
+
+      
+
+    }
+    else {
+      alert('완료여부 변경 실패')
+    }
+
+  })
+
+});
+
+
+
+// 상세조회에서 수정버튼 (updateView) 클릭 시 
+updateView.addEventListener('click', ()=>{
+
+
+  popupLayer.classList.add("popup-hidden");
+  updateLayer.classList.remove("popup-hidden");
+  // 1단계) 원래의 디테일 페이지는 숨기고 수정 창이 새로 뜨도록 만든다
+  
+
+  // 2단계) 다만 수정 버튼을 눌렀을 때 기존에 있던 것들을 채워놔야 한다
+  
+  // 수정 레이어를 보일 때 상세조회 팝업 레이어에 작성된 제목과 내용을 얻어와 세팅 
+
+  updateTitle.value= popupTodoTitle.innerText;
+  updateContent.value = popupTodoContent // 이건 왜 innerText가 아니라 innerHTML인가???
+
+  // textarea에서는 <br>이라는 것을 줄바꿈으로서 인식하지 못한다. 따라서 엔터를 치면<br>이 그대로 표시된다
+  .innerHTML.replaceAll("<br>" ,"\n");
+  // 그러므로 여기서 추가적으로 <br>이라는 글자를 \n으로 전부 바뀌어야 한다 <- 이 작업을 위해 innerHTML
+
+
+  // HTML 화면에서 줄 바꿈이 <br>로 인식되고 있는데 textarea에서는 \n으로 바꿔줘야 실제 줄바꿈으로 인식되어 출력된다.
+
+
+  // 3단계) todoNo, todoTitle, todoContent를 서버로 제출한다.
+  // 그 전에 먼저 id="updateLayer"에 있는 수정 버튼에 data-todo-no라는 속성을 추가한다
+  // 함수 외에도 data-todo-no를 쓸 일이 있기 때문이다. 
+  // 다른 함수에서도 수정 버튼을 눌렀을 때 수정이 이루어지려면 이 버튼을 눌렀을 때 속성을 추가할 수 밖에
+
+  updateBtn.setAttribute("data-todo-no",popupTodoNo.innerText);
+
+  // <button id="updateBtn" data-todo-no = ${todoNo}>수정</button>   
+  // 이것이 현재 상태
+
+})
+
+
+// 수정 레이어에서 취소 버튼 클릭 시
+
+updateCancel.addEventListener('click', () => {
+
+  // 수정레이어 숨기기 + 상세조회를 하는 팝업 레이어를 보이기
+
+  updateLayer.classList.add('popup-hidden');
+  popupLayer.classList.remove('popup-hidden');
+
+
+
+})
+
+
+// 수정 레이어의 수정 버튼 클릭 시 진짜 수정이 되는 로직 => 서버로 다녀와야 함
+
+updateBtn.addEventListener('click', (e) => {
+
+  // 서버로 전달해야 하는 값은 총 세개 => js객체 => JSON으로 변환
+
+  const obj = {
+    "todoNo" : e.target/*수정버튼을 클릭했을 때 data-todo로 설정한 값은 이렇게 가져올 수 있다*/.dataset.todoNo,
+    "todoTitle" : updateTitle.value,
+    "todoContent" : updateContent.value,
+  };
+
+  fetch('/ajax/update',{
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(obj)
+  })
+  .then(resp => resp.text())
+  .then(result => {
+    if(result>0){
+      alert('수정성공..');
+
+      // 수정레이어 숨기기
+      updateLayer.classList.add("popup-hidden");
+
+      // 상세조회 레이어를 보이기. 하지만 수정된 내용으로 내용이 바뀌어야 한다
+
+      // 함수를 호출하는 것이 쉽지만 innerText에 대입하는 것이 더 서버에 효율적
+
+      popupTodoTitle.innerText = updateTitle.value;
+      popupTodoContent.innerHTML = updateContent.value.replaceAll("\n", "<br>");
+      // 아까의 반대 과정 => textArea를 input으로
+
+      popupLayer.classList.remove("popup-hidden");
+
+      selectTodoList(); // 전체 목록 다시 조회
+
+
+
+      // 업데이트 화면을 전부 지워줌
+
+      updateTitle.value= "";
+      updateContent.value= "";
+      updateBtn.removeAttribute("data-todo-no") // 번호라는 속성을 제거한다. 이 과정의 역과정   
+      // updateBtn.setAttribute("data-todo-no",popupTodoNo.innerText);
+
+
+
+    }
+
+    else{
+      alert('실패..');
+    }
+
+  });
+
+
+
+})
+
+
+
+
+
 getTotalCount();
 getCompleteCount();
 selectTodoList();
-//selectTodo();
 
 
 

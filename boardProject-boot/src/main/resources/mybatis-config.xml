@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+		
+			
+	<!-- java에서의 null과 DB에서의 NULL은 다르다. 자바에서 보낸 null을 DB가 뭔지 모른다 
+	자바에서의 널 역시 DB에서의 널로 인식시킨다
+	자바 => DB로 INSERT/UPDATE시 JAVA의 NULL값을 DB의 NULL로 인식하도록 설정
+	가령 pstmt.setString(?,null)을 할 수 는 없으니 String 대신에 null이라는 타입을 지정해 준 것
+	-->
+		
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		
+		<!-- 위 설정을 통해 가령 자바의 memberId는 DB컬럼명 MEMBER_ID가 같다고 인식할 수 있음 -->
+		
+	</settings>
+</configuration>
