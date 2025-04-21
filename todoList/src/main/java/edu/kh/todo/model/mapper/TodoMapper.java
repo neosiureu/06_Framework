@@ -45,6 +45,8 @@ public interface TodoMapper {
 
 	int getTotalCount();
 
+	int todoDelete(int todoNo);
+
 	
 
 

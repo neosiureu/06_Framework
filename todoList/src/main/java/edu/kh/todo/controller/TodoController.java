@@ -159,7 +159,7 @@ public class TodoController {
 	}
 
 	@GetMapping("delete")
-	public String todoDelete(Todo todo,RedirectAttributes ra) {
+	public String todoDelete(int todo,RedirectAttributes ra) {
 		
 		int result = service.todoDelete(todo);
 		
@@ -173,13 +173,15 @@ public class TodoController {
 		}
 		else {
 			message="삭제실패";
-			path +="todo/detail?todoNo=" + todo.getTodoNo();
+			path +="todo/detail?todoNo=" + todo;
 		}
 		
 		ra.addFlashAttribute("message",message);
 		
 		return path;
 	}
+	
+	
 }
 
 

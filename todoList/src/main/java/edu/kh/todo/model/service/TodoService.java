@@ -39,10 +39,10 @@ public interface TodoService {
 	int todoUpdate(Todo todo);
 
 	/**할일 삭제
-	 * @param todo
+	 * @param todoNo
 	 * @return result
 	 */
-	int todoDelete(Todo todo);
+	int todoDelete(int todoNo);
 
 	/** 전체 할일 개수 조회
 	 * @return completeCount

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+ <settings>
+ 
+ <!-- Java -> DB로 INSERT,UPDATE 시 Java의 null 값을 DB의 NULL로 인식하도록 설정-->
+ 
+ <setting name="jdbcTypeForNull" value="NULL" />
+ 
+ <!--   java의 null과 DB의 NULL 다름!
+       java -> DB로 INSERT/UPDATE 시 java의 null 값을 DB의 NULL로 인식하도록
+       설정
+       
+       jdbc 전달받은 값이 "user01" 문자열일때 DB에 INSERT 하는상황
+       pstmt.setString(?,"user01")
+       pstmt.set??? (?,null)  -->
+ 
+
+   
+   <setting name="mapUnderscoreToCamelCase" value="true" />
+ 
+ 
+  <!-- DB의 UnderScore (_) 표기법 <-> Java의 Camel 표기법
+          
+      두 표기법이 서로 변환 될 수 있도록 매핑하여
+     Java 필드명(memberId)과 DB 컬럼명(MEMBER_ID)가 서로 연결되게 함
+       
+     java의 필드명(memberId) = DB의 컬럼값(MEMBER_ID) 가 서로 연될수 있도록함
+     
+       -->
+   </settings>
+
+</configuration>

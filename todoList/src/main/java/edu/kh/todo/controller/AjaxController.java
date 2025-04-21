@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +30,8 @@ import lombok.extern.slf4j.Slf4j;
  *     인식되지 않음
  * 
  * @RequestBody
- * - 비동기 요청시 전달되는 데이터 중 body 부분에 포함된 요청 데이터를
+ * - 비동기 요청시 전달되는 데이터 중 body 부분에 포함된 
+ *   요청 데이터를
  *   알맞은 java 객체 타입으로 바인딩하는 어노테이션
  *   
  * - 기본적으로 JSON 형식을 기대함.  
@@ -134,16 +137,54 @@ public class AjaxController {
 		// -> HttpMessageConverter가 JSON 형태로 자동변환 하여 반환
 		
 	}
-	@ResponseBody
+	
+	@ResponseBody          //비동기 요청을 보낸 곳으로 데이터 (반환값) 돌려보냄
 	@GetMapping("detail")
 	public Todo todoDetail(@RequestParam("todoNo") int todoNo) {
 		
 		Todo todo = service.todoDetail(todoNo);
 		
 		return todo;
+		// return 자료형 : toddo(dto)
+	    //-> HttpMessageConverter가 JSON 형태로 자동변환 하여 반환
 		
 	}
 	
+	// 할 일 삭제 요청 (DELETE)
+	@ResponseBody
+	@DeleteMapping("delete")
+	public int todoDelete(@RequestBody int todoNo) {
+		
+		return service.todoDelete(todoNo);
+		
+		
+		
+		 
+		
+		
+		
+	}	
+	
+	@ResponseBody
+	@PutMapping("changeComplete")
+	public int changeComplete(@RequestBody Todo todo) {
+		
+		// 서비스 호출 후 결과 반환 받기
+		int result = service.changeComplete(todo);
+		
+		return result;
+		
+	}
+	
+	@ResponseBody
+	@PutMapping("update")
+	public int todoUpdate(@RequestBody Todo todo) {
+		
+		int result = service.todoUpdate(todo);
+		
+		return result;
+		
+	}
 	
 	
 }
