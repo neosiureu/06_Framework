@@ -51,14 +51,16 @@
               </fieldset>
     
               <label>
-                <!-- label 태그 : input 태그의 제목을 나타내는 태그  -->
+                <!-- label 태그 : input 태그의 제목을 나타내는 태그 
+                      체크 되면 "on" 체크 안되면 "null"
+                -->
                 <input type="checkbox" name="saveId">
                 아이디 저장
               </label>
     
               <article class="signup-find-area">
 
-                <a href="#">회원가입</a>
+                <a href="/member/signup">회원가입</a>
 
                 <span> | </span>
                 <a href="#">ID/PW 찾기</a>
@@ -92,7 +94,7 @@
                 
                 <div>
                   <a href="#" id="nickname" th:text="*{memberNickname}">닉네임</a>
-                  <a href="#" id="logoutBtn">로그아웃</a>
+                  <a href="/member/logout" id="logoutBtn">로그아웃</a>
                 </div>
 
                 <p th:text="*{memberEmail}">이메일</p>

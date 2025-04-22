@@ -56,11 +56,15 @@ public class MemberServiceImpl implements MemberService {
 		// 로그인 결과에서 비밀번호 제거
 		loginMember.setMemberPw(null);
 	
-		
-	
-		
-		
 		return loginMember;
+	}
+
+
+	//이메일 중복 검사 서비스
+	@Override
+	public int checkEmail(String memberEmail) {
+		
+		return mapper.checkEmail(memberEmail);
 	}
 	
 	
