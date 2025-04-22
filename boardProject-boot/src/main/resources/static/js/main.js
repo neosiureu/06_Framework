@@ -7,6 +7,7 @@
 const getCookie = (key) => {
  const cookies = document.cookie; // "k=v; k=v; ... "
 
+
  //console. log(cookies);
  // cookies 에 저장된 문자열을 배열 형태로 변환
  const cookieList = cookies.split("; ") // ["k=V", "k=V"]
@@ -62,4 +63,23 @@ if (loginEmail != null){ //로그인 폼의 이메일 input태그가 화면상�
   }
 
 }
+
+const loginBtn = document.querySelector("#loginForm button");
+const memberPw = document.querySelector("[name='memberPw']");
+
+loginBtn.addEventListener("click" , (e) => {
+  
+  e.preventDefault();
+
+  if(loginEmail.value.trim().length == 0){
+    alert("email칸을 작성해주세요");
+    return;
+  }
+
+  if(memberPw.value.trim().length == 0){
+    alert("비밀번호를 작성해주세요.");
+    return;
+  }
+})
+  
 

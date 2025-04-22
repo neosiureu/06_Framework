@@ -29,10 +29,6 @@ public class EmailServiceImpl implements EmailServcie {
 	private final SpringTemplateEngine templateEngine;
 	// SpringTemplateEngine : 타임리프를 이용해서 html 코드 -> java 코드 변환
 	
-	
-	
-	
-
 	@Override
 	public String sendEmail(String htmlName, String email) {
 		
@@ -67,7 +63,7 @@ public class EmailServiceImpl implements EmailServcie {
 			helper.setTo(email); // 받는 사람 (수신자)
 			helper.setSubject("[boardProject] 회원 가입 인증번호입니다."); //제목
 			helper.setText(loadHtml(authKey, htmlName) , true); // 내용 (본문)
-							// 이메일의 본문으로 html 내용을 보냄
+			// 이메일의 본문으로 html 내용을 보냄
 			
 			//메일에 이미지 첨부
 			helper.addInline("logo", new ClassPathResource("static/images/logo.jpg"));
@@ -78,7 +74,7 @@ public class EmailServiceImpl implements EmailServcie {
 			return authKey; // 모든 작업 성공 시 인증키 반환
 			
 			
-		
+			
 		} catch (MessagingException e) {
 			e.printStackTrace();
 			return null; // 메일 발송 실패시 null 반환
@@ -86,14 +82,14 @@ public class EmailServiceImpl implements EmailServcie {
 		}
 		
 	}
-		
-		
-		
+	
+	
+	
 	// HTML 템플릿에 데이터를 바인딩하여 최종 HTML 생성 메서드
 	private String loadHtml(String authKey, String htmlName) {
 		// Context : 티임리프에서 제공하는 HTMl 템플릿에 데이터를 
 		//           전달하기 위해 사용하는 클래스
-	
+		
 		Context context = new Context(); // 템플릿에 바인딩할 데이터를 담는 상자
 		context.setVariable("authKey", authKey); // 템플릿에서 사용할 변수 authKey에 값 설정
 		
@@ -102,10 +98,10 @@ public class EmailServiceImpl implements EmailServcie {
 		return templateEngine.process("email/" + htmlName, context);
 		// templates/email/signup.html
 	}
-
-
-
-
+	
+	
+	
+	
 	// 인증키와 이메일을 DB에 저장하는 메서드
 	@Transactional(rollbackFor = Exception.class) // 메서드 레벨에서도 이용 가능 (해당 메서드에서만 트랜잭션 커밋/ 롤백)
 	private boolean storeAuthKey(Map<String, String> map) {
@@ -120,7 +116,7 @@ public class EmailServiceImpl implements EmailServcie {
 		
 		if(result == 0 ){
 			
-		result  = mapper.insertAuthKey(map);
+			result  = mapper.insertAuthKey(map);
 		}
 		
 		return result > 0; // 성공 여부 반환(true/false)
@@ -138,3 +134,7 @@ public class EmailServiceImpl implements EmailServcie {
 		return UUID.randomUUID().toString().substring(0,6);
 	}
 }
+	
+	
+	
+
