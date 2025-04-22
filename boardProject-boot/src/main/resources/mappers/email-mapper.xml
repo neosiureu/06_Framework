@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.email.model.mapper.EmailMapper">
+
+
+<!-- 전달받은 파라미터가 Map이면 key를 통해 접근해야 한다
+
+Map -> key로 접근 VS DTO -> 필드명으로 접근
+ -->
+
+<update id="updateAuthKey">
+	UPDATE "TB_AUTH_KEY" 
+	SET AUTH_KEY = #{authKey},
+	CREATE_TIME = SYSDATE 
+	WHERE EMAIL = #{email}
+</update>
+
+<insert id="insertAuthKey">
+	INSERT INTO "TB_AUTH_KEY"
+	VALUES(SEQ_KEY_NO.NEXTVAL, #{email}, #{authKey}, DEFAULT)
+</insert>
+
+
+</mapper>
+
+
