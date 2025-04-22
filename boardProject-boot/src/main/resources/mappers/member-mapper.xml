@@ -6,6 +6,15 @@
 SELECT MEMBER_NO, MEMBER_EMAIL, MEMBER_NICKNAME, MEMBER_PW, MEMBER_TEL, MEMBER_ADDRESS, PROFILE_IMG, AUTHORITY, TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일" MI"분" SS"초"') ENROLL_DATE
 FROM "MEMBER" WHERE MEMBER_EMAIL  = #{memberEmail} AND MEMBER_DEL_FL = 'N'
 </select>
-	
-   
+
+<!--  이메일 중복검사 -->
+
+<select id="checkEmail"  resultType="_int" > SELECT COUNT(*) FROM "MEMBER" 
+WHERE MEMBER_EMAIL = #{memberEmail} 
+AND MEMBER_DEL_FL = 'N' 
+</select>
+
+
 </mapper>
+
+

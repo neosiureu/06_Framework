@@ -35,6 +35,9 @@ COMMENT ON COLUMN "MEMBER"."AUTHORITY" IS '권한(1:일반, 2:관리자)';
 -- 회원 번호 시퀀스 만들기
 CREATE SEQUENCE SEQ_MEMBER_NO NOCACHE;
 
+SELECT COUNT(*) FROM "MEMBER" 
+WHERE MEMBER_EMAIL =  'user01@kh.or.kr' 
+AND MEMBER_DEL_FL = 'N'; 
 
 -- 샘플 회원 데이터 삽입
 INSERT INTO "MEMBER"
@@ -89,6 +92,8 @@ SELECT * FROM "TB_AUTH_KEY";
 
 COMMIT;
 
+
+-- 25년 4월 22일 여기까지 수행
 
 ------------------------------------------
 
