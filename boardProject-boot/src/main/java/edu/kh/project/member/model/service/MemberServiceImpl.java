@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
 
 
 	/**
-	 * 이메일 중복 검사 서비스
+	이메일 중복 검사 서비스
 	 */
 	@Override
 	public int checkEmail(String memberEmail) {

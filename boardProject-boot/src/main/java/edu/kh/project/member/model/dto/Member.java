@@ -28,5 +28,5 @@ public class Member {
 	private String profileImg; // 프로필이미지
 	private String enrollDate; // 회원가입일
 	private String memberDelFl; // 회원탈퇴여부 (Y N)
-	private String authority; // 권한
+	private String authority; // 권한 (1:일반 2:관리자)
 }

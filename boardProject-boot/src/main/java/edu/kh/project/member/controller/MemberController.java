@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,7 @@ public class MemberController {
 	
 	
 	/** login method: command 객체 
-	 * (@ModelAttribute로 불러온 놈 => memberEmail, memberPw가 이미 세팅된 상태)
+	 * (@ModelAttribute로 불러온 것이라 => memberEmail, memberPw가 이미 세팅된 상태)
 	 * @param inputMember 
 	 * @param ra: 리다이렉트 시 일시적으로 세션 스코프로 바꾸지만 리다이렉트가 끝나면 사라지는 정보
 	 * @param model: 데이터 전달용 객체로 기본적으로 request 범위의 객체이지만 
@@ -48,7 +49,7 @@ public class MemberController {
 	
 	@PostMapping("login")
 	// 동기식 요청
-	public String login(Member inputMember, RedirectAttributes ra, Model model, 
+	public String login(@ModelAttribute Member inputMember, RedirectAttributes ra, Model model, 
 			@RequestParam(value = "saveId", required = false)  String saveId,
 			HttpServletResponse resp) {
 		
@@ -79,7 +80,7 @@ public class MemberController {
 			// 이름을 html에서 이렇게 해놨기 때문에 
 			//  <th:block th:if="${session.loginMember==null}">
 
-			// 여기까지가 1단계로 model을 이용하여 request scope에 세팅
+			// 여기까지가 1단계로 model을 이용하여 request scope에 세팅한 것이다.
 			
 			
 			// 2단계: 클래스 위에 @SessionAttributes() 어노테이션을 사용하여 loginMember를
