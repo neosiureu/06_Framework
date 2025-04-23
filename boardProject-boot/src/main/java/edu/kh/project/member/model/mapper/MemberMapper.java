@@ -19,4 +19,28 @@ public interface MemberMapper {
 	 */
 	int checkEmail(String memberEmail);
 
+	/** 아이디 중복검사 
+	 * @param memberNickname
+	 * @return
+	 */
+	int checkNickname(String memberNickname);
+
+	/** 전화번호 중복검사
+	 * @param memberTel
+	 * @return
+	 */
+	int checkTel(String memberTel);
+
+	/** 회원가입하는 메서드
+	 * @param inputMember
+	 * @return
+	 */
+	int signup(Member inputMember);
+
+	/** 아이디 찾기 메서드
+	 * @param inputMember
+	 * @return
+	 */
+	Member findMember(Member inputMember);
+
 }

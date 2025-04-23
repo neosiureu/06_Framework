@@ -19,4 +19,10 @@ public interface EmaillMapper {
 	 */
 	int insertAuthKey(Map<String, String> map);
 
+	/** 이메일과 인증번호가 같은지 여부 조회
+	 * @param map
+	 * @return
+	 */
+	int checkAuthKey(Map<String, String> map);
+
 }

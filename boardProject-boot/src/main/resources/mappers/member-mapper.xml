@@ -24,7 +24,42 @@ SELECT MEMBER_NO , MEMBER_EMAIL, MEMBER_NICKNAME,
 	AND MEMBER_DEL_FL = 'N'
 	</select>
   	
+  	<!-- 아이디 중복검사 -->
+  	<select id="checkNickname">
+  	SELECT COUNT(*)
+  	FROM "MEMBER"
+  	WHERE MEMBER_NICKNAME = #{checkNickname}
+  	</select>
+  	
+  		<!-- 전화번호 중복검사 -->
+  	<select id="checkTel">
+  	SELECT COUNT(*)
+  	FROM "MEMBER"
+  	WHERE MEMBER_TEL = #{memberTel}
+  	</select>
   
+  
+  	<insert id="signup" >
+  	 INSERT INTO "MEMBER"
+     VALUES(SEQ_MEMBER_NO.NEXTVAL, 
+			 #{memberEmail},
+			 #{memberPw},
+			 #{memberNickname},
+			 #{memberTel},
+			 #{memberAddress},
+			 NULL,
+			 DEFAULT,
+			 DEFAULT,
+			 DEFAULT
+                    )
+  	</insert>
+  	
+  	<!-- 아이디 찾는 sql -->
+  	<select id="findMember">
+  		
+  	</select>
+  	
+  	
 </mapper>
 
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.myPage.model.mapper.MyPageMapper">
+ 
+  	<update id="updateInfo">
+  		UPDATE "MEMBER" SET
+  		MEMBER_NICKNAME = #{memberNickname},
+  		MEMBER_TEL = #{memberTel},
+  		MEMBER_ADDRESS = #{memberAddress}
+  		WHERE MEMBER_NO = #{memberNo}
+  	</update>
+  	
+  	
+  	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

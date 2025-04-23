@@ -133,6 +133,15 @@ public class EmailServiceImpl implements EmailServcie {
 		
 		return UUID.randomUUID().toString().substring(0,6);
 	}
+
+
+
+	// 이메일과 인증번호가 같은지 조회하는 메서드
+	@Override
+	public int checkAuthKey(Map<String, String> map) {
+		
+		return mapper.checkAuthKey(map);
+	}
 }
 	
 	
