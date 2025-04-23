@@ -69,7 +69,8 @@ public class EmailServiceImpl implements EmailService {
 		
 		// 하지만 이 혼자서는 메일을 발송 못함 => 헬퍼
 		
-		// helper클래스는 파일첨부나 템플릿을 설정할 수 있다
+		// helper 클래스는 파일첨부나 템플릿을 설정할 수 있다
+		
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,
 					true, "UTF-8");
@@ -201,6 +202,16 @@ public class EmailServiceImpl implements EmailService {
 		// 주로 DB에서 기본 키를 자바단에서 만들어 보내거나
 		// 고유한 식별자를 생성할 때 이를 쓴다
 		return UUID.randomUUID().toString().substring(0,6);
+	}
+
+
+	
+	
+	// 함수를 호버링하면 자동으로 주석이 보임
+	@Override
+	public int checkAuthKey(Map<String, String> map) {
+		
+		return mapper.checkAuthKey(map);
 	}
 	
 	

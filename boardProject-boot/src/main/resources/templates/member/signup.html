@@ -98,6 +98,7 @@
         <!-- 주소 입력 -->
         <label for="memberAddress">주소</label>
 
+        <!-- 이 memberAddress는 세 개가 하나의 이름이다. 서버 쪽에서 배열로 받아서 요소 하나씩 꺼내 연결한 후 DB에는 한 컬럼에 저장할 예정 -->
         <div class="signUp-input-area">
           <input type="text" name="memberAddress" placeholder="우편번호" maxlength="6" id="postcode">                       
           
@@ -122,9 +123,11 @@
   <th:block th:replace="~{common/footer}"></th:block>
 
   <!-- 다음 주소 API 추가 -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
   <!-- 회원 가입 JS 추가 -->
   <script src="/js/member/signup.js"></script> 
+  
   
 </body>
 </html>

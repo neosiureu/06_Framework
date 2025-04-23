@@ -21,6 +21,12 @@ Map -> key로 접근 VS DTO -> 필드명으로 접근
 </insert>
 
 
+<select id="checkAuthKey">
+	SELECT COUNT(*) FROM "TB_AUTH_KEY" 
+	WHERE EMAIL = #{email} AND AUTH_KEY = #{authKey}
+</select>
+
+
 </mapper>
 
 

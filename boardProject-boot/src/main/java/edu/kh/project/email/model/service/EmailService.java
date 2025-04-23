@@ -1,5 +1,7 @@
 package edu.kh.project.email.model.service;
 
+import java.util.Map;
+
 public interface EmailService {
 
 	/** 이메일 보내기
@@ -11,6 +13,12 @@ public interface EmailService {
 	String sendEmail(String string, String email);
 	// String authkey = service.sendEmail("signup",email);
 	// 전달된 타입이 스트링이라는 뜻으로 그냥 아무거나 전달함
+
+	/** 입력받은 이메일과 인증번호가 DB에 있는지 알아내느 서비스
+	 * @param map
+	 * @return
+	 */
+	int checkAuthKey(Map<String, String> map);
 
 
 }

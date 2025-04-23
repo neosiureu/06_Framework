@@ -86,6 +86,73 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.checkEmail(memberEmail);
 	}
 
+
+
+
+	@Override
+	public int checkNickname(String memberNickname) {
+		
+		return mapper.checkNickname(memberNickname);
+	}
+
+
+
+
+	
+	@Override
+	public int signup(Member inputMember, String[] memberAddres) {
+		// 1) memberAddres의 주소를 ^^^로 구분되도록 바꾸기
+		// inputMember.getMemberAddress() => ",," 빈문자열 세개가 붙어서 온 셈
+		// memberAddress => [,,] => 빈 문자열 셋이 들은 배열이 온 셈
+		
+		// 주소가 입력되어 넘어온 경우
+		
+		if(!inputMember.getMemberAddress().equals(",,")) {
+			// 주소 칸에 뭐라도 채워져 있을 때
+			// String.join("구분자",배열) 
+			// 배열의 모든 요소 사이에 전달한 구분자 문자열을 추가하여 하나의 문자열로 반환
+			
+			String address = String.join("^^^", memberAddres);
+			// [12345, 서울시중구 남대문로, 3층,E강의장] => "12345^^^서울시중구 남대문로^^^3층,E강의장"
+			// "12345서울시중구 남대문로3층,E강의장"으로 그대로 넘어가면 콤마를 통해 나누는 것이 힘들기 때문
+			
+			// 주소나 상세주소에 안 쓸 것 같은 특수 문자로 작성
+			// 나중에 마이페이지에서 주소 부분 수정 페이지를 만들 시 DB에 저장된 기존 주소를 화면상에 출력해 줘야 한다
+			// 우편번호, 도로명, 상세주소를 삼분할하여 보여줘야 하는데 그 구분자로 쉼표를 이용할 수가 없다
+			// 구분자가 기본 형태인 콤마로 작성되어 있으면 주소나 상세주소에 콤마가 들어오는 경우
+			// 3분할 이상으로 잘라질 수 있기 때문이다.
+			
+			inputMember.setMemberAddress(address);
+			
+			
+			
+		}
+		
+		// 주소가 입력되지 않고 넘어온 경우
+		
+		else {
+			
+			inputMember.setMemberAddress(null);
+			
+			
+		}
+		
+
+		
+		
+		// 2) 비밀번호 암호화 => inputMember내 memberPw는 평문이지만 암호화하여 다시 inputMember에 세팅
+		
+		// inputMember.setMemberAddress(bcrypt.encode(inputMember.getMemberAddress()) ;
+		
+		String encPw = bcrypt.encode(inputMember.getMemberPw());
+		
+		inputMember.setMemberPw(encPw);
+		
+		
+		// 회원가입 매퍼 메서드 호출
+		return mapper.signup(inputMember);
+	}
+
 	
 	
 

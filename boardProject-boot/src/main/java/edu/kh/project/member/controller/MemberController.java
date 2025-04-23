@@ -187,5 +187,80 @@ public class MemberController {
 		
 		return service.checkEmail(memberEmail);
 	}
+	
+	
+	
+	
+	/** 닉네임 중복 검사
+	 * @param memberNickname
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("checkNickname")
+	public int checkNickname(@RequestParam("memberNickname") String memberNickname) {
+		
+		return service.checkNickname(memberNickname);
+	}
 
+	
+	/** 회원가입 
+	 * @param inputMember는 입력된 회원 정보가 세팅된 객체 (memberEmail, memberPw, 
+	 * memberNickname, memberTel, memberAddress[])
+	 * memberAddress => 입력한 주소 input 3개의 값을 배열로 전달한다 [우편번호/ 도로명 및 지번주소 / 상세주소]
+	 * @param ra : 리다이렉트 시 잠깐 session 스코프로 범위가 변했다가 다시 request로
+	 * @param memberAddres
+	 * @return 
+	 */
+	
+	@PostMapping("signup")
+	public String signUp(Member inputMember , RedirectAttributes ra, 
+			@RequestParam("memberAddress") String [] memberAddres ) {
+	
+		log.debug("inputMember:" + inputMember);
+
+		log.debug("memberAddress:" + memberAddres.toString());
+		
+		// 이  memberAddres.toString()를 각각 꺼내와서 
+		
+				
+	// 우편번호, 도로명주소, 상세주소 => memberAddress로 들어옴
+	// 도로명주소는 콤마가 포함되기에 문자열로 받을 수 없음 (콤마 기준으로 문자열이 나눠지기에)
+	//memberAddress=01486,노해로 쌍문역 시티프라디움,101동 708호, 이렇게 나옴
+	// 따라서 콤마 말고 이상한 특수문자를 넣어 문자열 자체를 가공해야 한다
+		
+	/*
+    private int memberNo; //회원번호
+	private String memberEmail; // 회원 이메일
+	private String memberPw; // 회원 비밀번호
+	private String memberNickname; //회원 닉네임
+	private String memberTel; // 회원 전화번호
+	private String memberAddress; // 주소
+	*/
+		
+		// 회원가입 서비스
+		int result = service.signup(inputMember, memberAddres);
+		
+		String path = null;
+		String message = null;
+		
+		if(result>0) {
+			message = inputMember.getMemberNickname() +"님의 가입을 환영합니다";
+			path="/";
+		}
+		
+		else {
+			message = "가입에 실패하셨습니다.";
+			path="signup";
+		}
+		
+		ra.addFlashAttribute("message",message);
+		
+		
+		return "redirect:"+path ;
+		// 특히 실패했을 때 redirect:signup => 
+		// 상대경로 주소로서 
+		// signup으로 get방식 요청을 보내게 된다 (회원가입페이지로 이동이라는 메서드로)
+	}
+	
+	
 }
