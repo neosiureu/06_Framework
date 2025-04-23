@@ -28,4 +28,7 @@ public interface MemberService {
 	// 회원가입 서비스
 	int signup(Member inputMember, String[] memberAddres);
 
+
+	Member selectID(Member member);
+
 }

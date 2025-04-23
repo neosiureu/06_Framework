@@ -11,6 +11,14 @@
 
 
   <th:block th:replace="~{common/common}"></th:block>
+
+  <style> 
+  .hidden{
+    display: none;
+  }
+
+
+  </style>
 </head>
 
 <body>
@@ -38,10 +46,13 @@
 
         <th:block th:if="${session.loginMember==null}">
 
+        <br> <br>
           <!-- 로그인 박스 -->
           <form action="/member/login" method="POST" id="loginForm">
             <fieldset class="id-pw-area">
               <!-- 아이디/비밀번호 입력 -->
+              
+             
               <section>
                 <input type="text" name="memberEmail" placeholder="이메일" required>
 
@@ -66,7 +77,13 @@
               <a href="/member/signup">회원가입</a>
 
               <span> | </span>
-              <a href="/" id="findIDPw" >ID/PW 찾기</a>
+
+
+              <a href="/member/selectIDPW" id="findIDPw" >ID/PW 찾기</a>
+
+
+
+             
             </article>
 
           </form>
@@ -106,6 +123,36 @@
 
       </section>
 
+      <div class="hidden" id="hidden">
+        <br>
+        이메일을 찾고싶으신가요? <br>
+        닉네임: <input  name="memberNickname">
+        <br>
+        전화번호: <input name="memberTel">
+        <br> <br>
+        <a href="/member/selectID" style="color: rgb(247, 0, 255);">아이디찾기</a>
+
+        <th:block th:if="${findEmail}!=null">
+          <p>
+            찾으신 이메일은  
+            <strong th:text="${findEmail}">example@domain.com</strong>
+            입니다.
+          </p>        </th:block>
+
+
+        <br><br> <br> <br>
+
+        <br>
+        비밀번호를 찾고싶으신가요? <br>
+        닉네임: <input  name="memberNickname">
+        <br>
+        이메일: <input name="memberEmail">
+        <br>
+        전화번호: <input name="memberTel">
+        <br> <br>
+        <a href="/member/selectPW" style="color: rgb(247, 0, 255);">비밀번호찾기</a>
+
+      </div>
     </section>
   </main>
 

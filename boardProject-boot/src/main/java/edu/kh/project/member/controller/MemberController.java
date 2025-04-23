@@ -171,8 +171,7 @@ public class MemberController {
 	 */
 	@GetMapping("signup")
 	public String sigupPage() {
-		// 회원가입 페이지로 이동하는 요청을 받음
-		
+		// 회원가입 페이지로 이동하는 요청을 받
 		
 		return "member/signup";
 	}
@@ -262,5 +261,29 @@ public class MemberController {
 		// signup으로 get방식 요청을 보내게 된다 (회원가입페이지로 이동이라는 메서드로)
 	}
 	
+	
+	@GetMapping("selectID")
+	public String selectID(@ModelAttribute Member member
+			, RedirectAttributes ra
+			) {
+		
+		
+	
+		
+		Member selected = service.selectID(member);
+		
+		
+		
+		if(selected==null) {
+			ra.addFlashAttribute("message", "닉네임과 전화번호에 일치하는 아이디가 없습니다.");
+		}
+			
+		else {
+//			String email=  selected.getMemberEmail();
+
+			ra.addFlashAttribute("findEmail", selected.getMemberEmail());}
+
+		return "redirect:/";
+	}
 	
 }

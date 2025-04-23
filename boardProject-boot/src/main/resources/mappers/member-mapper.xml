@@ -51,6 +51,13 @@ VALUES(SEQ_MEMBER_NO.NEXTVAL,
 </insert>
 
 
+<select id="selectID">
+SELECT MEMBER_EMAIL FROM MEMBER WHERE 
+ MEMBER_NICKNAME = #{memberNickname}
+ AND
+ MEMBER_TEL  = #{memberTel}
+</select>
+
 </mapper>
 
 

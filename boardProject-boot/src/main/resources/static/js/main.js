@@ -108,6 +108,16 @@ if (loginEmail != null) {
 }
 
 
+
+const findIDPw = document.querySelector('#findIDPw');
+const hidden = document.querySelector('#hidden')
+
+
+findIDPw.addEventListener('click', (e)=>{
+  e.preventDefault();
+  hidden.classList.remove('hidden');
+})
+
 // const findIDPW = document.querySelector('#findIDPW');
 
 // findIDPW.addEventListener('click',{

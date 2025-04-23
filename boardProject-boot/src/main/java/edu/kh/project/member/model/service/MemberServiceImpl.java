@@ -1,5 +1,6 @@
 package edu.kh.project.member.model.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -152,6 +153,19 @@ public class MemberServiceImpl implements MemberService {
 		// 회원가입 매퍼 메서드 호출
 		return mapper.signup(inputMember);
 	}
+
+
+
+
+	@Override
+	public Member selectID(Member member) {
+	
+		return mapper.selectID(member) ;
+	}
+
+
+
+
 
 	
 	
