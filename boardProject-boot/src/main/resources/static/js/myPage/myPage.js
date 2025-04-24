@@ -1,10 +1,41 @@
+
 /* 회원 정보 수정 페이지 */
 const updateInfo = document.querySelector("#updateInfo"); // form 태그
 
 // #updateInfo 요소가 존재 할 때만 수행
 if(updateInfo != null) {
 
-    // form 제출 시
+    //다음 주소 API 다루기 메롱
+function execDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+  
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+          
+  
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+              
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('postcode').value = data.zonecode;
+            document.getElementById("address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("detailAddress").focus();
+        }
+    }).open();
+  }
+
+ 
+  document.querySelector("#searchAddress").addEventListener("click" , execDaumPostcode);
+    
+  // form 제출 시
     updateInfo.addEventListener("submit", async e => {
 
       // 가장 먼저 기본 이벤트 동작 중단 .
@@ -123,7 +154,9 @@ if(updateInfo != null) {
 // 비밀번호 변경 form 태그
 const changePw = document.querySelector("#changePw");
 
-if(changePw != null) {
+// 현재 페이지에서 chagePw 요소가 존재할 때 수행시키기위해서
+if(changePw != null) { // mypage.js파일이 다 공통으로 있어서 낫널로 시작함.
+
     // 제출 되었을 때
     changePw.addEventListener("submit", e => {
 
@@ -159,6 +192,8 @@ if(changePw != null) {
             e.preventDefault();
             return;
         } 
+
+
     });
 };
 
@@ -168,7 +203,7 @@ if(changePw != null) {
 // 탈퇴 form 태그
 const secession = document.querySelector("#secession");
 
-if(secession != null) {
+if(secession != null) { // 전역적으로 사용하기있기떄문에 
 
     secession.addEventListener("submit", e => {
 
@@ -193,8 +228,8 @@ if(secession != null) {
         }
 
         // 정말 탈퇴? 물어보기
-        if( !confirm("정말 탈퇴 하시겠습니까?") ) {
-            alert("취소 되었습니다.");
+        if( !confirm("정말 탈퇴 하시겠습니까?") ) { 
+            alert("취소 되었습니다."); // 취소를 눌럿을때
             e.preventDefault();
             return;
         }
@@ -223,3 +258,4 @@ const profileImg = document.getElementById("profileImg");  // 미리보기 이�
 const imageInput = document.getElementById("imageInput");  // 이미지 파일 선택 input
 const deleteImage = document.getElementById("deleteImage");  // 이미지 삭제 버튼
 const MAX_SIZE = 1024 * 1024 * 5;  // 최대 파일 크기 설정 (5MB)
+

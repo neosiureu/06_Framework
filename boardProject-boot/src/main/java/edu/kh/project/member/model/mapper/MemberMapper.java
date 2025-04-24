@@ -43,4 +43,18 @@ public interface MemberMapper {
 	 */
 	Member findMember(Member inputMember);
 
+	/** 비밀번호 재설정 전 아이디가 있는지
+	 * @param inputMember
+	 * @return
+	 */
+	Member findPw(Member inputMember);
+
+	/**로그인 안된상태에서 비밀번호 재설정
+	 * @param inputMember
+	 * @return
+	 */
+	int findPwConfirm(Member inputMember);
+
+	
+
 }

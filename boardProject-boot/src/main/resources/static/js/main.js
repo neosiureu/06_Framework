@@ -64,23 +64,10 @@ if (loginEmail != null){ //로그인 폼의 이메일 input태그가 화면상�
 
 }
 
-const loginForm = document.querySelector("#loginForm");
-const memberPw = document.querySelector("[name='memberPw']");
 
-loginForm.addEventListener("submit" , (e) => {
-  
-  
-  if(loginEmail.value.trim().length == 0){
-    alert("email칸을 작성해주세요");
-    e.preventDefault();
-    return;
-  }
-  
-  if(memberPw.value.trim().length == 0){
-    alert("비밀번호를 작성해주세요.");
-    e.preventDefault();
-    return;
-  }
-})
-  
+     
+     
+
+
+
 

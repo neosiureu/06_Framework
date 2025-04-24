@@ -41,4 +41,19 @@ public interface MemberService {
 	 */
 	Member findMember(Member inputMember);
 
+	/** 비밀번호 찾기전에 회원이 있는지
+	 * @param inputMember
+	 * @return
+	 */
+	Member findPw(Member inputMember);
+
+	/** 로그인 안된상태에서 비밀번호 재설정
+	 * @param inputMember
+	 * @return
+	 */
+	int findPwConfirm(Member inputMember);
+
+	
+
+
 }

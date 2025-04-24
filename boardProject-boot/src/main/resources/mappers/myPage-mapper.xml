@@ -10,7 +10,40 @@
   		WHERE MEMBER_NO = #{memberNo}
   	</update>
   	
+  	<!-- 회원의 비밀번호 조회 -->
+  	<select id="selectPw">
+  		SELECT MEMBER_PW
+  		FROM "MEMBER"
+  		WHERE MEMBER_NO = #{memberNo}
   	
+  	</select>
+  	
+  	<update id="changePw">
+  		UPDATE "MEMBER" SET
+  		MEMBER_PW = #{encPw}
+  		WHERE MEMBER_NO = #{memberNo}
+  	</update>
+  	
+  	<update id="secession">
+  	  UPDATE "MEMBER" SET
+  	  MEMBER_DEL_FL = 'Y'
+  	  WHERE MEMBER_NO = #{memberNo}
+  	</update>
+  	
+  	<insert id="insertUploadFile">
+  		INSERT INTO "UPLOAD_FILE"
+  		VALUES(SEQ_FILE_NO.NEXTVAL, #{filePath}, #{fileOriginalName}, #{fileRename} , DEFAULT , #{memberNo})
+  	</insert>
+  	
+  	<select id="fileList">
+  		SELECT FILE_NO, FILE_PATH, FILE_ORIGINAL_NAME, FILE_RENAME,
+        MEMBER_NICKNAME,
+        TO_CHAR(FILE_UPLOAD_DATE, 'YYYY-MM-DD') FILE_UPLOAD_DATE
+        FROM "UPLOAD_FILE"
+        JOIN MEMBER ON ("UPLOAD_FILE".MEMBER_NO = "MEMBER".MEMBER_NO) 
+        WHERE "UPLOAD_FILE".MEMBER_NO = #{memberNo}
+        ORDER BY FILE_NO DESC
+  	</select>
   	
 </mapper>
 

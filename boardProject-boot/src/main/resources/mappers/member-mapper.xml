@@ -55,11 +55,30 @@ SELECT MEMBER_NO , MEMBER_EMAIL, MEMBER_NICKNAME,
   	</insert>
   	
   	<!-- 아이디 찾는 sql -->
-  	<select id="findMember">
-  		
-  	</select>
-  	
-  	
+ <select id="findMember" parameterType="Member" resultType="Member">
+    SELECT MEMBER_EMAIL
+    FROM MEMBER
+    WHERE MEMBER_NICKNAME = #{memberNickname}
+    AND MEMBER_TEL = #{memberTel}
+</select>
+
+  	<!-- 아이디 찾는 sql -->
+ <select id="findPw" parameterType="Member" resultType="Member">
+    SELECT MEMBER_No
+    FROM MEMBER
+    WHERE MEMBER_NICKNAME = #{memberNickname}
+    AND MEMBER_TEL = #{memberTel}
+    AND MEMBER_EMAIL = #{memberEmail}
+</select>
+
+ 		<!-- 로그인 안된 상태에서 비밀번호 재설정 -->
+ 		<update id="findPwConfirm" parameterType="Member">
+ 		UPDATE MEMBER SET 
+ 		MEMBER_PW = #{memberPw}
+ 		WHERE MEMBER_NO = #{memberNo}
+ 		
+ 		</update>
+   	
 </mapper>
 
 

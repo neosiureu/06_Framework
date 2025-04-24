@@ -141,6 +141,31 @@ public class MemberServiceImpl implements MemberService {
 		
 		return mapper.findMember(inputMember);
 	}
+
+
+	@Override
+	public Member findPw(Member inputMember) {
+		
+		return mapper.findPw(inputMember);
+	}
+
+
+	// 로그인 안된 상태에서 비밀번호 재설정
+	@Override
+	public int findPwConfirm(Member inputMember) {
+		
+       String encPw = bcrypt.encode(inputMember.getMemberPw());
+		
+		inputMember.setMemberPw(encPw);
+		
+		return mapper.findPwConfirm(inputMember);
+	}
+
+
+
+
+
+
 	
 	
 

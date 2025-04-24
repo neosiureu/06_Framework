@@ -135,14 +135,29 @@ public class MemberController {
 		return"member/findMember";
 	}
 	
+	
+	
 	@PostMapping("findMember")
-	public String findMember(Member inputMember , Model model) {
-		
+	public String findMember(Member inputMember, Model model, RedirectAttributes ra) {
+	   
 		Member findmember = service.findMember(inputMember);
-		
-		
-		
-		return null;
+	   
+	    String findId = null;
+	    String message = null;
+
+	    if (findmember != null) {
+	       
+	    	findId = findmember.getMemberEmail();
+	    }
+
+	    if (findId == null) {
+	        message = "아이디 찾기에 실패했습니다.";
+	        ra.addFlashAttribute("message", message);
+	        return "redirect:/member/findMember";
+	    } else {
+	        model.addAttribute("findId", findId);
+	        return "member/findMember";
+	    }
 	}
 	
 	
@@ -153,6 +168,70 @@ public class MemberController {
 		
 		return"member/findPw";
 	}
+	
+	/** 비밀번호를 재설정 하기전 가입된회원이 찾는지 
+	 * @param model
+	 * @param inputMember
+	 * @param ra
+	 * @return
+	 */
+	@PostMapping("findPw")
+	public String findPw (Model model , Member inputMember ,
+			              RedirectAttributes ra) {
+		
+		String message = null;
+		
+		
+		Member findmember = service.findPw(inputMember);
+		
+		if (findmember != null) {
+			
+			int memberNo = findmember.getMemberNo();
+			model.addAttribute("memberNo",memberNo);
+			
+			return "/member/findPw";
+		
+		}else {
+			    message = "가입된 회원이 아닙니다.";
+		        ra.addFlashAttribute("message", message);
+		        return "redirect:/member/findPw";
+			
+		}
+		
+		
+		}
+	
+	@PostMapping("findPwConfirm")
+	public String findPwConfirm( @RequestParam("memberNo") int memberNo ,
+								 @RequestParam("memberPw") String memberPw,
+			                     RedirectAttributes ra) {
+		
+		Member inputMember = new Member();
+		
+		inputMember.setMemberNo(memberNo);
+		inputMember.setMemberPw(memberPw);
+		
+		int result = service.findPwConfirm(inputMember);
+		
+		String message = null;
+		String path = null;
+		
+		if (result != 1) {
+			message = "비밀번호가 재설정되지 않았습니다.!!";
+			path = "/member/findPw";
+		}else {
+			message = "비밀번호 재설정완료 !! 메인페이지에서 다시로그인 해주세요.";
+			path = "/";
+		}
+		
+		ra.addFlashAttribute("message",message);
+		
+		
+		return "redirect:"+path;
+	}
+		
+		
+	
 	
 	/** 이메일 중복검사 (비동기 요청)
 	 * @return 중복된 데이터의 개수

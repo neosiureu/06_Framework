@@ -226,3 +226,10 @@ form[name='myPageFrm']{position: relative;}
   color : white;
   margin-left: 2px;
 }
+
+.error {
+  color: red;
+}
+.confirm{
+  color:green;
+}
