@@ -193,7 +193,7 @@ public class MyPageServiceImpl implements MyPageService {
 
 		int result = mapper.insertUploadFile(uf);
 
-		// 4. 삽입에는 성공했지만 서버에도 이미지를 저장해야 한다
+		// 4. DB 삽입에는 성공했지만 서버에도 이미지를 저장해야 한다
 
 		if (result == 0)
 			return 0; // 실패시 아무것도 안 함
@@ -257,14 +257,13 @@ public class MyPageServiceImpl implements MyPageService {
 		return result1 + result2;
 
 	}
+	
 
 	/**
 	 * 프로필이미지 변경 서비스
 	 */
 	@Override
-	public int profile(MultipartFile profileImg, Member loginMember) throws Exception {
-	
-		
+	public int profile(MultipartFile profileImg, Member loginMember) throws Exception {		
 
 		// 프로필 이미지 경로 저장 
 		String updatePath = null;
