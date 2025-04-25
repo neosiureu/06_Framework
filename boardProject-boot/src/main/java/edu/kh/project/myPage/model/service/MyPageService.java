@@ -49,6 +49,21 @@ public interface MyPageService {
 	 */
 	List<UploadFile> fileList(int memberNo);
 
+	/**  여러 파일 업로드 서비스
+	 * @param memberNo
+	 * @param bbbList
+	 * @param aaaList
+	 * @return
+	 */
+	int fileUpload3(int memberNo, List<MultipartFile> bbbList, List<MultipartFile> aaaList)throws Exception;
+
+	/** 로그인한 회원의 프로필 파일을 저장하는 서비스
+	 * @param loginMember
+	 * @param profileImg
+	 * @return
+	 */
+	int profile(Member loginMember, MultipartFile profileImg) throws Exception;
+
 	
 
 }

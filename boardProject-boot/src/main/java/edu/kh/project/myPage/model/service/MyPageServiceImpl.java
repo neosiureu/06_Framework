@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import edu.kh.project.myPage.model.mapper.MyPageMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
+@PropertySource("classpath:/config.properties")
 public class MyPageServiceImpl implements MyPageService{
 
 	@Autowired
@@ -28,6 +31,13 @@ public class MyPageServiceImpl implements MyPageService{
 	
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
+	
+	
+	@Value("${my.profile.web-path}")
+	private String profileWebPath;
+	
+	@Value("${my.profile.folder-path}")
+	private String profileFolderPath;
 	
 	
 	@Override
@@ -206,8 +216,108 @@ public class MyPageServiceImpl implements MyPageService{
 			
 			return mapper.fileList(memberNo);
 		}
+
+
+		@Override
+		public int fileUpload3(int memberNo, List<MultipartFile> bbbList, List<MultipartFile> aaaList)
+				throws Exception {
+			
+			//1. aaaList 처리
+			int result1 = 0; // 결과(insert된 행의 갯수)를 저장할 변수
+			
+			// 업로드된 파일이 없을경우를 제외하고 업로드
+			for(MultipartFile file : aaaList) {
+				
+				if(file.isEmpty()) { // 파일이 없으면 다음 파일
+					continue;
+				}
+				
+				// DB에 저장 + 서버 실제로 저장
+				// fileUpload2()메서드를 호출 (재활용)
+				result1 += fileUpload2(memberNo,file);
+				
+			}
+			
+			//2. bbbList 처리
+	        int result2 = 0; // 결과(insert된 행의 갯수)를 저장할 변수
+			
+			// 업로드된 파일이 없을경우를 제외하고 업로드
+			for(MultipartFile file : bbbList) {
+				
+				if(file.isEmpty()) { // 파일이 없으면 다음 파일
+					continue;
+				}
+				
+				// DB에 저장 + 서버 실제로 저장
+				// fileUpload2()메서드를 호출 (재활용)
+				result2 += fileUpload2(memberNo,file);
+				
+			}
+			
+			
+			return result1 + result2;
+		}
+
+
+		// 프로필 이미지 변경 서비스
+		@Override
+		public int profile(Member loginMember, MultipartFile profileImg)throws Exception {
+			
+			//프로필 이미지 경로
+			String updatePath = null;
+			
+			// 변경명 저장
+			String rename =null;
+			
+			//업로드한 이미지가 있을경우 
+			// - 있을경우 : 경로 조합(클라이언트 접근경로 + 리네임파일명)
+			if(!profileImg.isEmpty()) { //이미지가 있을경우
+				
+				//1. 파일명 변경 
+				rename = Utility.fileRename(profileImg.getOriginalFilename());
+				
+				//2. /myPage/profile/변경파일명
+				updatePath = profileWebPath + rename;
+				
+				
+			}
+			
+			// 수정된 프로필 이미지 경로 + 회원 번호를 저장할 DTO 객체
+			Member member = Member.builder()
+							.memberNo(loginMember.getMemberNo())
+							.profileImg(updatePath)
+							.build();
+			
+			int result = mapper.profile(member);
+			
+			if(result > 0)  {
+				
+				// 프로필 이미지를 없애는 update 를 한 경우를 제외
+				// -> 업로드한 이미지가 있을경우 
+				if(!profileImg.isEmpty()) {
+					// 파일을 서버에 저장 
+					profileImg.transferTo(new File(profileFolderPath+rename));
+				}
+
+					loginMember.setProfileImg(updatePath);
+					
+			  }
+					
+				
+				
+				
+				
+				return result;
+					
+				}
+				
+				// 세션에 저장된 loginMember 의 프로필 이미지 경로를 
+				// DB와 동기화
+				
+			}
 	
 
 	
 	
-}
+
+

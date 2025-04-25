@@ -1,36 +1,34 @@
 const findPwTest = document.querySelector("#findPwTest");
 const pwMessage = document.querySelector("#pwMessage");
-console.log(findPwTest);
-const memberPwConfirm = document.querySelector("#memberPwConfirm");
+const findPwConfirm = document.querySelector("#findPwConfirm");
 
-const memberPw = document.querySelector("#memberPw");
-
-
-console.log(memberPw);
 
 if(findPwTest != null){
 
- findPwTest.addEventListener("submit", e => {
+  findPwTest.addEventListener("submit", e => {
+ 
+   const memberEmail = document.querySelector("#memberEmail");
+   const memberNickname = document.querySelector("#memberNickname");
+   const memberTel =document.querySelector("#memberTel");
+ 
+     if (memberNickname.value.trim().length === 0 ||
+         memberEmail.value.trim().length === 0 || 
+         memberTel.value.trim().length === 0) {
+         e.preventDefault();
+         alert("빈칸들을 다 작성해주세요.");
+         return;
+        }
+   });
+ 
+ 
+ 
+ 
+ 
+ 
+ }
 
-  const memberEmail = document.querySelector("#memberEmail");
-  const memberNickname = document.querySelector("#memberNickname");
-  const memberTel =document.querySelector("#memberTel");
 
-    if (memberNickname.value.trim().length === 0 ||
-        memberEmail.value.trim().length === 0 || 
-        memberTel.value.trim().length === 0) {
-        e.preventDefault();
-        alert("빈칸들을 다 작성해주세요.");
-        return;
-    }
-  });
-
-}
-const checkObj = {
-  "memberPw"        : false,
-  "memberPwConfirm" : false, 
-};
-
+//5) 비밀번호, 비밀번호 확인이 같은지 검사하는 함수
 const checkPw = () =>{
 
   // 같을 경우 
@@ -38,7 +36,7 @@ const checkPw = () =>{
     pwMessage.innerText = "비밀번호가 일치합니다.";
     pwMessage.classList.add("confirm");
     pwMessage.classList.remove("error");
-    checkObj.memberPwConfirm = true; // 비밀번호 확인 true
+    
     return;
   }
 
@@ -46,15 +44,15 @@ const checkPw = () =>{
   pwMessage.innerText = "비밀번호가 일치하지 않습니다.";
   pwMessage.classList.add("error");
   pwMessage.classList.remove("confirm");
-  checkObj.memberPwConfirm = false; // 비밀번호 확인 false
   
 
 
 };
 
+
 //2) 비밀번호 유효성 검사
-if(memberPw != null){
- 
+
+if(findPwConfirm != null ) {
 
 memberPw.addEventListener("input", e => {
 
@@ -66,7 +64,7 @@ memberPw.addEventListener("input", e => {
   if(inputPw.trim().length === 0){
     pwMessage.innerText = "영어,숫자,특수문자(!,@,#,-,_) 6~20글자 사이로 입력해주세요.";
     pwMessage.classList.remove("confirm" , "error");
-    checkObj.memberPw = false ; // 비밀번호가 유효하지 않다고 표시
+   
     memberPw.value = ""; // 첫글자 띄어쓰기 입력못하게 막기
     return;
   }
@@ -78,7 +76,7 @@ memberPw.addEventListener("input", e => {
     pwMessage.innerText ="비밀번호가 유효하지 않습니다.";
     pwMessage.classList.add("error");
     pwMessage.classList.remove("confirm");
-    checkObj.memberPw = false;
+    
     return;
   }
 
@@ -86,7 +84,7 @@ memberPw.addEventListener("input", e => {
   pwMessage.innerText = "유효한 비밀번호 형식입니다.";
   pwMessage.classList.add("confirm");
   pwMessage.classList.remove("error");
-  checkObj.memberPw = true;
+
 
   // 비밀번호 입력 시 비밀번호 확인란의 값과 비교하는 코드 추가
   
@@ -98,13 +96,9 @@ memberPw.addEventListener("input", e => {
     
 
 });
-}
-// --------------------------------
 
 
 //6) 비밀번호 확인 유효성 검사
-if(memberPwConfirm != null){
-
 memberPwConfirm.addEventListener("input", ()=>{
 
   if(checkObj.memberPw){ // memberPw 가 유효한 경우
@@ -116,9 +110,19 @@ memberPwConfirm.addEventListener("input", ()=>{
   // memberPw가 유효하지 않은경우
   // memberPwconfrim 유효하지 않아야함
 
-  checkObj.memberPwConfirm = false;
+  
 
 });
+
 }
 
-console.log(memberNo);
+
+
+
+
+
+
+
+
+
+

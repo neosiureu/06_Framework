@@ -49,9 +49,10 @@ public interface MemberService {
 
 	/** 로그인 안된상태에서 비밀번호 재설정
 	 * @param inputMember
+	 * @param memberNo 
 	 * @return
 	 */
-	int findPwConfirm(Member inputMember);
+	int findPwConfirm(Member inputMember, int memberNo);
 
 	
 

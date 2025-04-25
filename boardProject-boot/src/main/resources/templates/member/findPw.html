@@ -70,6 +70,12 @@
       
           <button class="myPage-submit">비밀번호 찾기</button>
         </form>
+     
+        <div>
+          <!-- 디버깅용 -->
+          <p>Session memberNo: <span th:text="${memberNo}">No memberNo</span></p>
+      </div>
+     
       </div>
 
 
@@ -92,7 +98,7 @@
         <div class="myPage-row">
           <label>비밀번호 확인</label>
 
-          <input type="password" name="memberPwConfirm" 
+          <input type="password" 
             maxlength="10" id="memberPwConfirm">
 
           <input type="hidden" id="memberNo" th:value=${memberNo}>

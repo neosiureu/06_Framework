@@ -9,17 +9,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.member.model.service.MemberService;
+import jakarta.mail.Session;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-@SessionAttributes({"loginMember"}) // 여러개를 session에다가 실을수있어서 {} 안에서 쓰면됨.
+@SessionAttributes({"loginMember","memberNo"}) // 여러개를 session에다가 실을수있어서 {} 안에서 쓰면됨.
 @Controller
 @RequestMapping("member")
 @Slf4j
@@ -176,58 +178,43 @@ public class MemberController {
 	 * @return
 	 */
 	@PostMapping("findPw")
-	public String findPw (Model model , Member inputMember ,
-			              RedirectAttributes ra) {
-		
-		String message = null;
-		
-		
-		Member findmember = service.findPw(inputMember);
-		
-		if (findmember != null) {
-			
-			int memberNo = findmember.getMemberNo();
-			model.addAttribute("memberNo",memberNo);
-			
-			return "/member/findPw";
-		
-		}else {
-			    message = "가입된 회원이 아닙니다.";
-		        ra.addFlashAttribute("message", message);
-		        return "redirect:/member/findPw";
-			
-		}
-		
-		
-		}
+	public String findPw(Model model, Member inputMember, RedirectAttributes ra) {
+	    String message = null;
+
+	    Member findmember = service.findPw(inputMember);
+
+	    if (findmember != null) {
+	        int memberNo = findmember.getMemberNo();
+	        model.addAttribute("memberNo", memberNo); // @SessionAttributes에 의해 세션에 저장됨
+	        return "/member/findPw";
+	    } else {
+	        message = "가입된 회원이 아닙니다.";
+	        ra.addFlashAttribute("message", message);
+	        return "redirect:/member/findPw";
+	    }
+	}
 	
 	@PostMapping("findPwConfirm")
-	public String findPwConfirm( @RequestParam("memberNo") int memberNo ,
-								 @RequestParam("memberPw") String memberPw,
-			                     RedirectAttributes ra) {
-		
-		Member inputMember = new Member();
-		
-		inputMember.setMemberNo(memberNo);
-		inputMember.setMemberPw(memberPw);
-		
-		int result = service.findPwConfirm(inputMember);
-		
-		String message = null;
-		String path = null;
-		
-		if (result != 1) {
-			message = "비밀번호가 재설정되지 않았습니다.!!";
-			path = "/member/findPw";
-		}else {
-			message = "비밀번호 재설정완료 !! 메인페이지에서 다시로그인 해주세요.";
-			path = "/";
-		}
-		
-		ra.addFlashAttribute("message",message);
-		
-		
-		return "redirect:"+path;
+	public String findPwConfirm(Member inputMember,
+	                            @SessionAttribute("memberNo") int memberNo, // 세션에서 memberNo 가져오기
+	                            SessionStatus status,
+	                            RedirectAttributes ra) {
+	    int result = service.findPwConfirm(inputMember, memberNo);
+
+	    String message = null;
+	    String path = null;
+
+	    if (result != 1) {
+	        message = "비밀번호가 재설정되지 않았습니다.!!";
+	        path = "/member/findPw";
+	    } else {
+	        message = "비밀번호 재설정완료 !! 메인페이지에서 다시로그인 해주세요.";
+	        path = "/";
+	        status.setComplete(); // 세션 종료
+	    }
+
+	    ra.addFlashAttribute("message", message);
+	    return "redirect:" + path;
 	}
 		
 		
