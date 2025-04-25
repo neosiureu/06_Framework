@@ -397,5 +397,27 @@ public class MyPageController {
 		
 		return "redirect:/myPage/fileTest";
 	}
+	
+	
+	@PostMapping("profile")
+	public String profile(@RequestParam("profileImg") MultipartFile profileImg, // by multipartResolver
+			@SessionAttribute("loginMember") Member loginMember,
+			RedirectAttributes ra
+			) throws Exception {
+		
+		
+		String message =null;
+		
+		// 업로드 된 파일 정보를 DB에 insert 후 행의 개수를 반환받겠다
+		
+		int result = service.profile(profileImg, loginMember );
+		
+		if(result>0) message="변경성공!";
+		else message = "변경실패";
+		
+		ra.addFlashAttribute("message",message);
+		
+		return "redirect:profile";
+	}
 
 }

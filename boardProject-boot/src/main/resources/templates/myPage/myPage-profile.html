@@ -38,7 +38,7 @@
             <img th:with="user=#{user.default.image}"
                 th:src="${session.loginMember.profileImg ?: user}"
                 id="profileImg" >
-                // 프로필 사진 자체
+                <!-- // 프로필 사진 자체 -->
           </div>
           <span id="deleteImage">x</span>
 
@@ -46,7 +46,7 @@
             <label for="imageInput">이미지 선택</label>
 
             <input type="file" name="profileImg" id="imageInput" accept="image/*">
-           // 실제로 파일을 기억할 놈
+           <!-- // 실제로 파일을 기억할 놈 -->
 
             <button>변경하기</button>
           </div>

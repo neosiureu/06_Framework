@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.kh.project.common.util.Utility;
@@ -18,7 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-
+@PropertySource("classpath:/config.properties") // config.properties를 읽어준다
+@Transactional(rollbackFor = Exception.class)
 public class MyPageServiceImpl implements MyPageService {
 
 	@Autowired
@@ -28,6 +32,12 @@ public class MyPageServiceImpl implements MyPageService {
 
 	@Autowired
 	private MyPageMapper mapper;
+
+	@Value("${my.profile.web-path}")
+	private String profileWebPath;
+
+	@Value("${my.profile.folder-path}")
+	private String profileFolderPath;
 
 	public int updateInfo(Member inputMember, String[] memberAddress) {
 
@@ -108,7 +118,7 @@ public class MyPageServiceImpl implements MyPageService {
 
 		// MultipartFile이 제공하는 다양한 메서드가 존재
 		/*
-		 * 1) getSize() = 파일의 크기 2) isEmpty() 3) getOriginalFileName() = 원본 파일명 
+		 * 1) getSize() = 파일의 크기 2) isEmpty() 3) getOriginalFileName() = 원본 파일명
 		 * 4)transferTo(경로) 메모리 또는 임시저장경로에 업로드만 되어있는 파일을 원하는 경로에 실제로 전송하겠다 실제로 서버 메모리에
 		 * 50MB까지는 임시저장 원래 temp에 저장 되지만 이 메서드를 이용하면 실제 서버 하드에 저장되는 셈 서버의 어떤 경로 폴더에 저장할지가
 		 * 인자로 들어 옴
@@ -116,102 +126,89 @@ public class MyPageServiceImpl implements MyPageService {
 		 */
 
 		// 업로드한 파일이 실재하는가?
-		
-		if(uploadFile.isEmpty()) 
-		{ return null;}
-		
-		//C:uploadFiles/test/파일명 으로 서버 하드에 저장
-		
-		
-		uploadFile.transferTo(new File("C:/uploadFiles/test/"+uploadFile.getOriginalFilename()));
+
+		if (uploadFile.isEmpty()) {
+			return null;
+		}
+
+		// C:uploadFiles/test/파일명 으로 서버 하드에 저장
+
+		uploadFile.transferTo(new File("C:/uploadFiles/test/" + uploadFile.getOriginalFilename()));
 		// 실제로 이 이후로 test폴더 안에 이미지가 저장 됨
-		
+
 		// 웹에서 해당 파일에 접근할 수 있는 경로 반환
-		// 즉 서버의 경로 저장  C:uploadFiles/test/"+uploadFile 
+		// 즉 서버의 경로 저장 C:uploadFiles/test/"+uploadFile
 		// 다만 웹에서 접근할 수 있는 주소는 /myPage/file/A.jpg꼴일 것
-		return "/myPage/file/"+uploadFile.getOriginalFilename();
+		return "/myPage/file/" + uploadFile.getOriginalFilename();
 	}
 
 	/*
-	
-	 파일업로드테스트2 => DB에 저장
-	 DB에 파일 저장이 가능은 하나 무거워짐
-	 
-	  1) DB에는 서버에 저장할 파일 경로만을 저장한다
-	  
-	  2) DB에 삽입 / 수정 완료된 후 성공 되고 서버에 실제로 파일을 저장한다
-	  
-	  3) 파일 저장 실패 시 예외 발생 => transactional 어노테이션을 통해 rollback;
-	 
+	 * 
+	 * 파일업로드테스트2 => DB에 저장 DB에 파일 저장이 가능은 하나 무거워짐
+	 * 
+	 * 1) DB에는 서버에 저장할 파일 경로만을 저장한다
+	 * 
+	 * 2) DB에 삽입 / 수정 완료된 후 성공 되고 서버에 실제로 파일을 저장한다
+	 * 
+	 * 3) 파일 저장 실패 시 예외 발생 => transactional 어노테이션을 통해 rollback;
+	 * 
 	 */
-	
+
 	@Override
 	public int fileUpload2(MultipartFile uploadFile, int memberNo) throws Exception {
-		
-		
-		if(uploadFile.isEmpty()) {
-			
+
+		if (uploadFile.isEmpty()) {
+
 			return 0;
 		}
-		
-		
 
 		// 1. 실제 서버에 저장할 파일 경로 만들기
-		
+
 		String folderPath = "C:/uploadFiles/test/";
-		
-		
+
 		// 2. 클라이언트가 파일이 저장된 폴더에 접근할 수 있는 주소 (img태그 src태그에 들어갈 주소)
-		
+
 		// fileConfig를 보면 됨
-		
+
 		String webPath = "/myPage/file/";
-		
+
 		// 3. DB에 전달할 데이터를 DTO하나를 만들어 묶는다.
-		// webPath memberNo, 원본 파일명, 변경된 파일명 => 유틸리티라는 클래스를 하나 만들어 
+		// webPath memberNo, 원본 파일명, 변경된 파일명 => 유틸리티라는 클래스를 하나 만들어
 		// 원본 파일명을 가지고 원하는대로 만드는 기능을 수행한다
-		
-		
+
 		String fileRename = Utility.fileRename(uploadFile.getOriginalFilename());
-		
-		
-		
+
 		/*
-		 	private int fileNo;
-			private String filePath;
-			private String fileOriginalName;
-			private String fileRename;
-			private String fileUploadDate;
-			private int memberNo;
-		*/
+		 * private int fileNo; private String filePath; private String fileOriginalName;
+		 * private String fileRename; private String fileUploadDate; private int
+		 * memberNo;
+		 */
 
 		// 1. 반복되는 참조변수명 생략 가능, set구문 생략 가능
 		// 2. method chaining 을 통해 한줄로 작성 가능
 		// 3. 매개변수 생성자의 개수를 맞출 필요가 없음
-		
-		UploadFile uf = UploadFile.builder().memberNo(memberNo)
-				.filePath(webPath).fileOriginalName(uploadFile.getOriginalFilename())
-				.fileRename(fileRename).build();
-		
+
+		UploadFile uf = UploadFile.builder().memberNo(memberNo).filePath(webPath)
+				.fileOriginalName(uploadFile.getOriginalFilename()).fileRename(fileRename).build();
+
 		int result = mapper.insertUploadFile(uf);
 
-		
-		
 		// 4. 삽입에는 성공했지만 서버에도 이미지를 저장해야 한다
-		
-		if(result==0) return 0; // 실패시 아무것도 안 함
-		
-		uploadFile.transferTo( new File(folderPath+fileRename));
-		
+
+		if (result == 0)
+			return 0; // 실패시 아무것도 안 함
+
+		uploadFile.transferTo(new File(folderPath + fileRename));
+
 		// folderPath경로쪽으로 파일을 실제 서버 컴퓨터에 저장한다
-		
+
 		return result;
-	
+
 	}
 
 	@Override
 	public List<UploadFile> fileList(int memberNo) {
-		
+
 		return mapper.fileList(memberNo);
 	}
 
@@ -221,52 +218,111 @@ public class MyPageServiceImpl implements MyPageService {
 	@Override
 	public int fileUpload3(List<MultipartFile> aaaList, List<MultipartFile> bbbList, int memberNo) throws Exception {
 		// List에서 꺼내다가 DB와 서버에 등록
-		
-		
-		// 1. aaaList처리 
-		// 제대로 DB에 저장됐을 때 그 행의 개수를 반환 
 
-		int result1= 0;
-		//일종의 결과 저장용 변수
-		
+		// 1. aaaList처리
+		// 제대로 DB에 저장됐을 때 그 행의 개수를 반환
+
+		int result1 = 0;
+		// 일종의 결과 저장용 변수
+
 		// 1.5 업로드된 파일이 없을 경우를 제외하고 업로드한다
 		// 리스트를 순회하면서 [MultipartFile, MultipartFile,MultipartFile.... ]에서 비었는지 확인
-		
-		for(MultipartFile file :aaaList) {
-			if(file.isEmpty()) {// 파일이 없으면 다음 파일을 검사
+
+		for (MultipartFile file : aaaList) {
+			if (file.isEmpty()) {// 파일이 없으면 다음 파일을 검사
 				continue;
 			}
-			
+
 			// DB에 저장 + 서버에 실제로 저장
-			result1 +=	fileUpload2(file, memberNo);
+			result1 += fileUpload2(file, memberNo);
 			// 위에서 만든 파일업로드 메서드를 호출해서 썼다.
-			
+
 		}
-		
-		
-		
+
 		// 2. bbb리스트 처리
-		
-		int result2= 0;
-		
-		
-		for(MultipartFile file :bbbList) {
-			if(file.isEmpty()) {// 파일이 없으면 다음 파일을 검사
+
+		int result2 = 0;
+
+		for (MultipartFile file : bbbList) {
+			if (file.isEmpty()) {// 파일이 없으면 다음 파일을 검사
 				continue;
 			}
-			
+
 			// DB에 저장 + 서버에 실제로 저장
-			result2 +=	fileUpload2(file, memberNo);
+			result2 += fileUpload2(file, memberNo);
 			// 위에서 만든 파일업로드 메서드를 호출해서 썼다.
-			
+
 		}
-		
-		
-		return result1+result2;
-		
+
+		return result1 + result2;
+
 	}
 
+	/**
+	 * 프로필이미지 변경 서비스
+	 */
+	@Override
+	public int profile(MultipartFile profileImg, Member loginMember) throws Exception {
 	
-	
+		
 
+		// 프로필 이미지 경로 저장 
+		String updatePath = null;
+		// PROFILE_IMG컬럼에는  웹 패스 + Rename결과로 들어가야 한다
+		
+		String rename =null;
+		
+		// 위의 folderPath webPath 대신 config.properties에 경로를 저장
+		
+		
+		// 업로드한 이미지가 있을 경우에만 처리 => 있다면 경로 조합
+		// 원래는 path와 RENAME을 따로 저장했으나 이제는 둘을 합친 경우를 넣어야 함
+		// 즉 있을 경우에는 클라이언트 접근 경로 + rename된 파일 명
+		
+		
+		// 변경명 저장
+		
+		if(!profileImg.isEmpty()) 
+		{
+			// 1. 원본 파일명을 전달하여 rename
+			rename = Utility.fileRename(profileImg.getOriginalFilename());
+			
+			// 2. /myPage/profile/변경된 파일명
+			updatePath = profileWebPath + rename;
+			// 둘을 합친 경로를 DB ProfileIMG에 보낼 것
+			
+			// 수정된 프로필 이미지 경로 + 회원번호를 저장할 DTO 객체를 만들어서 경로를 새로 생성
+			
+			Member member = Member.builder().memberNo(loginMember.getMemberNo()).profileImg(updatePath).build();
+			
+			// 이후 업데이트 수행
+			
+			int result = mapper.profile(member);
+			
+			
+			if(result>0) {
+				// DB에 수정 성공 => 서버에 저장 그런데 있다가 있어도, 있다가 없어도 업데이트에 성공한 것
+				
+				// 프로필 이미지를 없애는 업데이트를 하는 경우에 서버에는 아무것도 안 보내게 된다
+				
+				// 업로드한 이미지가 있을 경우만 따진다.
+				
+				if(!profileImg.isEmpty()) {
+					// 삭제했을 때 null로 넘어오기 때문
+					
+					// 이때만 파일을 서버에 저장
+					
+					profileImg.transferTo(new File(profileFolderPath+rename));
+				}
+				
+				// 세션에 저장된 로그인멤버의 프로필이미지 경로를 DB와 맞춰서 동기화 작업한다
+				loginMember.setProfileImg(updatePath); // 웹 접근경로 + rename
+				
+			}
+			return result;
+		
+		}
+		return 0;
+	}
 }
+	
