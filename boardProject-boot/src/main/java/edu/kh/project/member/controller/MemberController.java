@@ -1,5 +1,7 @@
 package edu.kh.project.member.controller;
 
+import java.io.Console;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -267,11 +269,13 @@ public class MemberController {
 			, RedirectAttributes ra
 			) {
 		
+		 log.debug("닉네임: " + member.getMemberNickname());
+		 log.debug("전화번호: " + member.getMemberTel());
+
 		
-	
-		
-		Member selected = service.selectID(member);
-		
+		String selected = service.selectID(member);
+				
+
 		
 		
 		if(selected==null) {
@@ -281,7 +285,9 @@ public class MemberController {
 		else {
 //			String email=  selected.getMemberEmail();
 
-			ra.addFlashAttribute("findEmail", selected.getMemberEmail());}
+			ra.addFlashAttribute("findEmail", selected);
+			
+		}
 
 		return "redirect:/";
 	}

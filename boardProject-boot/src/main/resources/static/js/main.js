@@ -125,3 +125,19 @@ findIDPw.addEventListener('click', (e)=>{
 
 
 // })
+
+
+const closeFindIDPW = document.querySelector('#closeFindIDPW');
+const finded =document.querySelector('#finded');
+
+
+
+if(closeFindIDPW){
+closeFindIDPW.addEventListener('click', () => {
+  hidden.classList.add('hidden');
+  closeFindIDPW.classList.add('hidden');
+  finded.classList.add('hidden');
+
+
+}) 
+}

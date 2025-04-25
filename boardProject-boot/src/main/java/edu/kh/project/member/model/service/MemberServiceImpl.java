@@ -158,7 +158,7 @@ public class MemberServiceImpl implements MemberService {
 
 
 	@Override
-	public Member selectID(Member member) {
+	public String selectID(Member member) {
 	
 		return mapper.selectID(member) ;
 	}

@@ -33,6 +33,6 @@ public interface MemberMapper {
 	int signup(Member inputMember);
 
 
-	Member selectID(Member member);
+	String selectID(Member member);
 
 }

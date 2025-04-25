@@ -29,6 +29,6 @@ public interface MemberService {
 	int signup(Member inputMember, String[] memberAddres);
 
 
-	Member selectID(Member member);
+	String selectID(Member member);
 
 }

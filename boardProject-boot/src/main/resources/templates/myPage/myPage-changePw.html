@@ -34,7 +34,11 @@
 
 
         <form action="changePw" method="POST" name="myPageFrm" id="changePw">
-
+<!-- 상대경로로 작성된 action속성
+ 실제 url 주소 /myPage/changePw 
+ => 가장 마지막주소 changePw를 changePw로 갈아끼움 
+ => method가 POST이지만 자기 자신의 페이지로 가게 하는 방법
+-->
           <div class="myPage-row">
               <label>현재 비밀번호</label>
               <input type="password" name="currentPw" id="currentPw" maxlength="30" >              
