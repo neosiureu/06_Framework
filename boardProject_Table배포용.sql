@@ -184,15 +184,14 @@ COMMENT ON COLUMN "BOARD"."MEMBER_NO" IS '작성한 회원 번호(FK)';
 
 
 
-
-
-
-
 -- 게시판 종류 테이블
 CREATE TABLE "BOARD_TYPE" (
 	"BOARD_CODE"	NUMBER		NOT NULL,
 	"BOARD_NAME"	NVARCHAR2(20)		NOT NULL
 );
+
+
+
 
 COMMENT ON COLUMN "BOARD_TYPE"."BOARD_CODE" IS '게시판 종류 코드 번호';
 COMMENT ON COLUMN "BOARD_TYPE"."BOARD_NAME" IS '게시판명';
@@ -229,6 +228,8 @@ COMMENT ON COLUMN "BOARD_IMG"."IMG_ORDER" IS '이미지 순서';
 COMMENT ON COLUMN "BOARD_IMG"."BOARD_NO" IS '게시글 번호(PK)';
 
 
+
+
 -- 댓글 테이블
 CREATE TABLE "COMMENT" (
 	"COMMENT_NO"	NUMBER		NOT NULL,
@@ -255,6 +256,8 @@ COMMENT ON COLUMN "COMMENT"."MEMBER_NO" IS '회원 번호(PK)';
 COMMENT ON COLUMN "COMMENT"."PARENT_COMMENT_NO" IS '부모 댓글 번호';
 
 
+
+
 --------------------- PK -----------------------
 
 ALTER TABLE "MEMBER" ADD CONSTRAINT "PK_MEMBER" PRIMARY KEY (
@@ -268,24 +271,24 @@ ALTER TABLE "UPLOAD_FILE" ADD CONSTRAINT "PK_UPLOAD_FILE" PRIMARY KEY (
 
 ALTER TABLE "BOARD" ADD CONSTRAINT "PK_BOARD" PRIMARY KEY (
 	"BOARD_NO"
-);
+); -- 수행함
 
 ALTER TABLE "BOARD_TYPE" ADD CONSTRAINT "PK_BOARD_TYPE" PRIMARY KEY (
 	"BOARD_CODE"
-);
+); -- 수행함
 
 ALTER TABLE "BOARD_LIKE" ADD CONSTRAINT "PK_BOARD_LIKE" PRIMARY KEY (
 	"MEMBER_NO",
 	"BOARD_NO"
-);
+); -- 수행함
 
 ALTER TABLE "BOARD_IMG" ADD CONSTRAINT "PK_BOARD_IMG" PRIMARY KEY (
 	"IMG_NO"
-);
+); -- 수행함
 
 ALTER TABLE "COMMENT" ADD CONSTRAINT "PK_COMMENT" PRIMARY KEY (
 	"COMMENT_NO"
-);
+); -- 수행함
 
 -------------------- FK -------------------------
 
@@ -310,6 +313,12 @@ REFERENCES "BOARD_TYPE" (
 
 
 
+
+
+
+
+
+
 ALTER TABLE "BOARD" ADD CONSTRAINT "FK_MEMBER_TO_BOARD_1" FOREIGN KEY (
 	"MEMBER_NO"
 )
@@ -328,12 +337,28 @@ REFERENCES "MEMBER" (
 
 
 
+
+
+
+
+
+
+
+
 ALTER TABLE "BOARD_LIKE" ADD CONSTRAINT "FK_BOARD_TO_BOARD_LIKE_1" FOREIGN KEY (
 	"BOARD_NO"
 )
 REFERENCES "BOARD" (
 	"BOARD_NO"
 );
+
+
+
+
+
+
+
+
 
 
 ALTER TABLE "BOARD_IMG" ADD CONSTRAINT "FK_BOARD_TO_BOARD_IMG_1" FOREIGN KEY (
@@ -344,12 +369,18 @@ REFERENCES "BOARD" (
 );
 
 
+
+
+
+
 ALTER TABLE "COMMENT" ADD CONSTRAINT "FK_BOARD_TO_COMMENT_1" FOREIGN KEY (
 	"BOARD_NO"
 )
 REFERENCES "BOARD" (
 	"BOARD_NO"
 );
+
+
 
 
 ALTER TABLE "COMMENT" ADD CONSTRAINT "FK_MEMBER_TO_COMMENT_1" FOREIGN KEY (
@@ -360,12 +391,30 @@ REFERENCES "MEMBER" (
 );
 
 
+
+
 ALTER TABLE "COMMENT" ADD CONSTRAINT "FK_COMMENT_TO_COMMENT_1" FOREIGN KEY (
 	"PARENT_COMMENT_NO"
 )
 REFERENCES "COMMENT" (
 	"COMMENT_NO"
 );
+
+-- 댓글 뿐 아니라 해당 댓글에 대한 대댓글을 달기 위해 댓글의 부모를 알아야 함
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---------------------- CHECK -----------------------
 
@@ -383,6 +432,9 @@ ALTER TABLE "COMMENT" ADD
 CONSTRAINT "COMMENT_DEL_CHECK"
 CHECK("COMMENT_DEL_FL" IN ('Y', 'N') );
 	
+
+-- 4/28 수행함
+
 	
 /* 게시판 종류(BOARD_TYPE) 추가 */
 CREATE SEQUENCE SEQ_BOARD_CODE NOCACHE;
@@ -394,10 +446,17 @@ INSERT INTO "BOARD_TYPE" VALUES(SEQ_BOARD_CODE.NEXTVAL, '자유 게시판');
 COMMIT;
 
 
+SELECT * FROM "BOARD_TYPE";
+
+
 ---------------------------------------------
-/* 게시글 번호 시퀀스 생성 */
+
+
+/* 게시글 번호용 시퀀스 생성 */
 CREATE SEQUENCE SEQ_BOARD_NO NOCACHE; 
 
+
+-- PLSQL
 
 BEGIN
 	FOR I IN 1..2000 LOOP
@@ -410,14 +469,19 @@ BEGIN
 					 CEIL( DBMS_RANDOM.VALUE(0,3) ),
 					 1 -- 회원번호
 		);
-		
+-- 네가지 DEFAULT값 = BOARD테이블에 가서 보자
+-- 작성일, 수정일, 조회수, 삭제여부, 보드코드(123중 하나), 회원번호
+-- 모든 글을 1번 회원이 		
 	END LOOP;
 END;
 
 COMMIT;
 
+SELECT * FROM MEMBER;
 
 SELECT * FROM "BOARD";
+
+-- 4월 28일 => 이 이전 모든 코드를 수행함
 
 ---------------------------------------------------
 -- 부모 댓글 번호 NULL 허용

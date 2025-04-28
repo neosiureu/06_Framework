@@ -10,9 +10,6 @@ import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.myPage.model.dto.UploadFile;
 
 
-
-
-
 @Mapper
 @Transactional(rollbackFor = Exception.class)
 
