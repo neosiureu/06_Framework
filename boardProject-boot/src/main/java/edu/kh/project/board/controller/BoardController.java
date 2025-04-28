@@ -36,6 +36,9 @@ public class BoardController {
 	 숫자로 된 요청 주소가 작성되어있을 때에 한해서 이 메서드로 매핑한다
 	 	 
 	 */
+	
+	
+	// @PathVariable은  "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
 	@GetMapping("{boardCode:[0-9]+}") // +가 없으면 한 칸에 한자리수의 숫자가 들어갈 수 있다.
 	public String selectBoardList(@PathVariable("boardCode") int boardCode
 			/* 페이지네이션을 위해 cp값을 받아오기로 한다. 현재 페이지가 몇 페이지인지 받아오기 위해
@@ -43,7 +46,6 @@ public class BoardController {
 			,@RequestParam(value="cp",required = false, defaultValue = "1") int cp, Model model
 			) {
 		// board이하 1레벨 하위에 어떤 숫자 주소 값이 들어오더라도 매핑하겠다
-		
 		// 조회 서비스 호출 후 결과를 맵으로 반환
 		
 		

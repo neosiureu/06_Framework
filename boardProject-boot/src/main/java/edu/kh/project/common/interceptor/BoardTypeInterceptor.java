@@ -77,7 +77,7 @@ public class BoardTypeInterceptor implements HandlerInterceptor {
 		
 		application.setAttribute("boardTypeList", boardTypeList);
 		
-		log.debug("boradTypeList의 내용:" + boardTypeList);
+		//log.debug("boradTypeList의 내용:" + boardTypeList);
 		
 	}
 	
