@@ -192,7 +192,6 @@ CREATE TABLE "BOARD_TYPE" (
 
 
 
-
 COMMENT ON COLUMN "BOARD_TYPE"."BOARD_CODE" IS '게시판 종류 코드 번호';
 COMMENT ON COLUMN "BOARD_TYPE"."BOARD_NAME" IS '게시판명';
 
@@ -449,6 +448,13 @@ COMMIT;
 SELECT * FROM "BOARD_TYPE";
 
 
+
+SELECT BOARD_CODE "boardCode" , BOARD_NAME "boardName" FROM "BOARD_TYPE" ORDER BY BOARD_CODE;
+
+-- 자바에서 사용하는 카멜 케이스로 바꿔야하기 때문에 별칭을 설정한다. 컬럼명이 Key로, 컬럼값이 Value로
+
+
+
 ---------------------------------------------
 
 
@@ -481,7 +487,8 @@ SELECT * FROM MEMBER;
 
 SELECT * FROM "BOARD";
 
--- 4월 28일 => 이 이전 모든 코드를 수행함
+
+
 
 ---------------------------------------------------
 -- 부모 댓글 번호 NULL 허용
@@ -498,16 +505,99 @@ BEGIN
 		INSERT INTO "COMMENT"	
 		VALUES(
 			SEQ_COMMENT_NO.NEXTVAL,
-			SEQ_COMMENT_NO.CURRVAL || '번째 댓글 입니다',
+			SEQ_COMMENT_NO.CURRVAL || '번째 댓글 입니다', 
 			DEFAULT, DEFAULT,
-			CEIL( DBMS_RANDOM.VALUE(0, 2000) ),
+			CEIL( DBMS_RANDOM.VALUE(0, 2000) ), -- 어느 글에 단 댓글인가??
 			2,
-			NULL
+			NULL --parent 숫자
 		);
 	END LOOP;
 END;
 
 COMMIT;
+
+
+SELECT count(*) FROM "COMMENT";
+
+
+
+
+
+
+
+
+
+
+
+
+-- 특정 게시판(BOARD_CODE=123)에서 삭제되지 않은 게시글 목록을 조회한다
+-- 단 최신 글이 제일 위에 조회되도록
+-- 작성일 : 몇초 - 몇분전 -  몇시간전 - 24시간 넘어갈때만 YYYY-MM-DD형식으로 조회
+
+-- 글번호 제목 작성자 작성일 조회수 좋아요
+
+-- 게시글번호/ 제목/ [댓글개수]/ 작성자닉네임/ 작성일/ 조회수 / 좋아요 개수
+
+
+SELECT * FROM BOARD;
+SELECT * FROM BOARD_LIKE;
+SELECT * FROM MEMBER;
+SELECT * FROM COMMENT;
+
+
+--SELECT BOARD_NO, BOARD_TITLE, READ_COUNT, MEMBER_NICKNAME  FROM BOARD B 
+--JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO) 
+--WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE =1 ORDER BY BOARD_NO DESC;
+
+
+
+
+-- 상관 서브쿼리 
+	-- FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24*60) 은 항상 일을 반환함
+
+SELECT BOARD_NO, BOARD_TITLE, READ_COUNT, MEMBER_NICKNAME,  (SELECT COUNT(*) FROM "COMMENT" C WHERE C.BOARD_NO = B.BOARD_NO) COMMENT_COUNT,
+(SELECT COUNT(*) FROM "BOARD_LIKE" L WHERE L.BOARD_NO = B.BOARD_NO ) LIKE_COUNT,
+CASE 
+	
+	
+	
+	WHEN SYSDATE -  BOARD_WRITE_DATE < (1/24/60)
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24*60*60) || '초 전'
+	
+	WHEN SYSDATE -  BOARD_WRITE_DATE < (1/24)
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24*60) || '분 전'
+	
+	WHEN SYSDATE - BOARD_WRITE_DATE < 1
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24) || '시간 전'
+
+ELSE TO_CHAR(BOARD_WRITE_DATE,'YYYY-MM-DD') 
+END BOARD_WRITE_DATE -- 컬럼의 별칭 지정
+
+
+FROM BOARD B 
+JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO) 
+WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE =1 ORDER BY BOARD_NO DESC;
+
+
+
+
+/*
+ 
+ 메인 쿼리 한행 조회 => 그 한 행의 조회 결과를 이용해 서브쿼리를 수행
+ 
+*/
+
+
+
+
+
+
+
+
+
+
+-- 4월 28일 => 이 이전 모든 코드를 수행함
+
 
 -----------------------------------------------------
 
