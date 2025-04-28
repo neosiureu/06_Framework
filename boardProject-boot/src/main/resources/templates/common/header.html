@@ -45,7 +45,9 @@
   
   <!-- navigator -->
   <nav>
+   
     <ul>
+       <!--
       <li>
         <a href="#"
         >게시판이름</a>
@@ -60,6 +62,19 @@
       <li class="chatting-li">
         <a href="#">자유게시판</a>
       </li>
+      <li class="chatting-li">
+        <a href="#">채팅</a>
+      </li>
+      -->
+
+      <th:block th:each="boardType : ${application.boardTypeList}">
+          <li>
+            <a th:text="${boardType.boardName}"
+            th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}">게시판 이름</a>
+          </li>
+      </th:block>
+
+
       <li class="chatting-li">
         <a href="#">채팅</a>
       </li>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.board.mapper.BoardMapper">
+
+ 		<!-- 게시판 종류 조회 -->
+ 		<select id="selectBoardTypeList">
+ 		SELECT BOARD_CODE "boardCode", BOARD_NAME "boardName"
+ 		FROM BOARD_TYPE
+ 		ORDER BY BOARD_CODE
+ 		</select>
+
+		
+		<!-- 게시글 수 조회 -->
+		<select id="getListCount">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE BOARD_DEL_FL = 'N'
+		AND BOARD_CODE = #{boardCode}
+		</select>
+ 
+       <!-- 
+		<![CDATA["문자열"]]>	
+		
+		해당 태그 내부에 작성된 문자열은 특수 기호(태그) 로 해석하지말고
+		문자 그대로 인식하라는 태그
+		
+	     -->
+	
+	<select id="selectBoardList">
+	SELECT BOARD_NO , BOARD_TITLE, READ_COUNT,M.MEMBER_NICKNAME , 
+    (SELECT COUNT(*) FROM "COMMENT" C
+    WHERE C.BOARD_NO = B.BOARD_NO ) COMMENT_COUNT,
+
+    (SELECT COUNT(*) FROM "BOARD_LIKE" l 
+     WHERE L.BOARD_NO  = B.BOARD_NO ) LIKE_COUNT, 
+    <![CDATA[
+      CASE 
+	 
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24 / 60
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24 * 60 * 60) || '초전'
+	
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24 * 60) || '분전' 
+	 
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24) || '시간전' 
+	 
+	  ELSE TO_CHAR(BOARD_WRITE_DATE , 'YYYY-MM-DD')
+	  END BOARD_WRITE_DATE 
+ 	 ]]>
+ 	
+     FROM "BOARD" B
+     JOIN "MEMBER" M ON(B.MEMBER_NO = M.MEMBER_NO)
+     WHERE B.BOARD_DEL_FL = 'N'
+     AND B.BOARD_CODE = #{boardCode}
+     ORDER BY B.BOARD_NO DESC
+	
+	</select>
+  	
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

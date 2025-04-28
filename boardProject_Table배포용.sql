@@ -377,7 +377,8 @@ CHECK("BOARD_DEL_FL" IN ('Y', 'N') );
 ALTER TABLE "COMMENT" ADD
 CONSTRAINT "COMMENT_DEL_CHECK"
 CHECK("COMMENT_DEL_FL" IN ('Y', 'N') );
-	
+
+-- 4/28 수행함
 	
 /* 게시판 종류(BOARD_TYPE) 추가 */
 CREATE SEQUENCE SEQ_BOARD_CODE NOCACHE;
@@ -388,6 +389,7 @@ INSERT INTO "BOARD_TYPE" VALUES(SEQ_BOARD_CODE.NEXTVAL, '자유 게시판');
 
 COMMIT;
 
+SELECT * FROM BOARD_TYPE;
 
 ---------------------------------------------
 /* 게시글 번호 시퀀스 생성 */
@@ -403,7 +405,7 @@ BEGIN
 					 SEQ_BOARD_NO.CURRVAL || '번째 게시글 내용 입니다',
 					 DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 					 CEIL( DBMS_RANDOM.VALUE(0,3) ),
-					 1 -- 회원번호
+					 4 -- 회원번호 dudals3530 래몬이 에다가넣어버려
 		);
 		
 	END LOOP;
@@ -413,7 +415,7 @@ COMMIT;
 
 
 SELECT * FROM "BOARD";
-
+SELECT * FROM MEMBER;
 ---------------------------------------------------
 -- 부모 댓글 번호 NULL 허용
 
@@ -432,14 +434,48 @@ BEGIN
 			SEQ_COMMENT_NO.CURRVAL || '번째 댓글 입니다',
 			DEFAULT, DEFAULT,
 			CEIL( DBMS_RANDOM.VALUE(0, 2000) ),
-			2,
+			4,
 			NULL
 		);
 	END LOOP;
 END;
 
 COMMIT;
+-- 4/28 수행함.
 
+SELECT COUNT(*)
+FROM "COMMENT" ;
+
+-- 특정 게시판(BOARD_CODE)에 삭제되지 않은 게시글 목록 조회
+-- 단 , 최신글이 제일 위에 존재하도록 조회
+-- 작성일 : 몇 초 / 몇 분 / 몇 시간 전 YYYY-MM-DD 형식 조회
+
+-- 게시글 번호 / 제목[댓글개수] / 작성자 닉네임/ 작성일 / 조회수 /좋아요 개수
+
+-- 상관 서브쿼리
+-- 1) 메인쿼리 1행 조회
+-- 2) 1행 조회 결과를 이용해서 서브쿼리 수행
+--     메인쿼리 모두 이용 될때까지 반복
+
+
+SELECT BOARD_NO , BOARD_TITLE, READ_COUNT,M.MEMBER_NICKNAME , 
+(SELECT COUNT(*) FROM "COMMENT" C
+ WHERE C.BOARD_NO = B.BOARD_NO ) COMMENT_COUNT ,
+ (SELECT COUNT(*) FROM "BOARD_LIKE" l 
+ WHERE L.BOARD_NO  = B.BOARD_NO ) 
+ 
+FROM "BOARD" B
+JOIN "MEMBER" M ON(B.MEMBER_NO = M.MEMBER_NO)
+WHERE B.BOARD_DEL_FL = 'N'
+AND B.BOARD_CODE = 1
+ORDER BY B.BOARD_NO DESC;
+
+
+
+
+SELECT BOARD_CODE "boardCode", BOARD_NAME "boardName"
+ 		FROM BOARD_TYPE
+ 		ORDER BY BOARD_CODE;
 -----------------------------------------------------
 
 /* BOARD_IMG 테이블용 시퀀스 생성 */
