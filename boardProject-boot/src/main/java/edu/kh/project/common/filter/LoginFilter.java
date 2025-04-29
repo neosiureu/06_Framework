@@ -72,7 +72,7 @@ public class LoginFilter implements Filter {
 		
 		
 		
-		// 세션객체 얻어오기
+		// 세션객체 얻어오기!!
 		HttpSession session = req.getSession();
 		
 		// 세션에서 로그인한 회원의 정보를 얻어왔는데 null일 때는 로그인이 안 되어있음
