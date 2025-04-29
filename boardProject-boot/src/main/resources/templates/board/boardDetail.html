@@ -28,7 +28,7 @@
             <!-- 프로필 + 닉네임 + 작성일 + 조회수 -->
             <div class="board-header">
                 <div class="board-writer">
-
+  
                     <!-- 프로필 이미지 -->
                     <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
                     <img th:unless="*{profileImg}"
@@ -88,8 +88,9 @@
                     </div>
                 </th:block>
                 
+                <!-- 일반 이미지 출력 -->
                 <th:block th:if="${#lists.size(board.imageList) > start}">
-
+                        <!-- 썸네일이 있다면 start = 1 / 없다면 start = 0-->
                     <h5>업로드 이미지</h5>  
                     <th:block th:each="i : ${#numbers.sequence(start, #lists.size(board.imageList) - 1)}">                                
                         <div class="img-box">
