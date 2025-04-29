@@ -48,6 +48,29 @@ public class LoginFilter implements Filter {
 		
 		// **********************  게시판 사용 시 이 파일을 다시 볼 것임 ********************** 
 		
+		// 현재 요청의 URI를 req로부터 가져 옴!
+		
+		String path= req.getRequestURI();
+		
+		// 만일 요청 URI가 "/myPage/profile/"로 시작하는지 확인
+		// /myPage/는 짤리되 /myPage/profile/은 통과한다
+		// 게시판 등등에서 로그인을 하지 않아도 프로필 이미지 요청을 보내는 곳이 있는데 
+		// 필터링하지 않도록 함
+		
+		if(path.startsWith("/myPage/profile/")) {
+			// 필터를 통과시켜라
+			chain.doFilter(request, response); 
+			return;
+		}
+		
+	
+		
+		
+		
+		
+		
+		
+		
 		
 		// 세션객체 얻어오기
 		HttpSession session = req.getSession();

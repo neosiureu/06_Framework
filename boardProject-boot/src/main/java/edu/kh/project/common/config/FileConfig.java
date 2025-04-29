@@ -51,7 +51,28 @@ public class FileConfig implements WebMvcConfigurer {
 	private String profileResourceLocation;
 
 	
-	// 요청 주소에 따라 서버 컴퓨터 중 어떤 경로에 접근할지 설정
+	
+	
+	
+	
+	
+	// 게시판 이미지 관련 경로
+	
+	@Value("${my.board.resource-handler}")
+	private String boardResourceHandler;
+	
+	@Value("${my.board.resource-location}")
+	private String boardResourceLocation;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// 요청 주소에 따라 서버 노드 하드웨어 중 어떤 경로에 접근할지 설정
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// ResourceHandlerRegistry:
@@ -75,6 +96,9 @@ public class FileConfig implements WebMvcConfigurer {
 		
 		registry.addResourceHandler(profileResourceHandler).addResourceLocations(profileResourceLocation);
 		
+		
+		
+		registry.addResourceHandler(boardResourceHandler).addResourceLocations(boardResourceLocation);
 		
 		
 		

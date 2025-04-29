@@ -18,7 +18,7 @@ public class Board {
 	
 	private int boardNo;
 	private String boardTitle;
-	private String boarContent;
+	private String boardContent;
 	private String boardWriteDate;
 	private String boardUpdateDate;
 
@@ -31,8 +31,8 @@ public class Board {
 	
 	// 멤버테이블에만 있는 요소 => 조인할 것임
 	private String memberNickname;
-	private int commentCount; // 좋아요수
-	private int likeCount;// 댓글수
+	private int commentCount; // 댓글수
+	private int likeCount; // 좋아요수
 	
 	// 게시글 작성자의 프로필 이미지
 	private String profileImg; // 상세 페이지에서
@@ -42,10 +42,10 @@ public class Board {
 	
 	// 특정 게시글의 이미지 목록 리스트
 	// 보드 이미지
-	// private List<BoardImg> imageList;
+	private List<BoardImg> imageList; // 2번째 SQL
 	
 	// 특정 게시글 작성된 댓글 목록 리스트
-	// private List<Comment> commentList;
+	private List<Comment> commentList; // 3번째 SQL
 	
 	// 좋아요 여부 확인
 	private int likeCheck; // 상세 페이지에서

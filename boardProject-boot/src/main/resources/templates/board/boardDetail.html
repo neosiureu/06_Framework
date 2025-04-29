@@ -43,11 +43,11 @@
                     
                     <!-- 좋아요 하트 -->
                     <span class="like-area">
-                        
                         <!-- 좋아요 누른적이 있으면 fa-solid, 없으면 fa-regular 클래스 추가 -->
                         <i class="fa-heart" id="boardLike"
                             th:classappend="*{likeCheck == 1} ? fa-solid : fa-regular"
                         ></i>
+                        <!-- 폰트어썸에서 가져온 하트 모양 th:classappend-->
 
                         <!-- 좋아요 개수 -->
                         <span th:text="*{likeCount}">0</span>
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="board-info">
-                    <p> <span>작성일</span> [[*{boardWriteDate}]] </p>     
+                    <p> <span>작성일</span> [[*{boardWriteDate}]] </p>     <!--th:text-->
 
                     <!-- 수정한 게시글인 경우 -->
 
@@ -74,13 +74,14 @@
             <!-- ====================== 이미지가 있을 경우 출력하는 구문  ====================== -->
            
             <th:block th:if="${ #lists.size(board.imageList) > 0}">
+                <!-- 이미지가 일단 있긴 있다면-->
 
                 <!-- 썸네일이 있을 경우 -->
-                <th:block th:if="*{thumbnail}">
+                <th:block th:if="*{thumbnail}"> <!-- req에서 실려온 Board객체에 있었던 것을 꺼낸 것이다.-->
                     <h5>썸네일</h5>
                     <div class="img-box">
                         <div class="boardImg thumbnail">
-                            <img th:src="|${thumbnail.imgPath}${thumbnail.imgRename}|">                     
+                            <img th:src="|${thumbnail.imgPath}${thumbnail.imgRename}|">   <!-- 내용은 같지만 모델에서 실려온 것이다.-->                   
                             
                             <a th:href="|${thumbnail.imgPath}${thumbnail.imgRename}|"
                                 th:download="${thumbnail.imgOriginalName}">다운로드</a>         
@@ -88,8 +89,19 @@
                     </div>
                 </th:block>
                 
+
+                <!-- 썸네일을 제외한 일반 이미지를 출력하는 부분-->
                 <th:block th:if="${#lists.size(board.imageList) > start}">
 
+                <!-- 썸네일이 있다면 start는 1이었고 없다면 start는 0이었다
+                 
+                ${#lists.size(board.imageList) > start 
+
+                이미지를 딱 하나만 업로드했을 때 이것의 imgOrder가 0이면 -> 썸네일 하나만 딱 올렸다
+                둘 다 1이므로 출력 X
+
+                썸네일만 올렸으므로 일반 이미지를 출력하지 않기 때문에 if문이 불만족
+                -->
                     <h5>업로드 이미지</h5>  
                     <th:block th:each="i : ${#numbers.sequence(start, #lists.size(board.imageList) - 1)}">                                
                         <div class="img-box">
@@ -107,7 +119,8 @@
                 
             </th:block>
 
-            <!-- ====================== 이미지가 있을 경우 출력하는 구문 ====================== -->
+
+            <!-- ====================== 내용은 있을 경우 출력하는 구문 ====================== -->
             
             <!-- 내용 -->
             <div class="board-content" th:text="*{boardContent}">내용</div>

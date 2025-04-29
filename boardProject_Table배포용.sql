@@ -604,65 +604,229 @@ WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE =1 ORDER BY BOARD_NO DESC;
 /* BOARD_IMG 테이블용 시퀀스 생성 */
 CREATE SEQUENCE SEQ_IMG_NO NOCACHE;
 
+
+SELECT * FROM board_img;
+
+
+
 /* BOARD_IMG 테이블에 샘플 데이터 삽입 */
 INSERT INTO "BOARD_IMG" VALUES(
-	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본1.jpg', 'test1.jpg', 0, 2000
+	SEQ_IMG_NO.NEXTVAL, '/images/board/' /* 웹상주소 */, '원본1.jpg' /* 원본 이름 */, 'test1.jpg'  /* rename된 이름 */, 0 /* 화면상에 뿌릴 순서 0=썸네일 1=일반이미지 제일 왼쪽...*/ , 1997 /* 이 이미지가 삽입된 게시글 번호 */
 );
 
 INSERT INTO "BOARD_IMG" VALUES(
-	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본2.jpg', 'test2.jpg', 1, 2000
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본2.jpg', 'test2.jpg', 1, 1997
 );
 
 INSERT INTO "BOARD_IMG" VALUES(
-	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본3.jpg', 'test3.jpg', 2, 2000
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본3.jpg', 'test3.jpg', 2, 1997
 );
 
 INSERT INTO "BOARD_IMG" VALUES(
-	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본4.jpg', 'test4.jpg', 3, 2000
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본4.jpg', 'test4.jpg', 3, 1997
 );
 
 INSERT INTO "BOARD_IMG" VALUES(
-	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본5.jpg', 'test5.jpg', 4, 2000
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본5.jpg', 'test5.jpg', 4, 1997
 );
+
+SELECT * FROM BOARD_IMG WHERE BOARD_NO = 1997 AND IMG_ORDER = 2;
 
 
 COMMIT;
 
+
+SELECT * FROM "BOARD";
+
+SELECT * FROM "BOARD_LIKE";
+
 SELECT * FROM "BOARD_IMG";
+
+/* 
+ 
+멤버1이 게시글2000번에 좋아요를 누르면 => BOARD_LIKE에 1 2000이라고 삽입 
+=> pk이기 때문에 두번은 못누름 => 하트가 채워지면 삽입, 하트가 없어지면 삭제일 뿐
+
+눌렀으면 1, 안 눌렀으면 0만 나오기 때문에 YN과 같은 컬럼이 따로 필요하지 않다는 것이 핵심
+
+
+*/
+
+
+SELECT * FROM "BOARD_IMG";
+-- 실제 <img src = /images/board/test1.jpg></img>로 들어감
+
+SELECT * FROM "MEMBER";
+
+DELETE FROM BOARD_IMG WHERE IMG_NO IN (7,8,9,10);
+
+COMMIT;
+/*
+
+SELECT * FROM "BOARD";
+
+
+SELECT * FROM "BOARD_IMG";
+-- 실제 <img src = /images/board/test1.jpg></img>로 들어감
+
+SELECT * FROM "COMMENT";
+
+이 세 테이블로부터 한 번의 명령어로 select할 게획
+
+*/
+
+SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_CODE, READ_COUNT, MEMBER_NO, MEMBER_NICKNAME, PROFILE_IMG, 
+TO_CHAR(BOARD_WRITE_DATE,'YYYY"년"MM"월"DD"일" HH24:MI:SS') BOARD_WRITE_DATE,
+TO_CHAR(BOARD_UPDATE_DATE,'YYYY"년"MM"월"DD"일" HH24:MI:SS') BOARD_UPDATE_DATE,
+(SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO =1997) LIKE_COUNT,
+(SELECT IMG_PATH ||IMG_RENAME FROM "BOARD_IMG" WHERE BOARD_NO = 1997 AND IMG_ORDER=0) THUMBNAIL, 
+(SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO = 1997 AND MEMBER_NO=1) LIKE_CHECK --자기가 좋아요한적이 있는지 하트가 채워지고 비워져있는 여부로
+FROM "BOARD" 
+JOIN "MEMBER" 
+USING(MEMBER_NO) 
+WHERE BOARD_DEL_FL = 'N' AND BOARD_NO = 1997 AND BOARD_CODE=1;
+
+
+/*
+ 
+"BOARD 테이블에서 삭제되지 않은 특정 게시글(BOARD_NO = 1997, BOARD_CODE = 1)에 대해 
+제목, 내용, 작성자 번호, 작성자 닉네임, 작성자 프로필 이미지, 작성/수정 일자, 조회수 정보를 조회하고, 
+추가로 BOARD_LIKE 테이블을 통해 해당 게시글이 받은 좋아요 수와 특정 회원이 좋아요를 눌렀는지 여부를 함께 조회하며, 
+BOARD_IMG 테이블을 통해 썸네일(대표 이미지) 경로를 함께 가져오는 쿼리문 
+ 
+*/
+
+
+-- 좋아요 받은 개수를 얻으려면 board like라는 테이블을 따로 만들어야 어떤 회원이 어떤 게시글에  대해 좋아요를 눌렀는지를 알아내게 됨
+
+
+
+
+
+
+
+
+-- 현재 상세조회하고 있는 게시글의 이미지 목록 조회하는 SQL문
+SELECT * FROM BOARD_IMG WHERE BOARD_NO = 1997 ORDER BY IMG_ORDER;
+
+
+
+
+
+-- 현재 상세조회하고 있는 게시글의 댓글 목록 조회하는 SQL문
+
+
+
+-- 댓글 목록 조회 SQL
+
+
+
+
+
+-- oracle에서 제공하는 계층형 데이터를 조회할 때 몇 번째 레벨에 있는지 알려주는 가상의 컬럼
+
+
+/*
+COMMENT 테이블에서 특정 게시글(BOARD_NO = 1997)의 삭제되지 않은 댓글과, 
+삭제된 댓글이더라도 삭제되지 않은 자식 댓글을 가진 댓글까지 포함하여, 
+작성자 정보(MEMBER 테이블에서 닉네임과 프로필 이미지)를 함께 조회하고, 
+계층 구조(부모-자식 관계)를 따라 댓글을 정렬하여 각 댓글의 깊이(LEVEL)와 함께 가져오는 쿼리문
+ */
+
+
+SELECT LEVEL, C.* FROM --c는 서브쿼리를 의미
+	(SELECT COMMENT_NO, COMMENT_CONTENT,
+	    TO_CHAR(COMMENT_WRITE_DATE, 'YYYY"년" MM"월" DD"일" HH24"시" MI"분" SS"초"') COMMENT_WRITE_DATE,
+	    BOARD_NO, MEMBER_NO, MEMBER_NICKNAME, PROFILE_IMG, PARENT_COMMENT_NO, COMMENT_DEL_FL
+	FROM "COMMENT"
+	JOIN MEMBER USING(MEMBER_NO)
+	WHERE BOARD_NO = 1997) C
+	
+WHERE COMMENT_DEL_FL = 'N' OR 0 != ( SELECT COUNT(*) FROM "COMMENT" SUB
+				WHERE SUB.PARENT_COMMENT_NO = C.COMMENT_NO
+				AND COMMENT_DEL_FL = 'N' ) -- 상관쿼리: 삭제되지 않은 자식 댓글의 개수가 0이 아니다 => 부모 댓글을 조회댓글에 포함하겠다 => 쉽게 말해 부모가 살아있다면 자식도 삭제하지 않고 데려가겠다
+				
+START WITH PARENT_COMMENT_NO IS NULL -- 계층형을 만드는 것은 이것
+CONNECT BY PRIOR COMMENT_NO = PARENT_COMMENT_NO -- 두 넘버가 같다면 계층을 이루는 부분
+ORDER SIBLINGS BY COMMENT_NO -- 같은 레벨 안에서는 COMMENT_NO순서를 오름차순으로 정렬
+;
+
+-- 이를 계층형 쿼리라 한다 LEVEL표시 + 서브쿼리 C의 내용들 => 인라인 뷰 (SQL에서 조회된 result set을 하나의 가상 테이블과 같이 쓰곤 한다) => 그 결과가 C
+
+/*
+
+인라인 뷰란,
+SQL문 안에서 (SELECT ...) 별칭 형태로 작성하여,
+하나의 SELECT 결과 집합(Result Set)을 테이블처럼 다루는 구조를 말한다.
+
+"COMMENT" 테이블과 "MEMBER" 테이블을 조인한 뒤,
+
+특정 게시글(BOARD_NO = 1997)의 댓글 데이터만 뽑아서
+
+작성자 닉네임과 프로필 이미지까지 함께 가져온 서브 결과를
+
+C라는 이름의 인라인 뷰로 만들어 사용하고 있다.
+
+
+  
+*/
+
 
 
 -- 댓글 샘플데이터
 INSERT INTO "COMMENT"	
-VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 1',
-			  DEFAULT, DEFAULT,	2000, 1, NULL);
+VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 1' /*댓글내용*/,
+			  DEFAULT, DEFAULT,	1997 /*댓글달린 게시글*/, 1 /*댓글단 회원 번호*/ , NULL /*부모댓글에 대한 정보*/);
 			 
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 2',
-			  DEFAULT, DEFAULT,	2000, 1, NULL);
+			  DEFAULT, DEFAULT,	1997, 1, NULL);
 			 
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 3',
-			  DEFAULT, DEFAULT,	2000, 1, NULL);
+			  DEFAULT, DEFAULT,	1997, 1, NULL);
+
+
+
+
+SELECT * FROM "COMMENT" c ORDER BY c.COMMENT_NO DESC; 
+
+-- 최상위 부모만 만든 셈 2001번, 2002번 2003번
+
+
+
+
+-- 그 최상위 부모에 대해서 자식
+
+
 
 -- 부모 댓글 1의 자식 댓글
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 1의 자식 1',
-			  DEFAULT, DEFAULT,	2000, 2, 2002);
+			  DEFAULT, DEFAULT,	1997, 2, 2001);
 			 
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 1의 자식 2',
-			  DEFAULT, DEFAULT,	2000, 2, 2002);
+			  DEFAULT, DEFAULT,	1997, 2, 2001);
 			 
 			 
 -- 부모 댓글 2의 자식 댓글			 
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 2의 자식 1',
-			  DEFAULT, DEFAULT,	2000, 2, 2003);
+			  DEFAULT, DEFAULT,	1997, 2, 2002);
 			 
+
+-- 2002가 1레벨 (댓글) 2006이 2레벨 (대댓글) , 2007이 3레벨 (대대댓글)
+
+
+
+-- 최상위 부모의 자식의 자식
+
+
 -- 부모 댓글 2의 자식 1의 자식 댓글			 
 INSERT INTO "COMMENT"	
 VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 2의 자식 1의 자식!!!',
-			  DEFAULT, DEFAULT,	2000, 2, 2007);
+			  DEFAULT, DEFAULT,	1997, 2, 2006);
 
 			 
 COMMIT;
@@ -674,6 +838,25 @@ INSERT INTO "BOARD_LIKE"
 VALUES(2, 2000); -- 2번 회원이 2003번 글에 좋아요를 클릭함
 
 COMMIT;
+
+
+
+
+
+
+-- 4월 29일 이 위로 다 시행
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----------------------------------------------------------
 
