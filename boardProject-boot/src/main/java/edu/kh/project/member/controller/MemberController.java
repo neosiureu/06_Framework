@@ -292,4 +292,67 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	
+	
+	
+	@GetMapping("selectPW")
+	public String selectPw() {
+			
+		return "member/findPw";
+	}
+	
+	
+	@PostMapping("selectPW") // <-- findPwForm의 method="POST", action="/member/selectPW" 와 일치
+    @ResponseBody // <-- 이 메서드의 반환 값을 HTTP 응답 본문에 직접 담아 클라이언트로 보냅니다. (findPw.js에서 response.text()로 받게 됩니다)
+    public String selectPwPost(@ModelAttribute Member member) { // @ModelAttribute로 폼 데이터(name 속성 일치)를 Member 객체로 바로 받을 수 있습니다.
+
+        log.info("AJAX 비밀번호 찾기 (POST) 요청 수신");
+        log.debug("수신 데이터 - 닉네임: " + member.getMemberNickname());
+        log.debug("수신 데이터 - 이메일: " + member.getMemberEmail());
+        log.debug("수신 데이터 - 전화번호: " + member.getMemberTel());
+
+        // --- 여기에 실제 비밀번호 찾기 서비스 로직 구현 ---
+        // TODO: 서비스 호출
+        String findPwResult = null; // 서비스 호출 결과라고 가정합니다. 서비스는 String을 반환해야 합니다.
+
+        try {
+             // MemberService에 비밀번호 찾기 로직을 추가하고 호출합니다.
+             // 서비스 메서드는 member 객체 정보를 이용하여 사용자를 찾고,
+             // 임시 비밀번호를 생성하여 이메일로 보내거나, 찾은 정보를 String 상태 코드로 반환해야 합니다.
+             // 예: findPwResult = service.processPasswordFind(member);
+
+             // 서비스 메서드가 반환할 수 있는 값 예시:
+             // - 유효한 임시 비밀번호 문자열 (예: "TEMP_PW_12345") -> 클라이언트 JS는 성공으로 판단
+             // - "NOT_FOUND" 문자열 -> 클라이언트 JS는 실패로 판단
+             // - "EMAIL_SENT" 문자열 -> 클라이언트 JS는 성공으로 판단 (이메일 발송 완료)
+             // - "ERROR" 문자열 -> 클라이언트 JS는 실패로 판단 (서버 처리 오류)
+             // - null -> 클라이언트 JS는 실패로 판단 (null은 "null" 문자열로 전달됨)
+
+
+             // --- 임시 로직 (실제 서비스 호출로 대체해야 함) ---
+             if ("test".equals(member.getMemberNickname()) &&
+                 "test@example.com".equals(member.getMemberEmail()) &&
+                 "01011112222".equals(member.getMemberTel())) {
+                 findPwResult = "비밀번호 재설정 이메일이 발송되었습니다."; // 예시: 성공 메시지
+             } else {
+                 findPwResult = "NOT_FOUND"; // 예시: 일치하는 사용자 없음
+             }
+             // --- 임시 로직 끝 ---
+
+
+        } catch (Exception e) {
+            // 서비스 실행 중 예외 발생 시
+            log.error("비밀번호 찾기 서비스 실행 중 오류 발생", e);
+            findPwResult = "ERROR"; // 클라이언트에 오류 상태를 알림
+        }
+
+
+        log.info("비밀번호 찾기 서비스 결과 문자열 반환: " + findPwResult);
+
+        // @ResponseBody 덕분에 findPwResult 문자열이 HTTP 응답 본문으로 그대로 클라이언트에게 전달됩니다.
+        // findPw.js의 fetch().then(response => response.text()).then(resultText => ...) 에서 이 값을 받게 됩니다.
+        return findPwResult;
+    }
+
+	
 }

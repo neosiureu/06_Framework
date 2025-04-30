@@ -132,12 +132,22 @@ const finded =document.querySelector('#finded');
 
 
 
-if(closeFindIDPW){
-closeFindIDPW.addEventListener('click', () => {
-  hidden.classList.add('hidden');
-  closeFindIDPW.classList.add('hidden');
-  finded.classList.add('hidden');
 
 
-}) 
+const closeResultButton = document.querySelector('#closeFindIDPW');
+
+if(closeFindIDPW){ // closeFindIDPW 요소가 있을 때만 (findEmail 값이 있어서 결과 영역이 보일 때)
+  closeFindIDPW.addEventListener('click', () => {
+      // hidden 영역 숨기기 (hidden 변수는 이미 코드 위에 선언되어 있습니다)
+      if (hidden) { // 요소가 존재할 때만 실행 (안전 코드)
+          hidden.classList.add('hidden');
+      }
+
+      // finded 영역 숨기기 (finded 변수는 이미 코드 위에 선언되어 있습니다)
+      if (finded) { // 요소가 존재할 때만 실행 (안전 코드)
+          finded.classList.add('hidden');
+      }
+      // X 버튼 자신은 finded 안에 있으므로 따로 hidden을 추가할 필요 없습니다.
+      // closeFindIDPW.classList.add('hidden'); // 이 줄은 제거했습니다.
+  })
 }

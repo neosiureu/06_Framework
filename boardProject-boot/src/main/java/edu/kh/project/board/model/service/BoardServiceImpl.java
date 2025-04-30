@@ -127,6 +127,62 @@ public class BoardServiceImpl implements BoardService {
 		
 		return mapper.selectOne(map);
 	}
+
+
+	@Override
+	public int boardLike(Map<String, Integer> map) {
+		// 넘어온 likeCheck가 1인지 0인지
+		
+		int result=0; 
+
+		if(map.get("likeCheck")==1) { 		
+			// 좋아요 체크된 상태인 경우 likecheck가 1인경우 BOARD_LIKE테이블에 DELETE
+
+			result = mapper.deleteBoardLike(map);
+			
+		}
+
+		else {		
+			// 좋아요 체크가 해제된 상태인 경우 likecheck가 0인경우 BOARD_LIKE테이블에 INTSERT
+			result = mapper.insertBoardLike(map);
+
+		}
+		
+		
+		// 해제나 삽입 시 숫자가 변경되곤 함  
+		//   <span th:text="*{likeCount}">1</span> ← 좋아요 개수      
+		// 3. 해당 게시글의 좋아요 개수를 조회해서 반환
+
+		if(result>0) {
+			return mapper.selectLikeCount(map.get("boardNo"));
+			
+		}
+		
+		return -1; // 좋아요 처리는 무조건 실패한 셈
+	}
+
+
+	/**
+	 * 조회수 1 증가 서비스
+	 */
+	@Override
+	public int updateReadCount(int boardNo) {
+		// 조회수 1 증가시키는 업데이트문을 호출
+		int result = mapper.updateReadCount(boardNo);
+
+		
+		// 그 후 변경한 게시글의 조회수 자체를 전체 조회
+		
+		if(result>0) {
+			return mapper.selectReadCount(boardNo);
+			
+		}
+		
+		
+		
+		// 조회수 증가가 실패한 경우 -1을 반환
+		return -1;
+	}
 	
 	
 	

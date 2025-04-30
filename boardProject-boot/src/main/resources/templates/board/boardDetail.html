@@ -47,7 +47,20 @@
                         <i class="fa-heart" id="boardLike"
                             th:classappend="*{likeCheck == 1} ? fa-solid : fa-regular"
                         ></i>
-                        <!-- 폰트어썸에서 가져온 하트 모양 th:classappend-->
+                        <!-- 폰트어썸에서 가져온 하트 모양을 th:classappend를 통해 추가-->
+
+                        <!--로그인을 했다 && 게시글에 좋아요 누름 VS
+                        
+                        로그인 안했다 (MEMBER_NO에 넘어가 내려가는 값이 비어있음) || 했지만 좋아요 안 누름 (SELECT가 안 됨)
+                        
+
+
+                        DB에 변경이 일어나야 함 => 클라이언트가 서버로 
+                        하트 채워짐에 대한 요청을 보낸다 (비동기로 보내야 함 = JS)
+
+                        -->
+
+
 
                         <!-- 좋아요 개수 -->
                         <span th:text="*{likeCount}">0</span>
@@ -159,6 +172,8 @@
 
         // - loginMember가 null 인 경우 null 반환
         const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
+        // 정적 실행 시에도 실행이 가능 (natural template)
+
 
         // 현재 게시글 번호를 전역 변수로 저장
         const boardNo = /*[[${board.boardNo}]]*/ "게시글 번호";
@@ -176,3 +191,34 @@
     
 </body>
 </html>
+
+
+<!--
+
+[ * 게시글 헤더 영역 (section.board-detail) ]
+┌──────────────────────────────────────────────────────────────┐
+│ <section class="board-detail" th:object="${board}">          │
+│                                                              │
+│   ─── ① 제목 ──────────────────────────────────────────────│
+│   <h1 class="board-title" th:text="*{boardTitle}">            │
+│       (게시글 제목)                                           │
+│   </h1>                                                       │
+│                                                              │
+│   ─── ② 작성자 정보 (.board-header) ───────────────────────│
+│   <div class="board-header">                                 │
+│                                                              │
+│     <div class="board-writer">                               │
+│                                                              │
+│       [프로필 이미지]                                         │
+│       • th:unless="*{profileImg}" → 기본 이미지 (`user.default.image`) │
+│       • th:if    ="*{profileImg}" → 업로드한 프로필           │
+│                                                              │
+│       <span th:text="*{memberNickname}">작성자 닉네임</span> │
+│                                                              │
+│     </div>                                                   │
+│                                                              │
+│   </div>                                                     │
+│                                                              │
+│ </section>                                                   │
+└──────────────────────────────────────────────────────────────┘
+-->

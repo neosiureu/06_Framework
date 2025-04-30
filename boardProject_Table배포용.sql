@@ -201,9 +201,30 @@ CREATE TABLE "BOARD_LIKE" (
 	"BOARD_NO"	NUMBER		NOT NULL
 );
 
+-- 둘다 같은 숫자가 들어갈 순 없다
+-- 1 1000 이후 1 2000은 할 수 있지만 
+
+
 COMMENT ON COLUMN "BOARD_LIKE"."MEMBER_NO" IS '회원 번호(PK)';
 COMMENT ON COLUMN "BOARD_LIKE"."BOARD_NO" IS '게시글 번호(PK)';
 
+
+SELECT * FROM BOARD_LIKE;
+
+INSERT INTO "BOARD_LIKE" VALUES(1,2000);
+-- 1번회원이 2000번 게시글에 좋아요를 누름 => 하트가 채워져야
+--  1번회원이 2000번 게시글에 좋아요를 다시 누름 => 하트가 없어져야
+
+
+--COMMIT;
+
+-- 좋아요 여부 확인 = 개수 세기 (눌렀으면 1또는 안 눌렀으면 0으로 결과가 나옴) 
+
+SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO = 2000 AND MEMBER_NO=1 ;
+
+
+
+SELECT * FROM BOARD_IMG bi ;
 -- 게시판 이미지 테이블
 CREATE TABLE "BOARD_IMG" (
 	"IMG_NO"	NUMBER		NOT NULL,
@@ -656,6 +677,36 @@ SELECT * FROM "BOARD_IMG";
 SELECT * FROM "BOARD_IMG";
 -- 실제 <img src = /images/board/test1.jpg></img>로 들어감
 
+
+INSERT INTO "BOARD_IMG" (SELECT NEXT_IMG_NO(), '경로1', '원본1', '변경1', 1, 1999 FROM DUAL
+-- 여러개의 SELECT를 한번에
+UNION 
+SELECT NEXT_IMG_NO(), '경로2', '원본2', '변경2', 2, 1999 FROM DUAL
+UNION 
+SELECT NEXT_IMG_NO(), '경로3', '원본3', '변경3', 3, 1999 FROM DUAL
+);
+
+----사실 시퀀스는 한 묶음에서 사용 불가해서 따로 함수가 필요
+-- VALUES대신 SELECT의 서브쿼리
+
+-- SEQ_IMG_NO시퀀스의 다음 값을 반환하는 함수 생성하기
+
+CREATE OR REPLACE FUNCTION NEXT_IMG_NO
+RETURN NUMBER -- 반환형
+
+IS IMG_NO NUMBER; -- 사용할 변수
+
+BEGIN
+	SELECT SEQ_IMG_NO.NEXTVAL
+	INTO IMG_NO
+	FROM DUAL;
+
+	RETURN IMG_NO;
+END;
+
+
+
+
 SELECT * FROM "MEMBER";
 
 DELETE FROM BOARD_IMG WHERE IMG_NO IN (7,8,9,10);
@@ -740,7 +791,7 @@ SELECT LEVEL, C.* FROM --c는 서브쿼리를 의미
 	    BOARD_NO, MEMBER_NO, MEMBER_NICKNAME, PROFILE_IMG, PARENT_COMMENT_NO, COMMENT_DEL_FL
 	FROM "COMMENT"
 	JOIN MEMBER USING(MEMBER_NO)
-	WHERE BOARD_NO = 1997) C
+	WHERE BOARD_NO = 2000) C
 	
 WHERE COMMENT_DEL_FL = 'N' OR 0 != ( SELECT COUNT(*) FROM "COMMENT" SUB
 				WHERE SUB.PARENT_COMMENT_NO = C.COMMENT_NO

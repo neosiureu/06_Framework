@@ -14,10 +14,12 @@
     <main>
         <th:block th:replace="~{common/header}"></th:block>
 
-        <!-- <form th:action="@{/editBoard/{boardCode}/insert(boardCode=${boardCode})}"  -->
-        <form action="insert"
+        <!-- <form th:action="@{/editBoard/{boardCode}/insert(boardCode=${boardCode})}"  상대경로 작성법 -->
+        <form action="insert" 
             method="POST"  class="board-write" id="boardWriteFrm" 
             enctype="multipart/form-data">
+            <!--이미지를 보내고 싶어서 multipart/form-data를 통해 이미지를 포함한 데이터를 보내고 싶어 
+            그래서 method POST방식을 쓸 수밖에  -->
 
             <!-- 제목 -->
             <h1 class="board-title">

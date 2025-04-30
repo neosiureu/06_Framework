@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper
+	namespace="edu.kh.project.board.model.mapper.EditBoardMapper">
+
+
+	<!-- useGeneratedKeys속성? DB 내부적으로 생성한 키, 즉 DB 시퀀스를 이용하여 해당 키를 전달된 파라미터 (board)의 
+		필드(boardNo)로 대입 가능하게 함 -->
+
+	<insert id="boardInsert" useGeneratedKeys="true"
+		parameterType="Board">
+
+		<!-- mybatis의 동적 SQL: 전달되는 값에 따라 프로그램 수행 중 SQL을 변경한다 <selectKey>태그 => INSERT 
+			/ UPDATE 시 사용할 키 (시퀀스) 번호를 조회하여 파라미터의 지정된 필드에 매핑한다. useGeneratedKeys속성은 할지 
+			말지만 지정 -->
+
+		<!-- order="BEFORE" : 메인 SQL문이 돌기 전에 selectKey부터 할거라고, 후에 하고싶으면 AFTER로 
+			지정 keyProperty: 조회 결과를 저장할 파라미터의 필드명 -->
+
+
+
+		<selectKey keyProperty="boardNo" resultType="_int"
+			order="BEFORE">
+			<!-- SEQ_BOARD_NO 가 게시글번호 -->
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
+
+		INSERT INTO "BOARD" VALUES(
+		#{boardNo}, #{boardTitle}, #{boardContent},
+		DEFAULT, DEFAULT, DEFAULT, DEFAULT, #{boardCode}, #{memberNo}
+		)
+
+	</insert>
+
+
+
+	<!-- 파라미터 자체를 List로 받고있는데 하나의 행만 넣을 수 있다 어떻게 해야 한번에 세개의 행을 넣을 수 있을까? uploadList를 
+		동적 SQL로 반복하면 되지 않을까? foreach라는 mybatis에서 제공하는 향상된 for문의 형태 특정 SQL문을 반복할 때 
+		사용 반복 사이에 seperator를 추가하여 사용한다 [지원하는 속성] 1) collection: 반복할 객체의 타입 작성. 예시로는 
+		list set.. 2) item: collection에서 순차적으로 접근하여 꺼낸 하나의 요소를 저장하는 변수 3) index: 
+		현재 반복 접근중인 index (0,1,2,3) 4) open: 반복전에 출력할 SQL 5) close: 반복후에 출력할 SQL 6) 
+		seperator: 반복 사이사이 구분자 -->
+
+
+	<insert id="insertUploadList">
+
+		INSERT INTO "BOARD_IMG"
+
+		<foreach collection="list" item="img" separator=" UNION "
+			open="(" close=")">
+			SELECT NEXT_IMG_NO(),
+			#{img.imgPath},
+			#{img.imgOriginalName},
+			#{img.imgRename},
+			#{img.imgOrder},
+			#{img.boardNo}
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+	
+</mapper>
+
+
