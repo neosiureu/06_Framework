@@ -62,7 +62,7 @@ if (findPwForm) {
                 if (findedResultTextElement) {
                     // <p id="findedResultText"> 태그의 내용을 전체 변경
                     // 서버에서 임시 비밀번호 ("TEMP_PW_12345") 등을 받았다면:
-                    findedResultTextElement.textContent = "찾으신 비밀번호는 " + resultText + " 입니다.";
+                    findedResultTextElement.textContent = "비밀번호가 발송되었습니다. 해당 이메일을 확인하세요.";
                     // 서버에서 '이메일 발송 성공' 등 상태 메시지를 받았다면:
                     // findedResultTextElement.textContent = resultText;
                 } else {
