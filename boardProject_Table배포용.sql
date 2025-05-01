@@ -478,6 +478,37 @@ SELECT BOARD_CODE "boardCode", BOARD_NAME "boardName"
  		ORDER BY BOARD_CODE;
 -----------------------------------------------------
 
+INSERT INTO "BOARD_IMG" 
+(
+ SELECT NEXT_IMG_NO(), '경로1' , '원본1', '변경1', 1, 2000 FROM DUAL
+ UNION 
+ SELECT NEXT_IMG_NO(), '경로2' , '원본2', '변경2', 2, 2000 FROM DUAL
+ UNION 
+ SELECT NEXT_IMG_NO(), '경로3' , '원본3', '변경3', 3, 2000 FROM DUAL
+ );
+
+SELECT * FROM "BOARD_IMG";
+
+
+-- SEQ_IMG_NO 시퀀스의 다음값을 반환하는 함수 생성
+CREATE OR REPLACE FUNCTION NEXT_IMG_NO
+
+-- 반환형
+RETURN NUMBER
+
+--사용할 변수
+IS IMG_NO NUMBER;
+
+BEGIN
+	SELECT SEQ_IMG_NO.NEXTVAL
+	INTO IMG_NO
+	FROM DUAL;
+
+	RETURN IMG_NO;
+END;
+
+
+
 /* BOARD_IMG 테이블용 시퀀스 생성 */
 CREATE SEQUENCE SEQ_IMG_NO NOCACHE;
 
@@ -549,8 +580,17 @@ VALUES( SEQ_COMMENT_NO.NEXTVAL, '부모 2의 자식 1의 자식!!!',
 			 
 COMMIT;
 
+SELECT COUNT(*)
+FROM BOARD_LIKE
+WHERE BOARD_NO = 1997;
 
+INSERT INTO BOARD_LIKE
+VALUES(5,1997); -- 1번 회언이 1994번 게시글에 좋아요를 누름
 
+--좋아요 여부 확인 (1 : o / 0 : x)
+SELECT COUNT(*) FROM BOARD_LIKE
+WHERE BOARD_NO = 1997
+AND MEMBER_NO = 5;
 
 -- 게시글 상세조회 SQL
 SELECT 

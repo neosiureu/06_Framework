@@ -182,6 +182,43 @@
   	
   	</select>
   
+  
+  
+  	<!-- 좋아요 해제  -->
+	<delete id="deleteBoardLike">
+		DELETE FROM "BOARD_LIKE"
+		WHERE MEMBER_NO = #{memberNo}
+		AND BOARD_NO = #{boardNo}
+	</delete>
+	
+	
+	<!-- 좋아요 체크  -->
+	<insert id="insertBoardLike">
+		INSERT INTO "BOARD_LIKE"
+		VALUES(#{memberNo}, #{boardNo})
+	</insert>
+
+	<!-- 게시글 좋아요 수 조회 -->
+	<select id="selectLikeCount">
+		SELECT COUNT(*) FROM "BOARD_LIKE"
+		WHERE BOARD_NO = #{boardNo}
+	</select>
+
+	<!-- 조회 수 1 증가 -->
+	<update id="updateReadCount">
+		UPDATE "BOARD" SET
+		READ_COUNT = READ_COUNT + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+
+
+	<!-- 조회 수 조회 -->
+	<select id="selectReadCount">
+		SELECT READ_COUNT
+		FROM "BOARD"
+		WHERE BOARD_NO = #{boardNo}
+	</select>
+  
 </mapper>
 
 
