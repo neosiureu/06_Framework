@@ -307,56 +307,46 @@ if (completionToggleButton) { // 완료 토글 버튼이 존재하는 경우
 */
 
 const completionToggleButtons = document.querySelectorAll('.completionToggleBtn');
-
 completionToggleButtons.forEach((button) => {
-    button.addEventListener('click', (e) => { 
-        // 로그인하지 않았거나 (loginMemberNo == null)  로그인했지만 작성자가 아닌 경우 (loginMemberNo !== authorMemberNo)
-        // 즉, 로그인 회원 번호가 작성자 회원 번호와 다르면 클릭 막음
-        if (loginMemberNo !== memberNo) {            
+  button.addEventListener('click', (e) => {
+
+      if (loginMemberNo !== memberNo) {
           console.log("작성자가 아니므로 나눔 상태 변경 불가");
-            // 클릭 이벤트의 기본 동작(예: 링크 이동, 버튼 동작)을 중지
-            e.preventDefault();
-            return; // 이벤트 핸들러 종료
-        }
+          e.preventDefault();
+          return;
+      }
 
+      if (loginMemberNo == null) {
+          alert('로그인 후 이용해주세요.');
+          return;
+      }
 
-        // 로그인 상태 확인 (작성자는 로그인 되어 있어야 하므로 사실상 글쓴이이 != null과 같은 조건)
-        if (loginMemberNo == null) {
-            // 이 부분은 위 작성자 체크에서 걸러지므로 사실상 실행되지 않을듯?
-            alert('로그인 후 이용해주세요.'); 
-            return;
-        }
+      // 대신 hidden input에서 상태 값 가져오기
+      const currentStatus = button.querySelector("input[name='completionStatus']").value;
 
-        const currentStatus = button.dataset.currentStatus;
+      let confirmationMessage;
+      if (currentStatus !== 'Y') {
+          confirmationMessage = "나눔을 완료 상태로 변경하시겠습니까?";
+      } else {
+          confirmationMessage = "나눔을 진행 중 상태로 변경하시겠습니까?";
+      }
 
-        // 상태 변경 확인 메시지 설정
-        let confirmationMessage;
-        // 현재 상태가 'Y'가 아닌 경우 (즉, 'N'이라면) -> '완료'로 변경
-        if (currentStatus !== 'Y') {
-            confirmationMessage = "나눔을 완료 상태로 변경하시겠습니까?";
-        } else { // 현재 상태가 'Y'라면 -> '진행 중'으로 변경
-            confirmationMessage = "나눔을 진행 중 상태로 변경하시겠습니까?";
-        }
+      if (!confirm(confirmationMessage)) {
+          console.log("나눔 상태 변경 취소됨");
+          return;
+      }
 
-        // 사용자가 '취소' 선택 시 종료
-        if (!confirm(confirmationMessage)) {
-            console.log("나눔 상태 변경 취소됨");
-            return; // 함수 종료
-        }
+      const newStatus = (currentStatus === 'Y') ? 'N' : 'Y';
 
-        // 상태 변경 실행
-        const newStatus = (currentStatus === 'Y') ? 'N' : 'Y';
+      // 반드시 상태도 갱신해야 다음 클릭 시 반영됨
+      button.querySelector("input[name='completionStatus']").value = newStatus;
 
-        // 현재 URL에서 쿼리 문자열 가져오기 및 cp 추출 (기존 코드)
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        let cp = urlParams.get('cp');
-        if (cp === null || cp.trim() === '') {
-            cp = '1';
-        }
+      const urlParams = new URLSearchParams(window.location.search);
+      let cp = urlParams.get('cp');
+      if (cp === null || cp.trim() === '') {
+          cp = '1';
+      }
 
-        // 상태 변경 요청과 페이지 이동을 한 번에 처리 (기존 코드)
-        window.location.href = `/board/updateCompletionSync?boardCode=${boardCode}&boardNo=${boardNo}&completionStatus=${newStatus}&cp=${cp}`;
-
-    });
+      window.location.href = `/board/updateCompletionSync?boardCode=${boardCode}&boardNo=${boardNo}&completionStatus=${newStatus}&cp=${cp}`;
+  });
 });

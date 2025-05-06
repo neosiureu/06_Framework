@@ -37,6 +37,8 @@
         
             <span id="completionText"
                   th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+                  <input type="hidden" name="completionStatus"
+           th:value="${board.completionStatus ?: 'N'}" />
         </button>
 
 
@@ -174,6 +176,8 @@
                 
                     <span id="completionText"
                           th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+                            <input type="hidden" name="completionStatus"
+           th:value="${board.completionStatus ?: 'N'}" />
                 </button>
                 
                 </th:block>
