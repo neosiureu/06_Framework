@@ -35,6 +35,8 @@ public class BoardController {
 	@Autowired
 	private BoardService service;
 
+	
+	
 	/*
 	 * @param boardCode: 게시판종류에 따라 (1/2/3)
 	 * 
@@ -49,9 +51,6 @@ public class BoardController {
 	// @PathVariable은 "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
 	@GetMapping("{boardCode:[0-9]+}") // +가 없으면 한 칸에 한자리수의 숫자가 들어갈 수 있다.
 	public String selectBoardList(@PathVariable("boardCode") int boardCode
-	/*
-	 * 페이지네이션을 위해 cp값을 받아오기로 한다. 현재 페이지가 몇 페이지인지 받아오기 위해
-	 */
 			, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model)
 
 	{
@@ -283,6 +282,45 @@ public class BoardController {
 	public int boardLike(@RequestBody Map<String, Integer> map) {
 //		log.debug("map" + map);
 		return service.boardLike(map);
+	}
+
+	
+	@GetMapping("updateCompletionSync") // GET 요청으로 변경, URL 경로 수정
+	public String updateCompletionStatusSync(
+	        Board board, // boardCode, boardNo, completionStatus가 자동으로 바인딩됩니다. (요청 파라미터 이름과 DTO 필드 이름 일치)
+	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없으므로 별도로 받습니다.
+	        @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+	        RedirectAttributes ra
+	) {
+	   
+
+	    // 로그인 체크 (필요하다면)
+	    if (loginMember == null) {
+	        ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+	        // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
+	        return "redirect:/board/" + board.getBoardCode() + "/" + board.getBoardNo() + "?cp=" + cp;
+	    }
+
+	    // 서비스 메소드에 전달할 Map 생성
+	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달합니다.
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("boardNo", board.getBoardNo());
+	    paramMap.put("completionStatus", board.getCompletionStatus()); // DTO에서 상태 값 가져옴
+
+	    // 서비스 호출 (기존 서비스 메소드 updateCompletion 사용)
+	    int result = service.updateCompletion(paramMap);
+
+	    String message = null;
+	    if (result > 0) {
+	        message = "게시글 상태가 성공적으로 변경되었습니다.";
+	    } else {
+	        message = "게시글 상태 변경 실패.";
+	    }
+
+	    ra.addFlashAttribute("message", message);
+
+	    // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
+	    return "redirect:/board/" + board.getBoardCode() + "/" + board.getBoardNo() + "?cp=" + cp;
 	}
 
 }

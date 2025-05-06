@@ -24,7 +24,8 @@
 				맵의 키가boardCode boardName -->
 			<th:block th:each="boardType : ${application.boardTypeList}">
 
-				<h1 class="board-name" th:if="${boardType.boardCode} == ${boardCode}" th:text="${boardType.boardName}">게시판 이름
+				<h1 class="board-name" th:if="${boardType.boardCode} == ${boardCode}" th:text="${boardType.boardName}">
+					게시판 이름
 				</h1>
 
 			</th:block>
@@ -72,17 +73,13 @@
 
 
 									<!-- 검색 X -->
-									<a th:unless="${param.key}"
-										th:href="@{/board/{boardCode}/{boardNo} (boardCode=${boardCode}, boardNo=*{boardNo}, 
-										cp=${pagination.currentPage})}"
-										th:text="*{boardTitle}">게시글 제목</a>
+									<a th:unless="${param.key}" th:href="@{/board/{boardCode}/{boardNo} (boardCode=${boardCode}, boardNo=*{boardNo}, 
+										cp=${pagination.currentPage})}" th:text="*{boardTitle}">게시글 제목</a>
 
 
 
-		
-<!--  		
-										th:href="@{/board/{boardCode}/{boardNo} 
-										/board/ 123중하나 / 보려고하는 게시글번호 = 게시글 상세조회 페이지로 이동
+
+									<!-- th:href="@{/board/{boardCode}/{boardNo} /board/ 123중하나 / 보려고하는 게시글번호 = 게시글 상세조회 페이지로 이동
 										
 (boardCode=${boardCode},         boardNo=*{boardNo},    cp=${pagination.currentPage})
 (pathVarible때문에 실어진 것),    {boardList.boardNo}      쿼리스트링
@@ -91,27 +88,25 @@
 /board/3/1982?cp=1 와 같이 넘어가기 위함 
 
 }"
-
-따라서 게시글 상세조회하는 a태그를 만들것을 알 수 있다. => 목록으로 버튼을 위함
-
-
-
--->
-
+따라서 게시글 상세조회하는 a태그를 만들것을 알 수 있다. => 목록으로 버튼을 위함-->
 
 									<!-- 검색 O -->
 									<a th:if="${param.key}"
 										th:href="@{/board/{boardCode}/{boardNo} (boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
 										th:text="*{boardTitle}">게시글 제목</a>
 
+									<th:block th:if="${board.boardCode == 1}">
+										<span
+											th:classappend="${board.completionStatus == 'Y'} ? 'badge badge-complete' : 'badge badge-ongoing'"
+											th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">
+										</span>
+									</th:block>
+
 									<th:block th:text="|[*{commentCount}]|">댓글 수</th:block>
 									<!-- 대괄호라는 문자열이어쓰기 -->
+									<!-- 나눔중/완료 뱃지 (boardCode 1인 공지게시판만) -->
 
-								</td>
-
-
-
-								<!-- 작성자 닉네임 -->
+									<!-- 작성자 닉네임 -->
 								<td th:text="*{memberNickname}">닉네임</td>
 
 								<!-- 작성일 -->
@@ -150,7 +145,7 @@
 			<!-- 게시글이 리스트 페이지에 있을 때만 페이지네이션이 보이게 할 예정 아직 안만들었음!!-->
 
 
-			
+
 			<div class="pagination-area">
 
 				<!-- 일반 목록 조회 (검색 X )-->
@@ -189,7 +184,8 @@
 
 						<!-- 보고있지 않은 페이지 -->
 						<li th:unless="${i} == *{currentPage}">
-							<a th:href="@{     /board/{boardCode}(boardCode=${boardCode}, cp=${i})   }" th:text="${i}">이동할 페이지</a>
+							<a th:href="@{     /board/{boardCode}(boardCode=${boardCode}, cp=${i})   }"
+								th:text="${i}">이동할 페이지</a>
 						</li>
 
 					</th:block>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,15 +16,33 @@
     <link rel="stylesheet" href="/css/board/comment-style.css">
 
 </head>
+
 <body>
     <main>
         <th:block th:replace="~{common/header}"></th:block>
 
-        <section class="board-detail" th:object="${board}">  
+        <section class="board-detail" th:object="${board}">
+              
+            <button class="completionToggleBtn" type="button" 
+            th:data-current-status="${board.completionStatus ?: 'N'}"
+            th:style="${board.completionStatus == 'Y'} ?
+                      'background-color: #6c757d; color: white;' :
+                      'background-color: #28a745; color: white;'">
+            
+            <i id="completionIcon"
+               th:classappend="${board.completionStatus == 'Y'} ?
+                               'fa-solid fa-circle-check' :
+                               'fa-regular fa-circle'">
+                            </i>
+        
+            <span id="completionText"
+                  th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+        </button>
+
+
             <!-- 제목 -->
-            <h1 class="board-title"
-                th:text="*{boardTitle}"
-            >  게시글 제목  </h1>
+            <h1 class="board-title" th:text="*{boardTitle}"> 게시글 제목 </h1>
+        
 
             <!-- 프로필 + 닉네임 + 작성일 + 조회수 -->
             <div class="board-header">
@@ -31,22 +50,19 @@
 
                     <!-- 프로필 이미지 -->
                     <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
-                    <img th:unless="*{profileImg}"
-                        th:src="#{user.default.image}" >
-                    
+                    <img th:unless="*{profileImg}" th:src="#{user.default.image}">
+
                     <!-- 프로필 이미지가 있을 경우 출력-->
-                    <img th:if="*{profileImg}"
-                        th:src="*{profileImg}" >
+                    <img th:if="*{profileImg}" th:src="*{profileImg}">
 
                     <span th:text="*{memberNickname}">작성자 닉네임</span>
 
-                    
+
                     <!-- 좋아요 하트 -->
                     <span class="like-area">
                         <!-- 좋아요 누른적이 있으면 fa-solid, 없으면 fa-regular 클래스 추가 -->
                         <i class="fa-heart" id="boardLike"
-                            th:classappend="*{likeCheck == 1} ? fa-solid : fa-regular"
-                        ></i>
+                            th:classappend="*{likeCheck == 1} ? fa-solid : fa-regular"></i>
                         <!-- 폰트어썸에서 가져온 하트 모양을 th:classappend를 통해 추가-->
 
                         <!--로그인을 했다 && 게시글에 좋아요 누름 VS
@@ -69,23 +85,23 @@
                 </div>
 
                 <div class="board-info">
-                    <p> <span>작성일</span> [[*{boardWriteDate}]] </p>     <!--th:text-->
+                    <p> <span>작성일</span> [[*{boardWriteDate}]] </p> <!--th:text-->
 
                     <!-- 수정한 게시글인 경우 -->
 
                     <!-- 참조하는 객체가 있으면 true, 없으면 false -->
-                    <p th:if="*{boardUpdateDate}"> 
+                    <p th:if="*{boardUpdateDate}">
                         <span>마지막 수정일</span> [[*{boardUpdateDate}]]
-                    </p>   
+                    </p>
 
-                    <p> <span>조회수</span> [[*{readCount}]]</p>                    
+                    <p> <span>조회수</span> [[*{readCount}]]</p>
                 </div>
             </div>
 
 
 
             <!-- ====================== 이미지가 있을 경우 출력하는 구문  ====================== -->
-           
+
             <th:block th:if="${ #lists.size(board.imageList) > 0}">
                 <!-- 이미지가 일단 있긴 있다면-->
 
@@ -94,19 +110,19 @@
                     <h5>썸네일</h5>
                     <div class="img-box">
                         <div class="boardImg thumbnail">
-                            <img th:src="|${thumbnail.imgPath}${thumbnail.imgRename}|">   <!-- 내용은 같지만 모델에서 실려온 것이다.-->                   
-                            
+                            <img th:src="|${thumbnail.imgPath}${thumbnail.imgRename}|"> <!-- 내용은 같지만 모델에서 실려온 것이다.-->
+
                             <a th:href="|${thumbnail.imgPath}${thumbnail.imgRename}|"
-                                th:download="${thumbnail.imgOriginalName}">다운로드</a>         
+                                th:download="${thumbnail.imgOriginalName}">다운로드</a>
                         </div>
                     </div>
                 </th:block>
-                
+
 
                 <!-- 썸네일을 제외한 일반 이미지를 출력하는 부분-->
                 <th:block th:if="${#lists.size(board.imageList) > start}">
 
-                <!-- 썸네일이 있다면 start는 1이었고 없다면 start는 0이었다
+                    <!-- 썸네일이 있다면 start는 1이었고 없다면 start는 0이었다
                  
                 ${#lists.size(board.imageList) > start 
 
@@ -115,26 +131,25 @@
 
                 썸네일만 올렸으므로 일반 이미지를 출력하지 않기 때문에 if문이 불만족
                 -->
-                    <h5>업로드 이미지</h5>  
-                    <th:block th:each="i : ${#numbers.sequence(start, #lists.size(board.imageList) - 1)}">                                
+                    <h5>업로드 이미지</h5>
+                    <th:block th:each="i : ${#numbers.sequence(start, #lists.size(board.imageList) - 1)}">
                         <div class="img-box">
                             <div class="boardImg">
 
-                                <img th:src="|${board.imageList[i].imgPath}${board.imageList[i].imgRename}|">  
+                                <img th:src="|${board.imageList[i].imgPath}${board.imageList[i].imgRename}|">
 
                                 <a th:href="|${board.imageList[i].imgPath}${board.imageList[i].imgRename}|"
-                                    th:download="${board.imageList[i].imgOriginalName}"
-                                >다운로드</a>                
+                                    th:download="${board.imageList[i].imgOriginalName}">다운로드</a>
                             </div>
                         </div>
-                    </th:block>    
+                    </th:block>
                 </th:block>
-                
+
             </th:block>
 
 
             <!-- ====================== 내용은 있을 경우 출력하는 구문 ====================== -->
-            
+
             <!-- 내용 -->
             <div class="board-content" th:text="*{boardContent}">내용</div>
 
@@ -142,19 +157,39 @@
 
             <!-- 버튼 영역-->
             <div class="board-btn-area">
-                
-                <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
 
+                <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
+                  <!-- th:if 안에서는 반드시 ${} 사용 -->
+                  <th:block th:if="${board.boardCode == 1 and board.memberNo == session.loginMember?.memberNo}">
+                    <button class="completionToggleBtn" type="button" 
+                    th:data-current-status="${board.completionStatus ?: 'N'}"
+                    th:style="${board.completionStatus == 'Y'} ?
+                              'background-color: #6c757d; color: white;' :
+                              'background-color: #28a745; color: white;'">
+                    
+                    <i id="completionIcon"
+                       th:classappend="${board.completionStatus == 'Y'} ?
+                                       'fa-solid fa-circle-check' :
+                                       'fa-regular fa-circle'"></i>
+                
+                    <span id="completionText"
+                          th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+                </button>
+                
+                </th:block>
+
+                <br> <br> <br> <br> <br> <br> <br>
                 <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
                     <button id="updateBtn">수정</button>
                     <button id="deleteBtn">삭제(GET)</button>
                     <button id="deleteBtn2">삭제(POST)</button>
                 </th:block>
+               
 
 
 
                 <button id="goToListBtn">목록으로</button>
-				
+
             </div>
 
         </section>
@@ -183,13 +218,18 @@
 
         const userDefaultIamge = /*[[#{user.default.image}]]*/ "기본이미지";
 
+        const boardCode = /*[[${board.boardCode}]]*/ "게시판 코드";
+        const memberNo = /*[[${board.memberNo}]]*/ "글 작성자 회원 번호";
+
+        // 내가 추가한 두 줄
     </script>
 
 
     <script src="/js/board/boardDetail.js"></script>
     <script src="/js/board/comment.js"></script>
-    
+
 </body>
+
 </html>
 
 

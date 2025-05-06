@@ -40,7 +40,7 @@ public class BoardServiceImpl implements BoardService {
 		// 페이지네이션 >의 의미: 다음 목록의 첫 페이지로 이동하기 위함
 		// 맨 끝 목록으로 이동하려면 >>>를 쓰곤 한다
 		
-		// 1. 지정된 게시판 (boardCode)에서 삭제되지 않은 게시글 수를 조회 (pagination에 쓰려고)
+		// 1. 지정된 게시판 (boardCode)에서 삭제되지 않은 게시글 수를 조회 (pagination에 쓰기 위함이다.)
 		
 		int listCount = mapper.getListCount(boardCode);
 		// 몇 번 게시판에 있는 게시글 수를 조회
@@ -158,7 +158,7 @@ public class BoardServiceImpl implements BoardService {
 			
 		}
 		
-		return -1; // 좋아요 처리는 무조건 실패한 셈
+		return -1; // insert delete 좋아요 처리는 무조건 실패한 셈
 	}
 
 
@@ -183,7 +183,17 @@ public class BoardServiceImpl implements BoardService {
 		// 조회수 증가가 실패한 경우 -1을 반환
 		return -1;
 	}
-	
+
+
+	// 게시글 완료/미완료 상태 수정 서비스 구현
+		@Override 
+		public int updateCompletion(Map<String, Object> paramMap) { // Map을 인자로 받음
+			log.debug("BoardServiceImpl.updateCompletion 실행, paramMap: " + paramMap); // 메소드 실행 확인
+
+			// BoardMapper의 해당 메소드를 호출하여 DB 업데이트 수행
+			
+			return mapper.updateCompletion(paramMap); // BoardMapper에 정의할 메소드 호출
+		}
 	
 	
 	

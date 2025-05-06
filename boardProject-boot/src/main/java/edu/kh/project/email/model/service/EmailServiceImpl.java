@@ -121,9 +121,7 @@ public class EmailServiceImpl implements EmailService {
    }
    
    
-   // 인증키와 이메일을 세트로 DB에 저장하는 메서드
-   
-   
+   // 인증키와 이메일을 세트로 묶어 DB에 저장하는 메서드
    private String loadHtml(String authKey, String htmlName) {
       /* setText의 첫 인자가 String이라서 알아서 이렇게 만들어줌
        html템플릿에 데이터를 바인딩하여 최종 HTML을 생성하는 메서드
@@ -163,12 +161,9 @@ public class EmailServiceImpl implements EmailService {
       // 업데이트 수행했는데 0이라면?
       // 기존 데이터중 이 이메일을 가진 데이터가 없었다
       // 그럴 때는 삽입을 하면 된다. 즉 Update용 mapper와 Insert용 mapper를 모두 호출
+
       
-      
-      
-      
-      // 1) 기존 이메일에 대한 인증키를 업데이트
-      
+      // 1) 기존 이메일에 대한 인증키를 업데이트   
       int result = mapper.updateAuthKey(map);
 
       // WHERE절에 부합하는 이메일이 아직 없었다
@@ -178,8 +173,7 @@ public class EmailServiceImpl implements EmailService {
       // 기존 데이터중 이 이메일을 가진 데이터가 없었다
       // 그럴 때는 삽입을 하면 된다. 
       // 즉 Update용 mapper와 Insert용 mapper를 모두 호출
-      
-      
+         
       if (result==0){ // 위에서 업데이트를 실패했다면, 즉 없었다면
          result = mapper.insertAuthKey(map);
       }
@@ -217,7 +211,7 @@ public class EmailServiceImpl implements EmailService {
    
    @Override // EmailService 인터페이스의 메서드 구현
    public boolean sendTemporaryPasswordEmail(String email, String tempPassword) {
-      // 임시 비밀번호 발송은 인증키 저장 과정이 필요 없습니다. 바로 메일 발송 진행.
+      // 임시 비밀번호 발송은 인증키 저장 과정이 필요 없다. 바로 메일 발송 진행.
 
       MimeMessage mimeMessage = mailSender.createMimeMessage(); // 메일 메시지 객체 생성
 

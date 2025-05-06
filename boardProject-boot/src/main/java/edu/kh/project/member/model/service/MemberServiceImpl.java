@@ -52,6 +52,9 @@ public class MemberServiceImpl implements MemberService {
 //$2a$10$82haJV8j1wPHa/JNEywzSOMuYdnFjBdSJvhLPB6ahNHnc/ujwHbUC
       
 
+	   // 평문 비밀번호를 암호화한 값을 로그로 출력 (디버깅용)
+	    String tempHashedPw = bcrypt.encode("pass01!");
+	    log.debug("pass01! -> 암호화 결과: " + tempHashedPw);
       // 1. 이메일이 일치하면서 탈퇴하지 않은 회원을 조회한다
       
       Member loginMember = mapper.login(inputMember.getMemberEmail());
@@ -67,6 +70,8 @@ public class MemberServiceImpl implements MemberService {
       // 일치하지 않으면 그냥 null
       if (!bcrypt.matches(inputMember.getMemberPw(), loginMember.getMemberPw()))
       {
+    	    log.debug("DB에서 가져온 비밀번호 값: [" + loginMember.getMemberPw() + "]");
+    	     log.debug("BCrypt Warning 발생 직전, 비교 대상 값 확인 필요");
          return null;
       }
       
@@ -109,6 +114,7 @@ public class MemberServiceImpl implements MemberService {
       // memberAddress => [,,] => 빈 문자열 셋이 들은 배열이 온 셈
       
       // 주소가 입력되어 넘어온 경우
+	   
       
       if(!inputMember.getMemberAddress().equals(",,")) {
          // 주소 칸에 뭐라도 채워져 있을 때

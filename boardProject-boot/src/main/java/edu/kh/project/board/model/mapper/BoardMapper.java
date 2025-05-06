@@ -53,11 +53,17 @@ public interface BoardMapper {
 	 * @return
 	 */
 	int selectLikeCount(int boardNo);
+	
+	
+	
+	
+	
 
 	/** 조회수 바꾸기
 	 * @param boardNo
 	 * @return
 	 */
+
 	int updateReadCount(int boardNo);
 
 	/** 조회수 알아내기
@@ -65,6 +71,8 @@ public interface BoardMapper {
 	 * @return
 	 */
 	int selectReadCount(int boardNo);
+
+	int updateCompletion(Map<String, Object> paramMap);
 
 	
 

@@ -50,5 +50,8 @@ public class Board {
 	// 좋아요 여부 확인
 	private int likeCheck; // 상세 페이지에서
 	
+	
+	private String completionStatus; //완료 상태에 대한 정보 추가
+	
 
 }

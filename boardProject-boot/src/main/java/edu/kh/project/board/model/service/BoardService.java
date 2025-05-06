@@ -37,4 +37,12 @@ public interface BoardService {
 	 */
 	int updateReadCount(int boardNo);
 
+	
+	// 게시글 완료/미완료 상태 수정 서비스를 위한 메소드 선언 추가
+		/** 게시글 완료/미완료 상태 수정
+		 * @param paramMap (boardNo, completionStatus)
+		 * @return 업데이트된 행의 개수 (성공 시 1)
+		 */
+		int updateCompletion(Map<String, Object> paramMap); 
+
 }

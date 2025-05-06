@@ -53,8 +53,7 @@ public class BoardTypeInterceptor implements HandlerInterceptor {
 	 page < request < session < application
 	 application scope는 서버 시작 시부터 서버 종료시까지 유지되는 서블릿 내장 객체
 	 서버 내에 오직 하나만 존재하여 모든 클라이언트가 공용으로 사용한다	
-	
-	
+
 	
 	얻어오는 방법?
 	request로부터 얻어옴 

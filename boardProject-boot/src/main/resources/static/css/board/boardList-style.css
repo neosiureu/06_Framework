@@ -1,3 +1,30 @@
+/* 뱃지 기본 스타일 */
+.badge {
+    display: inline-block; /* 인라인 블록 요소로 만들어 크기 및 패딩 적용 */
+    padding: 0.25em 0.5em; /* 상하 좌우 패딩 */
+    font-size: 0.75em; /* 폰트 크기 줄임 */
+    font-weight: bold; /* 글자 두껍게 */
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap; /* 줄 바꿈 방지 */
+    vertical-align: baseline; /* 세로 정렬 */
+    border-radius: 0.25rem; /* 모서리 둥글게 */
+    margin-left: 5px; /* 제목과의 간격 */
+}
+
+/* 나눔완료 뱃지 스타일 */
+.badge-complete {
+    color: white;
+    background-color: #6c757d;  /* 회색 */
+
+}
+
+/* 나눔중 뱃지 스타일 */
+.badge-ongoing {
+    color: white;
+    background-color: #28a745;  /* 초록색 */
+}
+
 /* section, div{ border : 1px solid black;} */
 
 .board-name{

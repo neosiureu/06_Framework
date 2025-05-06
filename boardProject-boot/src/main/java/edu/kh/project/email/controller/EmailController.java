@@ -21,6 +21,7 @@ public class EmailController {
 	@PostMapping("signup")
 	@ResponseBody
 	public int signup(@RequestBody String email) {
+		
 		/*
 		 * fetch("/email/signup",
 		 * { method: "post", 
@@ -30,7 +31,7 @@ public class EmailController {
 		String authKey = service.sendEmail("signup",email);
 		
 		if(authKey !=null) {
-			// 인증번호 발급 성공 && 이메일 보내기도 성공했다
+			// 인증번호 발급 성공 && 이메일 보내기도 성공했을 때
 			return 1;
 		}
 		

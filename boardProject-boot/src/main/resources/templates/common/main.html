@@ -78,12 +78,8 @@
 
               <span> | </span>
 
-
               <a href="/member/selectIDPW" id="findIDPw" >ID/PW 찾기</a>
 
-
-
-             
             </article>
 
           </form>
@@ -125,10 +121,7 @@
 
       <div class="hidden" id="hidden">
         <br>
-        <div style="display: flex; justify-content: space-between; align-items: center;" >
-        <p>이메일을 찾고싶으신가요?</p> <span id="closeFindIDPW" class="closeFindIDPW">&times;</span>
-        </div>
-        <br>
+        <p>이메일을 찾고싶으신가요?</p>
       
         <!-- 아이디  비번 찾기 form -->
         <form action="/member/selectID" method="get" th:if="${session.loginMember == null}">
@@ -153,8 +146,32 @@
       
         <!-- 비밀번호 찾기 영역 -->
         <p>비밀번호를 찾고싶으신가요?</p>
-        <a href="/member/selectPW" style="background: orange;">비밀번호 찾기 페이지로 이동</a>
-        
+        <label>
+          닉네임:
+          <input name="memberNickname">
+        </label>
+        <br>
+        <label>
+          이메일:
+          <input name="memberEmail">
+        </label>
+        <br>
+        <label>
+          전화번호:
+          <input name="memberTel">
+        </label>
+        <br><br>
+        <a href="/member/selectPW" style="color: rgb(247, 0, 255);">비밀번호찾기</a>
+      </div>
+          <!-- 결과 메시지 -->
+          <div th:if="${findEmail != null}" id="finded">
+            <p>
+              찾으신 이메일은
+              <strong th:text="${findEmail}"></strong>
+              입니다.
+            </p>
+            <span id="closeFindIDPW" class="closeFindIDPW">&times;</span>
+          </div>
     </section>
   </main>
 

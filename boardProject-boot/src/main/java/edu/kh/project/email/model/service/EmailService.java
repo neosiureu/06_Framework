@@ -14,7 +14,7 @@ public interface EmailService {
    // String authkey = service.sendEmail("signup",email);
    // 전달된 타입이 스트링이라는 뜻으로 그냥 아무거나 전달함
 
-   /** 입력받은 이메일과 인증번호가 DB에 있는지 알아내느 서비스
+   /** 입력받은 이메일과 인증번호가 DB에 있는지 알아내는 서비스
     * @param map
     * @return
     */

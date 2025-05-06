@@ -317,7 +317,7 @@ let sec = initSec;
 
     });
 
-  // 성공이든 실패든 무조건 진행하는  코드
+  // 이메일을 보냈다면 성공이든 실패든 무조건 진행하는  코드
   authKeyMessage.innerText = initTime; // "05:00";
   authKeyMessage.classList.remove("confirm", "error"); //검정글씨로 돌려놓기
 
