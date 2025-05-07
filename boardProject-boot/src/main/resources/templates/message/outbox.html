@@ -13,7 +13,7 @@
     <table border="1">
       <thead>
         <tr>
-          <th>받는 사람 번호</th> <!-- 닉네임으로 바꾸고 싶으면 JOIN 필요 -->
+          <th>받는 사람</th>
           <th>내용</th>
           <th>보낸 날짜</th>
           <th>읽음 여부</th>
@@ -21,7 +21,7 @@
       </thead>
       <tbody>
         <tr th:each="msg : ${sentList}">
-          <td th:text="${msg.receiverNo}">받는사람</td>
+          <td th:text="${msg.senderNickname}">보낸사람 닉네임</td>
           <td>
             <a th:href="@{/message/detail/{messageNo}(messageNo=${msg.messageNo})}"
                th:text="${#strings.abbreviate(msg.content, 20)}">내용</a>
@@ -34,8 +34,11 @@
         </tr>
       </tbody>
     </table>
+    
 
     <br>
+
+
     <a href="/">홈으로 돌아가기</a>
   </main>
 

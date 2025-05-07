@@ -20,4 +20,6 @@ public class Message {
     private String content;     // 쪽지 내용
     private String sendDate;    // 보낸 날짜 (YYYY-MM-DD 형태의 문자열)
     private String readFl;      // 읽음 여부 (Y/N)
+    private String senderNickname;   // 보낸 사람 닉네임
+    private String receiverNickname; // 받은 사람 닉네임
 }

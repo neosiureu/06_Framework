@@ -11,8 +11,8 @@
     <h2>쪽지 상세보기</h2>
 
     <section>
-      <p><strong>보낸 사람 번호:</strong> <span th:text="${message.senderNo}">보낸 사람</span></p>
-      <p><strong>받은 사람 번호:</strong> <span th:text="${message.receiverNo}">받는 사람</span></p>
+      <p><strong>보낸 사람:</strong> <span th:text="${message.senderNickname}">보낸 사람</span></p>
+      <p><strong>받은 사람:</strong> <span th:text="${message.receiverNickname}">받는 사람</span></p>
       <p><strong>내용:</strong></p>
       <div style="border:1px solid #aaa; padding:10px; margin-bottom:10px;" th:text="${message.content}">
         쪽지 내용

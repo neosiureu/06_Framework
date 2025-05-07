@@ -17,28 +17,35 @@
 		)
 	</insert>
 
-	<select id="selectInboxMessages" parameterType="int"
-		resultType="Message">
-		SELECT MESSAGE_NO, SENDER_NO, RECEIVER_NO, CONTENT,
-		TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
-		READ_FL
-		FROM
-		MESSAGE
-		WHERE RECEIVER_NO = #{memberNo}
-		ORDER BY MESSAGE_NO DESC
-	</select>
+	<select id="selectInboxMessages" resultType="Message">
+    SELECT M.MESSAGE_NO,
+           M.SENDER_NO,
+           S.MEMBER_NICKNAME AS senderNickname,
+           M.RECEIVER_NO,
+           M.CONTENT,
+           TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
+           M.READ_FL
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+    WHERE M.RECEIVER_NO = #{memberNo}
+    ORDER BY M.SEND_DATE DESC
+</select>
 
-	<select id="selectMessageDetail" resultType="Message">
-		SELECT MESSAGE_NO,
-		SENDER_NO,
-		RECEIVER_NO,
-		CONTENT,
-		TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
-		READ_FL
-		FROM MESSAGE
-		WHERE MESSAGE_NO = #{messageNo}
-		AND (RECEIVER_NO = #{memberNo} OR SENDER_NO = #{memberNo})
-	</select>
+<select id="selectMessageDetail" resultType="Message">
+    SELECT M.MESSAGE_NO,
+           M.SENDER_NO,
+           S.MEMBER_NICKNAME AS senderNickname,
+           M.RECEIVER_NO,
+           R.MEMBER_NICKNAME AS receiverNickname,
+           M.CONTENT,
+           TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+           M.READ_FL
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+    JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
+    WHERE M.MESSAGE_NO = #{messageNo}
+      AND (M.SENDER_NO = #{memberNo} OR M.RECEIVER_NO = #{memberNo})
+</select>
 
 
 	<update id="updateReadFlag">
@@ -51,18 +58,22 @@
 	</update>
 
 
-	<select id="selectSentMessages" resultType="Message">
-		SELECT MESSAGE_NO,
-		SENDER_NO,
-		RECEIVER_NO,
-		CONTENT,
-		SEND_DATE,
-		READ_FL
-		FROM MESSAGE
-		WHERE
-		SENDER_NO = #{memberNo}
-		ORDER BY SEND_DATE DESC
-	</select>
+<select id="selectSentMessages" resultType="Message">
+    SELECT 
+        M.MESSAGE_NO,
+        M.SENDER_NO,
+        S.MEMBER_NICKNAME AS senderNickname,  
+        M.RECEIVER_NO,
+        R.MEMBER_NICKNAME AS receiverNickname,
+        M.CONTENT,
+        TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
+        M.READ_FL
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO  
+    JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
+    WHERE M.SENDER_NO = #{memberNo}
+    ORDER BY M.SEND_DATE DESC
+</select>
 
 </mapper>
 
