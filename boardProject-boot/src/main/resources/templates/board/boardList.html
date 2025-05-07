@@ -15,6 +15,139 @@
 
 
 <body>
+
+	<!-- ===== 이지선다 투표 영역 시작 ===== -->
+	<div class="vote-container">
+		<h3 class="vote-question">🍕 오늘 저녁 메뉴는?</h3>
+		<div class="vote-options">
+			<div class="vote-option" onclick="castVote('A')">
+				<span class="vote-label">치킨</span>
+				<div class="progress-bar-container">
+					<div class="progress-bar" id="barA"></div>
+				</div>
+				<span id="percentA">0%</span>
+			</div>
+			<div class="vote-option" onclick="castVote('B')">
+				<span class="vote-label">피자</span>
+				<div class="progress-bar-container">
+					<div class="progress-bar" id="barB"></div>
+				</div>
+				<span id="percentB">0%</span>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.vote-container {
+			padding: 20px;
+			margin: 20px auto;
+			max-width: 500px;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			background: #fafafa;
+		}
+
+		.vote-question {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		.vote-options {
+			display: flex;
+			justify-content: space-between;
+			gap: 10px;
+		}
+
+		.vote-option {
+			flex: 1;
+			cursor: pointer;
+			padding: 10px;
+			border-radius: 8px;
+			background: #fff;
+			border: 1px solid #ccc;
+			text-align: center;
+		}
+
+		.vote-option:hover {
+			background: #f0f8ff;
+		}
+
+		.progress-bar-container {
+			background: #eee;
+			height: 20px;
+			border-radius: 10px;
+			overflow: hidden;
+			margin: 5px 0;
+		}
+
+		.progress-bar {
+			height: 100%;
+			background: #4caf50;
+			width: 0%;
+			transition: width 0.5s;
+		}
+	</style>
+
+
+<script th:inline="javascript">
+  // 전역 선언
+  const userId = /*[[${session.loginMember?.memberNo}]]*/ null;
+
+  function loadInitialVoteResult() {
+    fetch('/vote/result')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('barA').style.width = data.percentA + '%';
+        document.getElementById('barB').style.width = data.percentB + '%';
+        document.getElementById('percentA').innerText = data.percentA + '%';
+        document.getElementById('percentB').innerText = data.percentB + '%';
+      });
+  }
+
+  function castVote(choice) {
+    if (userId === null || userId === "null") {
+      alert("로그인 후 이용 가능합니다.");
+      return;
+    }
+
+    fetch('/vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, choice })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.voted === 1) {
+          alert("이미 투표하셨습니다.");
+          return;
+        }
+
+        alert("투표되었습니다.");
+
+        document.getElementById('barA').style.width = data.percentA + '%';
+        document.getElementById('barB').style.width = data.percentB + '%';
+        document.getElementById('percentA').innerText = data.percentA + '%';
+        document.getElementById('percentB').innerText = data.percentB + '%';
+      });
+  }
+
+  window.onload = loadInitialVoteResult;
+</script>
+
+	<!-- ===== 이지선다 투표 영역 끝 ===== -->
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<main>
 		<th:block th:replace="~{common/header}"></th:block>
 
@@ -184,8 +317,7 @@
 
 						<!-- 보고있지 않은 페이지 -->
 						<li th:unless="${i} == *{currentPage}">
-							<a th:href="@{     /board/{boardCode}(boardCode=${boardCode}, cp=${i})   }"
-								th:text="${i}">이동할 페이지</a>
+							<a th:href="@{     /board/{boardCode}(boardCode=${boardCode}, cp=${i})   }" th:text="${i}">이동할 페이지</a>
 						</li>
 
 					</th:block>

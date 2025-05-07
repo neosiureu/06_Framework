@@ -18,6 +18,50 @@
   }
 
 
+  .my-info {
+  width: 400px;
+  padding: 10px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  background-color: #fefefe;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.nickname-email {
+  margin-bottom: 8px;
+}
+
+.nickname-email a {
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.nickname-email p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.message-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.message-btn, .logout-btn {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background-color: #e7f0ff;
+  text-decoration: none;
+  color: #333;
+  font-size: 13px;
+  border: 1px solid #ccc;
+}
+
+.message-btn:hover, .logout-btn:hover {
+  background-color: #cfe0ff;
+}
   </style>
 </head>
 
@@ -108,6 +152,8 @@
             <div class="my-info" th:object="${session.loginMember}">
               <div>
                 <a href="/mypage/info" id="nickname" th:text = "*{memberNickname}">닉네임</a>
+                <a href="/message/inbox" id="messageBoxBtn"> 받은 쪽지함</a>
+                <a href="/message/outbox" id="messageBoxBtn"> 보낸 쪽지함</a>
                 <a href="/member/logout" id="logoutBtn">로그아웃</a>
               </div>
               <p th:text = "*{memberEmail}">이메일</p>

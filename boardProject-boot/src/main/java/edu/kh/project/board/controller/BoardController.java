@@ -285,10 +285,10 @@ public class BoardController {
 	}
 
 	
-	@GetMapping("updateCompletionSync") // GET 요청으로 변경, URL 경로 수정
+	@GetMapping("updateCompletionSync") // GET 요청으로 
 	public String updateCompletionStatusSync(
-	        Board board, // boardCode, boardNo, completionStatus가 자동으로 바인딩됩니다. (요청 파라미터 이름과 DTO 필드 이름 일치)
-	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없으므로 별도로 받습니다.
+	        Board board, // boardCode, boardNo, completionStatus가 자동으로 바인딩 이유: DTO 필드 이름 일치
+	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없어서
 	        @SessionAttribute(value = "loginMember", required = false) Member loginMember,
 	        RedirectAttributes ra
 	) {
@@ -302,7 +302,7 @@ public class BoardController {
 	    }
 
 	    // 서비스 메소드에 전달할 Map 생성
-	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달합니다.
+	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달
 	    Map<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("boardNo", board.getBoardNo());
 	    paramMap.put("completionStatus", board.getCompletionStatus()); // DTO에서 상태 값 가져옴
@@ -319,7 +319,6 @@ public class BoardController {
 
 	    ra.addFlashAttribute("message", message);
 
-	    // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
 	    return "redirect:/board/" + board.getBoardCode() + "/" + board.getBoardNo() + "?cp=" + cp;
 	}
 

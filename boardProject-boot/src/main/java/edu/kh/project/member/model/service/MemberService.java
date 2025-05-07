@@ -32,6 +32,8 @@ public interface MemberService {
    String selectID(Member member);
    
    String processPasswordFind(Member member);
+
+Member selectMemberByNo(int memberNo);
    
    
 

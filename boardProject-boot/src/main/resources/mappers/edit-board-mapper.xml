@@ -8,29 +8,25 @@
 	<!-- useGeneratedKeys속성? DB 내부적으로 생성한 키, 즉 DB 시퀀스를 이용하여 해당 키를 전달된 파라미터 (board)의 
 		필드(boardNo)로 대입 가능하게 함 -->
 
-	<insert id="boardInsert" useGeneratedKeys="true"
-		parameterType="Board">
-
-		<!-- mybatis의 동적 SQL: 전달되는 값에 따라 프로그램 수행 중 SQL을 변경한다 <selectKey>태그 => INSERT 
-			/ UPDATE 시 사용할 키 (시퀀스) 번호를 조회하여 파라미터의 지정된 필드에 매핑한다. useGeneratedKeys속성은 할지 
-			말지만 지정 -->
-
-		<!-- order="BEFORE" : 메인 SQL문이 돌기 전에 selectKey부터 할거라고, 후에 하고싶으면 AFTER로 
-			지정 keyProperty: 조회 결과를 저장할 파라미터의 필드명 -->
-
-
-
-		<selectKey keyProperty="boardNo" resultType="_int"
-			order="BEFORE">
-			<!-- SEQ_BOARD_NO 가 게시글번호 -->
+<insert id="boardInsert" useGeneratedKeys="true" parameterType="Board">
+		<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
 			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
 		</selectKey>
 
-		INSERT INTO "BOARD" VALUES(
-		#{boardNo}, #{boardTitle}, #{boardContent},
-		DEFAULT, DEFAULT, DEFAULT, DEFAULT, #{boardCode}, #{memberNo}
+		INSERT INTO "BOARD" (
+			BOARD_NO,
+			BOARD_TITLE,
+			BOARD_CONTENT,
+			
+			BOARD_CODE,
+			MEMBER_NO
+		) VALUES (
+			#{boardNo},
+			#{boardTitle},
+			#{boardContent},
+			#{boardCode},
+			#{memberNo}
 		)
-
 	</insert>
 
 
@@ -43,22 +39,67 @@
 		seperator: 반복 사이사이 구분자 -->
 
 
-	<insert id="insertUploadList">
-
-		INSERT INTO "BOARD_IMG"
-
-		<foreach collection="list" item="img" separator=" UNION "
-			open="(" close=")">
-			SELECT NEXT_IMG_NO(),
-			#{img.imgPath},
-			#{img.imgOriginalName},
-			#{img.imgRename},
-			#{img.imgOrder},
-			#{img.boardNo}
-			FROM DUAL
-		</foreach>
-	</insert>
+	 <insert id="insertUploadList">
+     INSERT INTO "BOARD_IMG" (IMG_NO, IMG_PATH, IMG_ORIGINAL_NAME, IMG_RENAME, IMG_ORDER, BOARD_NO)
+     <foreach collection="list" item="img" separator=" UNION ALL ">
+         SELECT NEXT_IMG_NO(), #{img.imgPath}, #{img.imgOriginalName}, #{img.imgRename}, #{img.imgOrder}, #{img.boardNo} FROM DUAL
+     </foreach>
+ </insert>
 	
+	<!-- 게시글 부분 수정 -->
+	<update id="boardUpdate">
+	UPDATE "BOARD" SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT= #{boardContent} 
+	WHERE BOARD_CODE = #{boardCode} AND BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
+	</update>
+	
+	
+		<!-- 게시글 이미지 삭제  -->
+		
+		<delete id="deleteImage">
+		DELETE FROM "BOARD_IMG" WHERE BOARD_NO = #{boardNo} AND IMG_ORDER 
+		IN (${deleteOrder})
+		</delete>
+	
+	<!-- "1,2,3"  => 따옴표가 있으면 안되기 때문 
+	만약 따옴표가 생기면 컬럼 값 자체가 "1,2,3"이라는 말이 되어버림!!-->
+	
+	
+	
+	<!-- 한 행의 게시글 이미지를 수정한다 -->
+	
+	<update id="updateImage">
+	UPDATE "BOARD_IMG" SET IMG_ORIGINAL_NAME = #{imgOriginalName},
+	IMG_RENAME = #{imgRename}
+	WHERE BOARD_NO = #{boardNo}
+	AND IMG_ORDER = #{imgOrder}
+	</update>
+	
+	
+	<!-- 
+	
+					private int imgNo;
+					private String imgPath;
+					private String imgOriginalName;
+					private String imgRename;
+					private int imgOrder;
+					private int boardNo;
+
+					// 게시글 이미지 삽입 및 수정 시 사용하는 필드를 미리 만들어 놓는다
+					private MultipartFile uploadFile; 
+	 -->
+	
+	
+	<!--  게시글 이미지를 삽입 -->
+	
+	<insert id="insertImg">
+	INSERT INTO "BOARD_IMG" VALUES(
+	NEXT_IMG_NO(), 
+	#{imgPath}, 
+	#{imgOriginalName},
+	#{imgRename},
+	#{imgOrder},
+	#{boardNo})
+	</insert>
 	
 </mapper>
 

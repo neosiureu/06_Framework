@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="edu.kh.project.message.model.mapper.MessageMapper">
+
+	<insert id="insertMessage" parameterType="Message">
+		INSERT INTO MESSAGE (
+		MESSAGE_NO,
+		SENDER_NO,
+		RECEIVER_NO,
+		CONTENT
+		) VALUES (
+		SEQ_MESSAGE_NO.NEXTVAL,
+		#{senderNo},
+		#{receiverNo},
+		#{content}
+		)
+	</insert>
+
+	<select id="selectInboxMessages" parameterType="int"
+		resultType="Message">
+		SELECT MESSAGE_NO, SENDER_NO, RECEIVER_NO, CONTENT,
+		TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
+		READ_FL
+		FROM
+		MESSAGE
+		WHERE RECEIVER_NO = #{memberNo}
+		ORDER BY MESSAGE_NO DESC
+	</select>
+
+	<select id="selectMessageDetail" resultType="Message">
+		SELECT MESSAGE_NO,
+		SENDER_NO,
+		RECEIVER_NO,
+		CONTENT,
+		TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
+		READ_FL
+		FROM MESSAGE
+		WHERE MESSAGE_NO = #{messageNo}
+		AND (RECEIVER_NO = #{memberNo} OR SENDER_NO = #{memberNo})
+	</select>
+
+
+	<update id="updateReadFlag">
+		UPDATE MESSAGE
+		SET READ_FL = 'Y'
+		WHERE MESSAGE_NO =
+		#{messageNo}
+		AND RECEIVER_NO = #{memberNo}
+		AND READ_FL = 'N'
+	</update>
+
+
+	<select id="selectSentMessages" resultType="Message">
+		SELECT MESSAGE_NO,
+		SENDER_NO,
+		RECEIVER_NO,
+		CONTENT,
+		SEND_DATE,
+		READ_FL
+		FROM MESSAGE
+		WHERE
+		SENDER_NO = #{memberNo}
+		ORDER BY SEND_DATE DESC
+	</select>
+
+</mapper>
+
+

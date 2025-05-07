@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>보낸 쪽지함</title>
+  <link rel="stylesheet" href="/css/message/outbox.css"> <!-- 필요시 스타일 추가 -->
+</head>
+<body>
+
+  <main>
+    <h2>보낸 쪽지함</h2>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>받는 사람 번호</th> <!-- 닉네임으로 바꾸고 싶으면 JOIN 필요 -->
+          <th>내용</th>
+          <th>보낸 날짜</th>
+          <th>읽음 여부</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="msg : ${sentList}">
+          <td th:text="${msg.receiverNo}">받는사람</td>
+          <td>
+            <a th:href="@{/message/detail/{messageNo}(messageNo=${msg.messageNo})}"
+               th:text="${#strings.abbreviate(msg.content, 20)}">내용</a>
+          </td>
+          <td th:text="${msg.sendDate}">보낸시간</td>
+          <td th:text="${msg.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(sentList)}">
+          <td colspan="4">보낸 쪽지가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+    <a href="/">홈으로 돌아가기</a>
+  </main>
+
+</body>
+</html>

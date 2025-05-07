@@ -231,6 +231,61 @@ document.querySelector('#boardLike').addEventListener('click',(e)=>{
 
 
 
+// ----------------------- 게시글 수정 버튼--------------------
+
+
+const updateBtn = document.querySelector('#updateBtn');
+
+if(updateBtn != null){
+  // <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">가 아니면 랜더링 자체가 안 되기 때문
+
+  updateBtn.addEventListener("click",()=>{
+
+
+    if (completionStatus === 'Y') {
+      alert("나눔완료된 글은 수정할 수 없습니다.");
+      e.preventDefault(); // ← 이동 방지
+      return;
+    }
+
+    ///board/1/2004?cp=1 가 현재인데
+    // get방식으로 /editBoard/1/2004/update?cp=1 과 같이 4계층과 cp까지
+
+    // /1/2004만 똑같고 앞만 board를 editBoard로
+
+    location.href = location.pathname.replace('board','editBoard') + "/update" + location.search ;
+
+    //   /editBoard/1/2004/update?cp=1 과 같이 변함
+  })
+
+}
+
+
+
+
+
+
+// // 수정 막기 처리 => 이를 따로 처리해서는 안 됐었음
+// if (updateBtn != null) {
+//   updateBtn.addEventListener("click", (e) => {
+
+//     if (completionStatus === 'Y') {
+//       alert("나눔완료된 글은 수정할 수 없습니다.");
+//       e.preventDefault();
+//       return;
+//     }
+
+//     location.href = location.href;
+//   });
+// }
+
+
+
+
+
+
+
+
 /*
 // completionToggleButton은 HTML에서 이미 정의
 
@@ -307,46 +362,48 @@ if (completionToggleButton) { // 완료 토글 버튼이 존재하는 경우
 */
 
 const completionToggleButtons = document.querySelectorAll('.completionToggleBtn');
+
 completionToggleButtons.forEach((button) => {
   button.addEventListener('click', (e) => {
 
-      if (loginMemberNo !== memberNo) {
-          console.log("작성자가 아니므로 나눔 상태 변경 불가");
-          e.preventDefault();
-          return;
-      }
+    if (loginMemberNo !== memberNo) {
+      console.log("작성자가 아니므로 나눔 상태 변경 불가");
+      e.preventDefault();
+      return;
+    }
 
-      if (loginMemberNo == null) {
-          alert('로그인 후 이용해주세요.');
-          return;
-      }
+    if (loginMemberNo == null) {
+      alert('로그인 후 이용해주세요.');
+      return;
+    }
 
-      // 대신 hidden input에서 상태 값 가져오기
-      const currentStatus = button.querySelector("input[name='completionStatus']").value;
+    const currentStatus = button.querySelector("input[name='completionStatus']").value;
 
-      let confirmationMessage;
-      if (currentStatus !== 'Y') {
-          confirmationMessage = "나눔을 완료 상태로 변경하시겠습니까?";
-      } else {
-          confirmationMessage = "나눔을 진행 중 상태로 변경하시겠습니까?";
-      }
+    let confirmationMessage;
+    if (currentStatus !== 'Y') {
+      confirmationMessage = "나눔을 완료 상태로 변경하시겠습니까?";
+    } else {
+      confirmationMessage = "나눔을 진행 중 상태로 변경하시겠습니까?";
+    }
 
-      if (!confirm(confirmationMessage)) {
-          console.log("나눔 상태 변경 취소됨");
-          return;
-      }
+    if (!confirm(confirmationMessage)) {
+      // console.log("나눔 상태 변경 취소됨");
+      return;
+    }
 
-      const newStatus = (currentStatus === 'Y') ? 'N' : 'Y';
+    const newStatus = (currentStatus === 'Y') ? 'N' : 'Y';
+    button.querySelector("input[name='completionStatus']").value = newStatus;
 
-      // 반드시 상태도 갱신해야 다음 클릭 시 반영됨
-      button.querySelector("input[name='completionStatus']").value = newStatus;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      let cp = urlParams.get('cp');
-      if (cp === null || cp.trim() === '') {
-          cp = '1';
-      }
-
-      window.location.href = `/board/updateCompletionSync?boardCode=${boardCode}&boardNo=${boardNo}&completionStatus=${newStatus}&cp=${cp}`;
+    // cp 값만 따로 추출
+    const urlParams = new URLSearchParams(location.search);
+    let cp = urlParams.get('cp');
+    if (cp === null || cp.trim() === '') {
+        cp = '1';
+    }
+   
+    location.href = `/board/updateCompletionSync?boardCode=${boardCode}&boardNo=${boardNo}&completionStatus=${newStatus}&cp=${cp}`;
   });
 });
+
+
+

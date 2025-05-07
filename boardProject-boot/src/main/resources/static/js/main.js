@@ -1,8 +1,8 @@
-// 쿠키에 저장된 이메일을 input창에 입력 
-// 
+// 쿠키에 저장된 이메일을 input창에 입력
+//
 // => 로그인이 안된 경우에 수행해야 한다 (로그인창 자체가 )
 
-// 먼저 이메일 작성 자리 input태그 요소부터 
+// 먼저 이메일 작성 자리 input태그 요소부터
 
 
 // 쿠키에서 매개변수로 전달받은 key와 일치하는 value를 얻어와 반환하는 함수
@@ -15,12 +15,12 @@ const getCookie = (key) => {
   // 배열.map(함수): 배열의 각 요소를 이용해 콜백함수 수행 후 결과 값으로 새로운 배열을 만들어 반환하는 JS내장함수
 
 
-  const cookieList = cookies.split("; ").map(el => el.split("="));  // 띄어쓰기 세미콜론을 기준으로 쪼개어 배열 형태로 반환 ["키"="값", "키"="값"]과 같이 나타남 
+  const cookieList = cookies.split("; ").map(el => el.split("="));  // 띄어쓰기 세미콜론을 기준으로 쪼개어 배열 형태로 반환 ["키"="값", "키"="값"]과 같이 나타남
 
   console.log(cookieList)
 
   //  [ ['test' = 'test01'] , ['saveId'= 'user01@kh.or.kr'] ]과 같은 이차원배열의 형태
-  // 배열.map(콜백함수) => 대상인 배열을 순회하며 첫 요소인 "K"="V"를 쪼개서 ["K", "V"]로 바꾼다. 
+  // 배열.map(콜백함수) => 대상인 배열을 순회하며 첫 요소인 "K"="V"를 쪼개서 ["K", "V"]로 바꾼다.
 
 
 
@@ -48,7 +48,7 @@ const getCookie = (key) => {
 
   console.log(obj);
 
-  return obj[key]; // 매개변수로 전달받은 key에 대해 
+  return obj[key]; // 매개변수로 전달받은 key에 대해
   // obj객체에 저장된 key가 일치하는 요소의 벨류에 해당하는 값이 반환 됨.
 
   // 만약 쿠키에 없는 키를 반환하면 undefined객체가 반환 됨
@@ -61,13 +61,13 @@ const getCookie = (key) => {
 
 
 
-// getCookie(); 
+// getCookie();
 // 가령 saveId=user01@kh.or.kr와 같은 식으로 저장 되어있음
 
 const loginEmail = document.querySelector("#loginForm input[name='memberEmail']");
 const loginPw = document.querySelector("#loginForm input[name='memberPw']");
 
-//전역변수로 선언되었기 때문에 로그인창이 안 보일 때 랜더링이 되지 않는다. 
+//전역변수로 선언되었기 때문에 로그인창이 안 보일 때 랜더링이 되지 않는다.
 // 따라서 null임에도 접근하려하면 오류가 난다 => nullPointerExcetion 방지
 
 if (loginEmail != null) {
@@ -77,7 +77,7 @@ if (loginEmail != null) {
   const saveId = getCookie("saveId");
 
   if (saveId != undefined) {
-    loginEmail.value = saveId; // 쿠키에서 얻어온 이메일 값을 input요소 value에 세팅. 
+    loginEmail.value = saveId; // 쿠키에서 얻어온 이메일 값을 input요소 value에 세팅.
     // 즉 자동으로 아이디를 기억해두겠다는 의미
 
 
@@ -86,17 +86,17 @@ if (loginEmail != null) {
   }
 
 
-  const loginner = document.querySelector('.loginner'); 
+  const loginner = document.querySelector('.loginner');
 
 
   loginner.addEventListener('click',(e) =>{
     if (loginEmail.value.trim().length === 0) {
       alert('아이디는 비어있을 수 없습니다');
       e.preventDefault();
-      
+     
     }
-  
-  
+ 
+ 
     if (loginPw.value.trim().length === 0) {
       alert('비밀번호는 비어있을 수 없습니다');
       e.preventDefault();

@@ -262,6 +262,15 @@ public class MemberServiceImpl implements MemberService {
        }
 
 
+
+
+	@Override
+	public Member selectMemberByNo(int memberNo) {
+		// TODO Auto-generated method stub
+		return mapper.selectMemberByNo(memberNo);
+	}
+
+
    
    
 

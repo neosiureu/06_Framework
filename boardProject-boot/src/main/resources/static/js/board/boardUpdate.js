@@ -3,8 +3,16 @@
 //const previewList = document.querySelectorAll('img.preview');
 //const orderList = [];  기존에 존재하던 이미지의 순서(order)를 기록할 배열
 
-// X버튼이 눌러져 삭제되는 이미지의 
-// 순서(order)를 기록하는 Set
+/* X버튼이 눌러져 삭제되는 이미지의 
+ 순서(order)를 기록하는 Set
+ 기존 이미지를 x버튼 눌러 삭제한다면
+
+ X버튼 누를 떄마다 중복된 데이터가 들어가서는 안 된다.
+ 몇 번을 X버튼 누르던지 한번만 들어가도록  하기 위해 Set객체를 만든다
+*/
+
+
+
 const deleteOrderList = new Set();
 // Set : 중복된 값을 저장 못하게하는 객체(Java Set 똑같음)
 // * Set을 사용하는 이유 : 
@@ -19,6 +27,12 @@ const deleteImageList = document.getElementsByClassName("delete-image");
 
 // 마지막으로 선택된 파일을 저장할 배열
 const lastValidFiles = [null, null, null, null, null];
+
+/*
+백업 저장 용 => 기존에 작성된 파일이 어딘가에 백업 되어있어야 함.
+취소를 누르거나 문제가 있어 업로드되지 않는다면
+기존 파일이 들어와야해서 백업이 필요
+*/
 
 
 
@@ -42,7 +56,7 @@ const updatePreview = (file, order) => {
 			return;
 		}
 
-		// 이전 선택된 파일이 있을 때
+		// 이전 선택된 다른 파일이 있을 때
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(lastValidFiles[order]);
 		inputImageList[order].files = dataTransfer.files;
@@ -61,6 +75,13 @@ const updatePreview = (file, order) => {
 	// deleteOrderList에서 해당 이미지 순서를 삭제
 	// -> 왜?? 이전에 X 버튼을 눌러 삭제 기록이 있을 수도 있기 때문에
 	deleteOrderList.delete(order);
+/*
+	updatePreview함수 내에 작성 => 업데이트를 일으킨 당시
+	ex) 3번과 4번 사진을 삭제하면	deleteOrderList Set객체에 3과 4가 들어감 
+	그런데 빠지는 것이 아니라 다른 사진으로 수정하려면 기존 Set객체 3과 4는 없애야 함
+	다만 자바에서 set에 있는 요소를 삭제하기 위해서는 remove를 사용하지만 JS에서는 delete메서드를 통해 삭제한다
+*/
+
 }
 
 
@@ -98,7 +119,7 @@ for (let i = 0; i < inputImageList.length; i++) {
 
 
 
-	/* X 버튼 클릭 시 미리보기, 선택된 파일 삭제 */
+	/* X 버튼 클릭 시 미리보기, 선택된 파일 삭제  DB랑 똑같은 순서*/
 	deleteImageList[i].addEventListener("click", () => {
 
 		previewList[i].src = ""; // 미리보기 삭제
@@ -109,15 +130,16 @@ for (let i = 0; i < inputImageList.length; i++) {
 		// X 버튼이 눌러 졌을 때
 		// --> 기존에 이미지가 있었는데 
 		//     i번째 이미지 X버튼 눌러서 삭제함 --> DELETE 수행
-		if (orderList.includes(i)) {
+		if (orderList.includes(i)) { // 기존에 이미지가 있는 파트에서 X를 눌렀을 때
 			deleteOrderList.add(i);
-		}
+		} // 아무것도 없을 때 X버튼을 눌러도 아무것도 없음
 
 	})
 
 } // for end
 
 // -----------------------------------------------------------------------
+
 
 /* 제목, 내용 미작성 시 제출 불가 */
 const form = document.querySelector("#boardUpdateFrm");
@@ -143,11 +165,14 @@ form.addEventListener("submit", e => {
 
 
 	// 제출 전에 form 태그 마지막 자식으로
-	// input 추가 한 후 제출
+	// input을 동적으로 추가 한 후 제출
 	// -> 해당 input에는
-	//   삭제된 이미지 순서(deleteOrderList)를 추가
+	// 위에서 Set객체로 만든 삭제된 이미지 순서(deleteOrderList)를 추가 => 파라미터로 보내자.
 
 	const input = document.createElement("input");
+
+	// 파라미터로 보내기 위해 input태그로 추가한다.
+
 
 	// Array.from() : Set -> Array로 변환
 	// 배열.toString() : [1,2,3] --> "1,2,3" 변환
@@ -161,3 +186,63 @@ form.addEventListener("submit", e => {
 	form.append(input); // 자식으로 input 추가
 
 })
+
+
+
+
+
+
+/*
+[ * 게시글 수정 페이지 (boardUpdate.html) ]
+┌────────────────────────────────────────────────────────────────────────────┐
+│ <main>                                                                     │
+│                                                                            │
+│ ┌─ Header (공통) ──────────────────────────────────────────────────────┐ │
+│ │ <th:block th:replace="~{common/header}">                              │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌─ <form id="boardUpdateFrm"> (게시글 수정 폼) ─────────────────────────┐ │
+│ │  method="POST" action="update" th:object="${board}"                    │ │
+│ │  enctype="multipart/form-data"                                         │ │
+│ │                                                                        │ │
+│ │  <h1 class="board-name" th:text="${boardName}">게시판 이름</h1>       │ │
+│ │                                                                        │ │
+│ │  ─ 제목 입력 영역 ────────────────────────────────────────────────┐ │
+│ │  │ <input type="text" name="boardTitle" th:value="${board.boardTitle}">│ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ │                                                                        │ │
+│ │  ─ 썸네일 이미지 업로드 영역 (img0) ──────────────────────────────┐ │
+│ │  │ <input type="file" id="img0" name="images"> (썸네일 전용)         │ │
+│ │  │ <img class="preview"> <span class="delete-image">×</span>          │ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ │                                                                        │ │
+│ │  ─ 일반 이미지 업로드 영역 (img1~img4) ───────────────────────────┐ │
+│ │  │ 반복적으로 img1~img4 업로드용 input 존재                         │ │
+│ │  │ 각 이미지마다 preview + delete 버튼 존재                         │ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ │                                                                        │ │
+│ │  ─ 게시글 내용 입력 영역 ───────────────────────────────────────┐ │
+│ │  │ <textarea name="boardContent" th:text="*{boardContent}">        │ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ │                                                                        │ │
+│ │  ─ 제출 버튼 영역 ───────────────────────────────────────────────┐ │
+│ │  │ <button id="writebtn">등록</button>                            │ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ │                                                                        │ │
+│ │  ─ 현재 페이지(cp) hidden 처리 ──────────────────────────────────┐ │
+│ │  │ <input type="hidden" name="cp" th:value="${param.cp}">         │ │
+│ │  └─────────────────────────────────────────────────────────────────┘ │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌─ Footer (공통) ──────────────────────────────────────────────────────┐ │
+│ │ <th:block th:replace="~{common/footer}">                              │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌─ 이미지 미리보기 스크립트 ─────────────────────────────────────────┐ │
+│ │ <script th:inline="javascript">                                       │ │
+│ │   이미지 목록(imageList) 받아서 previewList[imgOrder].src에 출력    │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+*/

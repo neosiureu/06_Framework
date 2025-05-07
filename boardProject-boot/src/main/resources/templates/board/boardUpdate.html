@@ -19,6 +19,9 @@
 
             <h1 class="board-name" th:text="${boardName}">게시판 이름</h1>
 
+            <!--editBoardController로-->
+
+            
             <!-- 제목 -->
             <h1 class="board-title">
                 <input type="text" name="boardTitle" 
@@ -34,6 +37,7 @@
             <div class="img-box">
                 <div class="boardImg thumbnail">
                     <label for="img0">
+
                         <img class="preview">
                     </label>
                     <input type="file" name="images" class="inputImage" id="img0" accept="image/*">
@@ -108,15 +112,19 @@
     <script th:inline="javascript">
         
         const imageList = /*[[${board.imageList}]]*/ [];
-        const previewList = document.querySelectorAll('img.preview');
+        const previewList = document.querySelectorAll('img.preview'); // preview클래스를 가진 모든 img태그를 얻어와 배열 형태로 저장
 		const orderList = [];  // 기존에 존재하던 이미지의 순서(order)를 기록할 배열
       
 		for(let img of imageList){
             previewList[img.imgOrder].src = img.imgPath + img.imgRename;
+            // src속성에 해당 경로를 추가한다. <img class="preview">와 같은 것을 처리할 수 있음
+
+
 
             // 미리보기가 출력된 이미지 순서를
             // orderList에 추가
             orderList.push(img.imgOrder);
+            // 01234 배열 중 끝 번호에 넣는다.
         }
 
     </script>

@@ -22,29 +22,26 @@
         <th:block th:replace="~{common/header}"></th:block>
 
         <section class="board-detail" th:object="${board}">
-              
-            <button class="completionToggleBtn" type="button" 
-            th:data-current-status="${board.completionStatus ?: 'N'}"
-            th:style="${board.completionStatus == 'Y'} ?
+
+            <button class="completionToggleBtn" type="button" th:data-current-status="${board.completionStatus ?: 'N'}"
+                th:style="${board.completionStatus == 'Y'} ?
                       'background-color: #6c757d; color: white;' :
                       'background-color: #28a745; color: white;'">
-            
-            <i id="completionIcon"
-               th:classappend="${board.completionStatus == 'Y'} ?
+
+                <i id="completionIcon" th:classappend="${board.completionStatus == 'Y'} ?
                                'fa-solid fa-circle-check' :
                                'fa-regular fa-circle'">
-                            </i>
-        
-            <span id="completionText"
-                  th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
-                  <input type="hidden" name="completionStatus"
-           th:value="${board.completionStatus ?: 'N'}" />
-        </button>
+                </i>
+
+                <span id="completionText" th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+                <!-- <input type="hidden" name="completionStatus"
+           th:value="${board.completionStatus ?: 'N'}" />-->
+            </button>
 
 
             <!-- 제목 -->
             <h1 class="board-title" th:text="*{boardTitle}"> 게시글 제목 </h1>
-        
+
 
             <!-- 프로필 + 닉네임 + 작성일 + 조회수 -->
             <div class="board-header">
@@ -58,6 +55,17 @@
                     <img th:if="*{profileImg}" th:src="*{profileImg}">
 
                     <span th:text="*{memberNickname}">작성자 닉네임</span>
+                    <span
+                    th:if="${board.boardCode == 1
+                            and session.loginMember != null
+                            and board.memberNo != session.loginMember.memberNo
+                            and board.completionStatus != 'Y'}"
+                    class="send-message">
+                    
+                    <a th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo})}" title="쪽지 보내기">
+                      <i class="fa-regular fa-envelope"></i>
+                    </a>
+                  </span>
 
 
                     <!-- 좋아요 하트 -->
@@ -161,25 +169,21 @@
             <div class="board-btn-area">
 
                 <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
-                  <!-- th:if 안에서는 반드시 ${} 사용 -->
-                  <th:block th:if="${board.boardCode == 1 and board.memberNo == session.loginMember?.memberNo}">
-                    <button class="completionToggleBtn" type="button" 
-                    th:data-current-status="${board.completionStatus ?: 'N'}"
-                    th:style="${board.completionStatus == 'Y'} ?
+                <!-- th:if 안에서는 반드시 ${} 사용 -->
+                <th:block th:if="${board.boardCode == 1 and board.memberNo == session.loginMember?.memberNo}">
+                    <button class="completionToggleBtn" type="button"
+                        th:data-current-status="${board.completionStatus ?: 'N'}" th:style="${board.completionStatus == 'Y'} ?
                               'background-color: #6c757d; color: white;' :
                               'background-color: #28a745; color: white;'">
-                    
-                    <i id="completionIcon"
-                       th:classappend="${board.completionStatus == 'Y'} ?
+
+                        <i id="completionIcon" th:classappend="${board.completionStatus == 'Y'} ?
                                        'fa-solid fa-circle-check' :
                                        'fa-regular fa-circle'"></i>
-                
-                    <span id="completionText"
-                          th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
-                            <input type="hidden" name="completionStatus"
-           th:value="${board.completionStatus ?: 'N'}" />
-                </button>
-                
+
+                        <span id="completionText" th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">나눔중</span>
+                        <input type="hidden" name="completionStatus" th:value="${board.completionStatus ?: 'N'}" />
+                    </button>
+
                 </th:block>
 
                 <br> <br> <br> <br> <br> <br> <br>
@@ -188,7 +192,7 @@
                     <button id="deleteBtn">삭제(GET)</button>
                     <button id="deleteBtn2">삭제(POST)</button>
                 </th:block>
-               
+
 
 
 
@@ -224,8 +228,11 @@
 
         const boardCode = /*[[${board.boardCode}]]*/ "게시판 코드";
         const memberNo = /*[[${board.memberNo}]]*/ "글 작성자 회원 번호";
+        const completionStatus = /*[[${board.completionStatus}]]*/ "N"; // completionStatus 여부
 
-        // 내가 추가한 두 줄
+        // 내가 추가한 세줄
+
+
     </script>
 
 

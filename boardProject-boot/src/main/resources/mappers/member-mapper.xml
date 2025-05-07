@@ -67,6 +67,21 @@ SELECT MEMBER_EMAIL FROM MEMBER WHERE
    <update id="updatePasswordByMemberNo">
       UPDATE "MEMBER"
       SET MEMBER_PW = #{memberPw}  WHERE MEMBER_NO = #{memberNo} </update>
+<select id="selectMemberByNo" parameterType="int" resultType="Member">
+  SELECT 
+    MEMBER_NO,
+    MEMBER_EMAIL,
+    MEMBER_PW,
+    MEMBER_NICKNAME,
+    MEMBER_TEL,
+    MEMBER_ADDRESS,
+    PROFILE_IMG,
+    TO_CHAR(ENROLL_DATE, 'YYYY-MM-DD') AS ENROLL_DATE,
+    MEMBER_DEL_FL,
+    AUTHORITY
+  FROM MEMBER
+  WHERE MEMBER_NO = #{memberNo}
+</select>
 
 </mapper>
 

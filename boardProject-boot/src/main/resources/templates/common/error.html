@@ -1,0 +1,13 @@
+<!-- src/main/resources/templates/common/error.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>오류</title>
+</head>
+<body>
+  <h1>에러 발생</h1>
+  <p th:text="${errorMessage}">예상치 못한 오류가 발생했습니다.</p>
+  <a href="/">홈으로 돌아가기</a>
+</body>
+</html>

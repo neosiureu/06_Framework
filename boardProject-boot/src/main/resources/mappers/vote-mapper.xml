@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="edu.kh.project.vote.model.mapper.VoteMapper">
+
+
+
+<!-- 1. 사용자가 이미 투표했는지 확인 -->
+  <select id="checkUserVoted" resultType="int">
+    SELECT COUNT(*) 
+    FROM USER_VOTE 
+    WHERE USER_ID = #{userId}
+  </select>
+
+  <!-- 2. USER_VOTE에 사용자 투표 삽입 -->
+  <insert id="insertUserVote">
+    INSERT INTO USER_VOTE (USER_ID, CHOICE)
+    VALUES (#{userId}, #{choice})
+  </insert>
+
+  <!-- 3. VOTE 테이블의 투표 수 증가 -->
+  <update id="incrementVoteCount">
+    UPDATE VOTE
+    SET COUNT = COUNT + 1
+    WHERE CHOICE = #{choice}
+  </update>
+
+  <!-- 4. 현재 선택 항목(A or B)의 투표 수 가져오기 -->
+  <select id="getVoteCount" resultType="int">
+    SELECT COUNT 
+    FROM VOTE 
+    WHERE CHOICE = #{string}
+  </select>
+  
+</mapper>
+
+

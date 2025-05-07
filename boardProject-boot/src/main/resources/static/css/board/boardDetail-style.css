@@ -156,3 +156,17 @@
     color: red;
     cursor: pointer;
 }
+
+.send-message {
+    margin-left: 5px;
+}
+
+.send-message a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1.1em;
+}
+
+.send-message a:hover {
+    color: #0056b3;
+}

@@ -41,4 +41,6 @@ public interface MemberMapper {
    
    
    int updatePasswordByMemberNo(@Param("memberNo") int memberNo, @Param("memberPw") String memberPw);
+
+Member selectMemberByNo(int memberNo);
 }

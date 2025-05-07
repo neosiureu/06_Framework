@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>받은 쪽지함</title>
+  <link rel="stylesheet" href="/css/message/inbox.css"> <!-- 필요시 추가 -->
+</head>
+<body>
+
+  <main>
+    <h2>받은 쪽지함</h2>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>보낸 사람</th>
+          <th>내용</th>
+          <th>보낸 날짜</th>
+          <th>읽음 여부</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="msg : ${messageList}">
+          <td th:text="${msg.senderNo}">보낸사람</td>
+          <td>
+            <a th:href="@{/message/detail/{messageNo}(messageNo=${msg.messageNo})}"
+               th:text="${msg.content}">
+              쪽지내용
+            </a>
+          </td>
+          <td th:text="${msg.sendDate}">보낸시간</td>
+          <td th:text="${msg.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
+        </tr>
+      
+        <tr th:if="${#lists.isEmpty(messageList)}">
+          <td colspan="4">받은 쪽지가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+    <a href="/">홈으로 돌아가기</a>
+  </main>
+
+</body>
+</html>
