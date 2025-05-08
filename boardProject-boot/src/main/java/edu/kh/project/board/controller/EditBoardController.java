@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
@@ -266,4 +267,48 @@ public class EditBoardController {
 				
 		return "redirect:"+path;
 	}
+	
+	
+	
+	// /editBoard/1/2004/delete?cp=1
+	@RequestMapping(value = "{boardCode:[0-9]+}/{boardNo:[0-9]+}/delete", method = {RequestMethod.GET, RequestMethod.POST})
+	public String boardDelete(@PathVariable("boardCode") int boardCode,
+			@PathVariable("boardNo") int boardNo,
+			@RequestParam(value="cp", required = false, defaultValue = "1") int cp,
+			RedirectAttributes ra, @SessionAttribute("loginMember") Member logMember) {
+		
+		Map<String, Integer> map = new HashMap<>();  
+		// 전부 value에 해당하는 실제 값이 int형이어서
+		
+		map.put("boardCode", boardCode);
+		map.put("boardNo", boardNo);
+		map.put("memberNo", logMember.getMemberNo());
+		
+		int result = service.boardDelete(map);
+		
+		
+		String path = null;
+		String message =null;
+		
+		if(result >0) {
+			message = "삭제되었습니다!!";
+			path = String.format("/board/%d?cp=%d", boardCode, cp);
+					// /board/1?cp=7
+		}
+		
+		else {
+			
+			message = "삭제 실패";
+			path = String.format("board/%d/%d?cp=%d", boardCode, boardNo, cp);
+			// /board/1/2000?cp=7
+
+		}
+				
+		
+		
+		ra.addFlashAttribute("message",message);
+		
+		return "redirect:"+path;
+	}
+	
 }

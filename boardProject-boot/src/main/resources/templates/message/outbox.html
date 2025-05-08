@@ -21,7 +21,7 @@
       </thead>
       <tbody>
         <tr th:each="msg : ${sentList}">
-          <td th:text="${msg.senderNickname}">보낸사람 닉네임</td>
+          <td th:text="${msg.receiverNickname}">받는사람 닉네임</td>
           <td>
             <a th:href="@{/message/detail/{messageNo}(messageNo=${msg.messageNo})}"
                th:text="${#strings.abbreviate(msg.content, 20)}">내용</a>

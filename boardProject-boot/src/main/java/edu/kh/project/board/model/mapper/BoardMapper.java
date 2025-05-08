@@ -72,8 +72,19 @@ public interface BoardMapper {
 	 */
 	int selectReadCount(int boardNo);
 
+	
+	
+	/** 나눔 완료 여부 알아내기
+	 * @param paramMap
+	 * @return
+	 */
 	int updateCompletion(Map<String, Object> paramMap);
 
+	
+	
+	
+	
+	
 	
 
 }

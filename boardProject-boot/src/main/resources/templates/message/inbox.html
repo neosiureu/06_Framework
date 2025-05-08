@@ -16,20 +16,24 @@
           <th>보낸 사람</th>
           <th>내용</th>
           <th>보낸 날짜</th>
-          <th>읽음 여부</th>
+          <th colspan="2">읽음 여부</th>
+         
         </tr>
       </thead>
       <tbody>
-        <tr th:each="msg : ${messageList}">
-          <td th:text="${msg.senderNickname}">보낸사람 닉네임</td>
+        <tr th:each="message : ${messageList}">
+          <td th:text="${message.senderNickname}">보낸사람 닉네임</td>
           <td>
-            <a th:href="@{/message/detail/{messageNo}(messageNo=${msg.messageNo})}"
-               th:text="${msg.content}">
+            <a th:href="@{/message/detail/{messageNo}(messageNo=${message.messageNo})}"
+               th:text="${message.content}">
               쪽지내용
             </a>
           </td>
-          <td th:text="${msg.sendDate}">보낸시간</td>
-          <td th:text="${msg.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
+          <td th:text="${message.sendDate}">보낸시간</td>
+          <td th:text="${message.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
+          <td>
+            <a th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo})}">답장</a>
+          </td>
         </tr>
       
         <tr th:if="${#lists.isEmpty(messageList)}">

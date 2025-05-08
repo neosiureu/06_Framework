@@ -407,3 +407,93 @@ completionToggleButtons.forEach((button) => {
 
 
 
+// ----------------------- 게시글 삭제 버튼 GET방식--------------------
+
+
+
+
+const deleteBtn = document.querySelector('#deleteBtn');
+
+if(deleteBtn!=null){
+  deleteBtn.addEventListener('click',()=>{
+    if(!confirm("삭제하시겠습니까?")){
+      alert('취소됨!');
+      return;
+    }
+
+    // /board/1/2009?cp=1 <- 현재 주소
+
+    // -> 목표: /editBoard/1/2009/delete?cp=1
+
+    const url = location.pathname.replace("board","editBoard")+"/delete";
+
+    const quertyString = location.search; // ?cp=1 라는 쿼리스트링 부분이 저장 됨
+
+    location.href = url + quertyString;
+
+
+  });
+}
+
+    
+
+// ----------------------- 게시글 삭제 버튼 POST방식--------------------
+
+const deleteBtn2 = document.querySelector('#deleteBtn2');
+
+
+
+if(deleteBtn!=null){
+  deleteBtn2.addEventListener('click',()=>{
+    if(!confirm("삭제하시겠습니까?")){
+      alert('취소됨!');
+      return;
+    }
+
+    const url = location.pathname.replace("board","editBoard")+"/delete";
+    // 목표: /editBoard/1/2004/delete?cp=1
+
+
+    // JS에서 동기식으로 post요청을 보내는 것은 사실 불가능해서 form태그를 보낸다
+
+
+    const form = document.createElement("form");
+    //<form>
+
+    form.action = url;
+    form.method = "POST";
+
+    // 쿼리 스트링을 주소에 보내지 못함. 
+    // cp를 post로 보내고싶다면 input에 name속성값을 통해 전달해야 함
+
+
+    // cp 값을 저장할 input태그 생성
+
+    const input = document.createElement("input");
+    // <input>
+
+    input.type = "hidden";
+    input.name ="cp" 
+    // 직접 입력할 수 없으니 1이 들어있어야 함
+    // input.value = location.search // 쿼리스트링에서 원하는 파라미터 값을 얻어오는 방버
+
+    const params = new URLSearchParams(location.search);
+    // ?cp=1과 같이 나옴
+
+    const cp = params.get("cp"); // => 1
+    input.value = cp;
+    // cp=1의 형태로 데이터가 제출 됨
+
+
+    form.append(input);
+
+    // 아무데나 붙여라 => 화면에 폼 태그를 추가한 후 제출하기
+    
+    document.querySelector('body').append(form); // 태그는 기호 없이 구해올 수 있음
+
+    form.submit();
+  });
+}
+
+
+
