@@ -119,7 +119,8 @@
             <div class="board-btn-area">
                 
                 <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
-
+                <h1 th:text="${board.memberNo}"></h1>
+                <h1 th:text="${session.loginMember?.memberNo}"></h1>
                 <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
                     <button id="updateBtn">수정</button>
                     <button id="deleteBtn">삭제(GET)</button>

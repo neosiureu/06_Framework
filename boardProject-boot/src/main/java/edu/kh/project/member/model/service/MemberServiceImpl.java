@@ -152,13 +152,14 @@ public class MemberServiceImpl implements MemberService {
 
 	// 로그인 안된 상태에서 비밀번호 재설정
 	@Override
-	public int findPwConfirm(Member inputMember , int memberNo) {
+	public int findPwConfirm(Member inputMember) {
 		
        String encPw = bcrypt.encode(inputMember.getMemberPw());
 		System.out.println(encPw);
 		inputMember.setMemberPw(encPw);
 		
-		return mapper.findPwConfirm(inputMember,memberNo);
+		
+		return mapper.findPwConfirm(inputMember);
 	}
 
 

@@ -121,6 +121,7 @@
     BOARD_CONTENT, 
     BOARD_CODE, 
     READ_COUNT,
+    MEMBER_NO,
     MEMBER_NICKNAME, 
     PROFILE_IMG,
     TO_CHAR(BOARD_WRITE_DATE, 'YYYY"년"MM"월"DD"일"HH24:MI:SS') AS BOARD_WRITE_DATE,
@@ -218,7 +219,122 @@
 		FROM "BOARD"
 		WHERE BOARD_NO = #{boardNo}
 	</select>
-  
+	
+	<!-- 
+		 동적 SQL : <choose> <when> <otherWise>
+		
+		<choose> : 조건문을 작성할 영역 지정
+		 	내부에 <when> <otherWIse> 태그 작성 가능
+	    
+	    <when> : if, else if 역할의 태그
+	            - test 속성 : 조건식 작성하는 속성 
+	    
+	    <otherWise> : else 역할의 태그
+	 -->
+	
+	<!-- 검색 조건이 맞는 게시글 수 조회 -->
+	<select id="getSearchCount">
+		SELECT COUNT(*)
+		FROM BOARD
+		
+		<!--  작성자 검색인 경우 -->
+		<if test='key == "w"'>
+			JOIN MEMBER USING(MEMBER_NO)
+		</if>
+			WHERE BOARD_DEL_FL = 'N'
+			AND BOARD_CODE = #{boardCode}			
+	         
+	    <choose>
+	    	
+	    	<!--  제목 검색 (key 값이 t인경우) -->
+	    	<when test='key == "t"'>
+	    		AND BOARD_TITLE LIKE '%'|| #{query} ||'%' 
+	    	</when>
+	    	
+	    	<!--  내용 검색 (key 값이 c인경우) -->
+	    	<when test='key == "c"'>
+	    	    AND BOARD_CONTENT LIKE '%'|| #{query} ||'%' 
+	    	</when>
+	    	
+	    	<!--  제목+내용 검색 (key 값이 tc인경우) -->
+	    	<when test='key == "tc"'>
+	    		AND (
+	    		 BOARD_TITLE LIKE '%'|| #{query} ||'%'
+	    		 OR 
+	    		 BOARD_CONTENT LIKE '%'|| #{query} ||'%' 	
+	    		)
+	    	</when>
+	    	
+	    	<!--  작성자 검색 (key 값이 w인경우) -->
+	    	<otherwise>
+	    	 	AND MEMBER_NICKNAME LIKE '%'|| #{query} ||'%'
+	    	</otherwise>
+	    	
+	    </choose>     
+	 	
+	</select>
+	
+	<select id="selectSearchList">
+	SELECT BOARD_NO , BOARD_TITLE, READ_COUNT,M.MEMBER_NICKNAME , 
+    (SELECT COUNT(*) FROM "COMMENT" C
+    WHERE C.BOARD_NO = B.BOARD_NO ) COMMENT_COUNT,
+
+    (SELECT COUNT(*) FROM "BOARD_LIKE" l 
+     WHERE L.BOARD_NO  = B.BOARD_NO ) LIKE_COUNT, 
+    <![CDATA[
+      CASE 
+	 
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24 / 60
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24 * 60 * 60) || '초전'
+	
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24 * 60) || '분전' 
+	 
+	  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1
+	  THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE )* 24) || '시간전' 
+	 
+	  ELSE TO_CHAR(BOARD_WRITE_DATE , 'YYYY-MM-DD')
+	  END BOARD_WRITE_DATE 
+ 	 ]]>
+ 	
+     FROM "BOARD" B
+     JOIN "MEMBER" M ON(B.MEMBER_NO = M.MEMBER_NO)
+     WHERE B.BOARD_DEL_FL = 'N'
+     AND B.BOARD_CODE = #{boardCode}
+     
+     <choose>
+	    	
+	    	<!--  제목 검색 (key 값이 t인경우) -->
+	    	<when test='key == "t"'>
+	    		AND BOARD_TITLE LIKE '%'|| #{query} ||'%' 
+	    	</when>
+	    	
+	    	<!--  내용 검색 (key 값이 c인경우) -->
+	    	<when test='key == "c"'>
+	    	    AND BOARD_CONTENT LIKE '%'|| #{query} ||'%' 
+	    	</when>
+	    	
+	    	<!--  제목+내용 검색 (key 값이 tc인경우) -->
+	    	<when test='key == "tc"'>
+	    		AND (
+	    		 BOARD_TITLE LIKE '%'|| #{query} ||'%'
+	    		 OR 
+	    		 BOARD_CONTENT LIKE '%'|| #{query} ||'%' 	
+	    		)
+	    	</when>
+	    	
+	    	<!--  작성자 검색 (key 값이 w인경우) -->
+	    	<otherwise>
+	    	 	AND MEMBER_NICKNAME LIKE '%'|| #{query} ||'%'
+	    	</otherwise>
+	    	
+	    </choose>     	
+    
+     ORDER BY B.BOARD_NO DESC
+	
+	</select>
+	
+	  
 </mapper>
 
 

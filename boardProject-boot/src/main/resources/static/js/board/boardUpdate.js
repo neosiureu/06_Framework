@@ -60,8 +60,9 @@ const updatePreview = (file, order) => {
 	
 	// deleteOrderList에서 해당 이미지 순서를 삭제
 	// -> 왜?? 이전에 X 버튼을 눌러 삭제 기록이 있을 수도 있기 때문에
-	deleteOrderList.delete(order);
-}
+	deleteOrderList.delete(order); 
+	                                // 자바에서는 set.remove(order)로 사용
+}                                  // js에서는 delete(order)로 사용
 
 
 /* input태그, x버튼에 이벤트 리스너 추가 */

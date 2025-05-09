@@ -21,7 +21,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-@SessionAttributes({"loginMember","memberNo"}) // 여러개를 session에다가 실을수있어서 {} 안에서 쓰면됨.
+@SessionAttributes({"loginMember","memberNo1"}) // 여러개를 session에다가 실을수있어서 {} 안에서 쓰면됨.
 @Controller
 @RequestMapping("member")
 @Slf4j
@@ -185,7 +185,7 @@ public class MemberController {
 
 	    if (findmember != null) {
 	        int memberNo = findmember.getMemberNo();
-	        model.addAttribute("memberNo", memberNo); // @SessionAttributes에 의해 세션에 저장됨
+	        model.addAttribute("memberNo1", memberNo); // @SessionAttributes에 의해 세션에 저장됨
 	        return "/member/findPw";
 	    } else {
 	        message = "가입된 회원이 아닙니다.";
@@ -196,10 +196,14 @@ public class MemberController {
 	
 	@PostMapping("findPwConfirm")
 	public String findPwConfirm(Member inputMember,
-	                            @SessionAttribute("memberNo") int memberNo, // 세션에서 memberNo 가져오기
-	                            SessionStatus status,
-	                            RedirectAttributes ra) {
-	    int result = service.findPwConfirm(inputMember, memberNo);
+			RedirectAttributes ra , @SessionAttribute("memberNo1") int memberNo,
+			                        SessionStatus status) {
+	                            
+	                            
+		inputMember.setMemberNo(memberNo);
+	    
+		int result = service.findPwConfirm(inputMember);
+		
 
 	    String message = null;
 	    String path = null;
@@ -207,10 +211,11 @@ public class MemberController {
 	    if (result != 1) {
 	        message = "비밀번호가 재설정되지 않았습니다.!!";
 	        path = "/member/findPw";
+	        status.setComplete();
 	    } else {
 	        message = "비밀번호 재설정완료 !! 메인페이지에서 다시로그인 해주세요.";
 	        path = "/";
-	        status.setComplete(); // 세션 종료
+	        status.setComplete();
 	    }
 
 	    ra.addFlashAttribute("message", message);

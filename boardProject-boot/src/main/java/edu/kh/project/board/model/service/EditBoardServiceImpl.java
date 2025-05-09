@@ -2,7 +2,9 @@ package edu.kh.project.board.model.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +31,7 @@ public class EditBoardServiceImpl implements EditBoardService{
 	private String webPath;    // /images/board
 	
 	@Value("${my.board.folder-path}")
-	private String folderPath; 
+	private String folderPath;  // C:/uploadFiles/board/
 	
 	//게시글 작성하는 메서드
 	@Override
@@ -128,6 +130,106 @@ public class EditBoardServiceImpl implements EditBoardService{
 		
 		return boardNo;
 	}
+	
+	
+	@Override
+	public int boardUpdate(Board inputBoard, List<MultipartFile> images, String deleteOrdeList)throws Exception {
+		
+		//1. 게시글 부분(제목/내용) 수정
+		int result = mapper.boardUpdate(inputBoard);
+		
+		//수정 실패 시 바로 리턴
+		if(result == 0) return 0;
+		
+		//2. 기존 O -> 삭제된 이미지 (deleteOrderList) 가있는 경우
+		if(deleteOrdeList != null && !deleteOrdeList.equals("")) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("deletedOrdeList", deleteOrdeList);
+			map.put("boardNo", inputBoard.getBoardNo());
+			
+			result = mapper.deleteImage(map);
+			
+			// 삭제 실패한경우 -> 롤백
+
+			if(result == 0) throw new RuntimeException();
+		}
+		
+		//3. 선택한 파일이 존재할 경우
+		// 해당 파일 전보만 모아두는 List 생성
+		
+		List<BoardImg> uploadList = new ArrayList<>();
+		
+		// images List에서 하나씩 꺼내어 파일이 있는지 검사
+		
+		for (int i = 0; i < images.size(); i++) {
+			
+			//실제 선택된 파일이 존재하는 경우
+			if(!images.get(i).isEmpty()) {
+				
+				//원본명
+				String originalName = images.get(i).getOriginalFilename();
+				
+				//변경명 
+				String rename = Utility.fileRename(originalName);
+				
+				// 모든 값을 저장할 DTO 생성
+				BoardImg img = BoardImg.builder()
+						      .imgOriginalName(originalName)
+						      .imgRename(rename)
+						      .imgPath(webPath)
+						      .boardNo(inputBoard.getBoardNo())
+						      .imgOrder(i)
+						      .uploadFile(images.get(i)) //이미지 자체를 기억해줄 MultipartFile
+						      .build();
+				
+				//해당 BoardImg 를 uploadList 추가
+				uploadList.add(img);
+				
+				//4. 업로드 하려는 이미지 정보를 이용해서 
+				//    수정 or 삽입 수행
+				
+				//1) 기존 O -> 새 이미지로 변경 -> 수정
+				
+				result = mapper.updateImage(img);
+				
+				if(result == 0) {
+					// 수정 실패 == 기존 해당 순서 (IMG_ORDER)에 이미지가 없었다!
+					// ->삽입 수행
+					
+					//2) 기존 x -> 새이미지 추가
+					result = mapper.insertImage(img);
+				}
+				
+			}
+			
+			//수정또는 삽입이 실패한 경우
+			if(result == 0) throw new RuntimeException(); // 예외발생 -> 롤백
+			
+			
+		}
+		
+		//선택한 파일이 하나도 없을경우
+		if(uploadList.isEmpty()) {
+			return result;
+		}
+		
+		// 수정, 새로 삽입 한 이미지 파일을 서버에 실제로 저장!
+		for(BoardImg img : uploadList) {
+			img.getUploadFile().transferTo(new File(folderPath+ img.getImgRename()));
+		}
+		
+		return result;
+	}
+	
+	//게시글 삭제
+	@Override
+	public int boardDelete(Map<String, Integer> map) {
+		
+		
+		
+		return mapper.boardDelete(map);
+	}
+	
 }
 
 

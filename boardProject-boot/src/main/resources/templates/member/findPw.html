@@ -40,7 +40,7 @@
       <!-- 마이페이지 본문(오른쪽) -->
       <section class="myPage-main">
 
-        <div th:unless="${memberNo != null}">
+        <div th:if="${memberNo1 == null}">
         <h1 class="myPage-title">비밀번호 찾기</h1>
         <span class="myPage-subject">회원의 비밀번호 찾기</span>
 
@@ -71,15 +71,12 @@
           <button class="myPage-submit">비밀번호 찾기</button>
         </form>
      
-        <div>
-          <!-- 디버깅용 -->
-          <p>Session memberNo: <span th:text="${memberNo}">No memberNo</span></p>
-      </div>
+     
      
       </div>
 
 
-        <div th:if="${memberNo != null}">
+        <div th:if="${memberNo1 != null}">
         <h1 class="myPage-title">비밀번호 재설정</h1>
         <span class="myPage-subject">회원의 비밀번호를 재설정</span>
 
@@ -90,7 +87,7 @@
           <label>새 비밀번호</label>
 
           <input type="password" name="memberPw" 
-            maxlength="10" id="memberPw">
+            maxlength="15" id="memberPw">
           </div>
 
           
@@ -99,12 +96,12 @@
           <label>비밀번호 확인</label>
 
           <input type="password" 
-            maxlength="10" id="memberPwConfirm">
+            maxlength="15" id="memberPwConfirm">
 
-          <input type="hidden" id="memberNo" th:value=${memberNo}>
+          
         </div>
         
-
+        
         <button class="myPage-submit">비밀번호 변경</button>
       </form>
       <span class="signUp-message" id="pwMessage">영어,숫자,특수문자(!,@,#,-,_) 6~20글자 사이로 입력해주세요.</span>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.board.mapper.EditBoardMapper">
+
 		
 		
 		<!--
@@ -70,9 +71,55 @@
          </insert>	
 		
 	
+		<!-- 게시글 수정 -->
+	<update id="boardUpdate">
+	
+		UPDATE "BOARD" SET
+		BOARD_TITLE = #{boardTitle},
+		BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_NO = #{boardNo} 
+		AND BOARD_CODE = #{boardCode}
+		AND MEMBER_NO = #{memberNo}
 		
+	</update>
+	
+	<!-- 게시글 이미지 삭제 -->
+	<delete id="deleteImage">
+	DELETE FROM BOARD_IMG
+	WHERE BOARD_NO = #{boardNo}
+	AND IMG_ORDER IN(${deletedOrdeList})
+	</delete>
+	
+	<!-- 게시글 이미지 1행 수정 -->
+	<update id="updateImage">
+	UPDATE "BOARD_IMG" SET
+	IMG_ORIGINAL_NAME = #{imgOriginalName},
+	IMG_RENAME = #{imgRename}
+	WHERE BOARD_NO = #{boardNo}
+	AND IMG_ORDER = #{imgOrder}
+	</update>
+	
+	<!-- 게시글 이미지 1행 삽입 -->
+	<insert id="insertImage">
+	INSERT INTO "BOARD_IMG"
+	VALUES(NEXT_IMG_NO(),
+	       #{imgPath},
+	       #{imgOriginalName},
+	       #{imgRename},
+	       #{imgOrder},
+	       #{boardNo}
+	   )
+	
+	</insert>
 		
-			
+			<!-- 게시글 삭제 -->
+			<update id="boardDelete">
+			UPDATE "BOARD" SET
+			BOARD_DEL_FL = 'Y'
+			WHERE BOARD_CODE = #{boardCode}
+			AND BOARD_NO = #{boardNo}
+			AND MEMBER_NO = #{memberNo}
+			</update>
 			
 		
   
