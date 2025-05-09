@@ -194,6 +194,60 @@ public class BoardServiceImpl implements BoardService {
 			
 			return mapper.updateCompletion(paramMap); // BoardMapper에 정의할 메소드 호출
 		}
+
+		
+		
+		
+
+		/**
+		 * 검색서비스이나 게시글 목록 서비스를 배끼면 된다.
+		 */
+		@Override
+		public Map<String, Object> searchList(Map<String, Object> paraMap, int cp) {
+			// paramMap(key, query, boardCode)
+
+			// selectBoardList에서 삭제되지 않은 게시글 수를 이랃ㄴ getListCount()로 가져와서 페이지네이션을 만들었었음
+			
+			
+			// 1. boardCode에 해당하는 게시판에서 검색되지 않으면서 삭제되지 않은 게시글수를 조회하겠다
+			
+			
+			int listCount = mapper.getSearchCount(paraMap); // paramMap안에 boardCode, 검색조건에 따른 키 쿼리등이 다 있음
+			
+			
+			// 2. 1번의 결과와 cp를 이용하여 페이지네이션 객체를 생성
+			Pagination pagination = new Pagination(cp, listCount);
+
+			
+			
+			// 3. 진짜 페이지 목록 조회
+
+			int limit = pagination.getLimit(); //10이 반환
+			int offset = (cp-1) * limit;
+			
+			RowBounds rowBounds = new RowBounds(offset,limit);
+			
+			
+			// mapper 메서드 호출하여 원하는 코드 수행
+			// mapper메서드 호출 시 전달할 수 있는 경우는 하나 뿐
+			// 둘을 전달할 수 있는 경우: RowBounds 이용할 때
+			
+			// 인자의 종류
+			// 1번째: SQL에 전달할 파라미터 (없으면 null이라도)
+			// 2번째: RowBounds 객체
+
+
+			List<Board> boardList = mapper.selectSearchList(paraMap, rowBounds);
+
+			
+			// 4. boardList와 pagination 객체를 map으로 묶어 위로 간다
+			Map<String, Object> map = new HashMap<>();
+			map.put("pagination", pagination);
+			map.put("boardList", boardList);
+			
+			
+			return map;
+		}
 	
 	
 	

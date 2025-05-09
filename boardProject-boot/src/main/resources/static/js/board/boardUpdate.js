@@ -246,3 +246,78 @@ form.addEventListener("submit", e => {
 └────────────────────────────────────────────────────────────────────────────┘
 
 */
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mainSelect = document.getElementById('mainCategory');
+  const chickenBox = document.getElementById('chickenBox');
+  const pizzaBox = document.getElementById('pizzaBox');
+  const chickenType = document.getElementById('chickenType');
+  const pizzaType = document.getElementById('pizzaType');
+  const resultSpan = document.getElementById('selectedResult');
+
+  // 한글 매핑 객체
+  const categoryMap = {
+    chicken: '치킨',
+    pizza: '피자'
+  };
+
+  const detailMap = {
+    fried: '후라이드 치킨',
+    yangnyeom: '양념 치킨',
+    garlic: '갈릭 치킨',
+    soy: '간장 치킨',
+    cheese: '치즈 피자',
+    pepperoni: '페퍼로니 피자',
+    bulgogi: '불고기 피자',
+    combination: '콤비네이션 피자'
+  };
+
+  // 선택 항목 업데이트 함수
+  function updateResult() {
+    const category = mainSelect.value;
+    let detail = '';
+
+    // 상세 항목 추출
+    if (category === 'chicken') {
+      detail = chickenType.value;
+    } else if (category === 'pizza') {
+      detail = pizzaType.value;
+    }
+
+    if (category && detail) {
+      const categoryName = categoryMap[category] || category;
+      const detailName = detailMap[detail] || detail;
+      resultSpan.textContent = `${categoryName} - ${detailName}`;
+    } else {
+      resultSpan.textContent = '없음';
+    }
+  }
+
+  // 카테고리 변경 시 처리
+  mainSelect.addEventListener('change', () => {
+    const value = mainSelect.value;
+
+    chickenBox.style.display = 'none';
+    pizzaBox.style.display = 'none';
+    chickenType.disabled = true;
+    pizzaType.disabled = true;
+    chickenType.value = '';
+    pizzaType.value = '';
+    resultSpan.textContent = '없음';
+
+    if (value === 'chicken') {
+      chickenBox.style.display = 'block';
+      chickenType.disabled = false;
+    } else if (value === 'pizza') {
+      pizzaBox.style.display = 'block';
+      pizzaType.disabled = false;
+    }
+  });
+
+  // 상세 항목 선택 시 결과 갱신
+  chickenType.addEventListener('change', updateResult);
+  pizzaType.addEventListener('change', updateResult);
+});

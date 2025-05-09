@@ -14,6 +14,61 @@
     <main>
         <th:block th:replace="~{common/header}"></th:block>
 
+
+
+
+
+        
+<!--선택 영역 관련-->
+
+
+  <h2>음식 주문 폼</h2>
+
+  <form action="/submitFood" method="POST">
+    <!-- 음식 카테고리 선택 -->
+    <label for="mainCategory">음식 카테고리</label>
+    <select id="mainCategory" name="category">
+      <option value="">-- 선택하세요 --</option>
+      <option value="chicken">치킨</option>
+      <option value="pizza">피자</option>
+    </select>
+
+    <br><br>
+
+    <!-- 치킨 종류 -->
+    <div id="chickenBox" style="display: none;">
+      <label for="chickenType">치킨 종류</label>
+      <select id="chickenType" name="detail" disabled>
+        <option value="">-- 치킨 선택 --</option>
+        <option value="fried">후라이드 치킨</option>
+        <option value="yangnyeom">양념 치킨</option>
+        <option value="garlic">갈릭 치킨</option>
+        <option value="soy">간장 치킨</option>
+      </select>
+    </div>
+
+    <!-- 피자 종류 -->
+    <div id="pizzaBox" style="display: none;">
+      <label for="pizzaType">피자 종류</label>
+      <select id="pizzaType" name="detail" disabled>
+        <option value="">-- 피자 선택 --</option>
+        <option value="cheese">치즈 피자</option>
+        <option value="pepperoni">페퍼로니 피자</option>
+        <option value="bulgogi">불고기 피자</option>
+        <option value="combination">콤비네이션 피자</option>
+      </select>
+    </div>
+
+    <br>
+    <button type="submit">제출</button>
+  </form>
+
+  <!-- 선택 결과 출력 -->
+  <div id="resultBox" style="margin-top: 20px;">
+    <strong>선택한 항목:</strong> <span id="selectedResult">없음</span>
+  </div>
+
+
         <form action="update" th:object="${board}" method="POST" 
             class="board-write" id="boardUpdateFrm" enctype="multipart/form-data">  
 

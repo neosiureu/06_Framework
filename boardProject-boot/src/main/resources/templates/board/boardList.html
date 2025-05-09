@@ -386,6 +386,13 @@
 				목표 : /board/1?key=w&query=짱구
 			-->
 			<form th:action="@{{boardCode}(boardCode=${boardCode})}" method="get" id="boardSearch">
+				<!-- boardController에서 selectBoardList에서 
+				 @RequestScope에 pathvatriable을 통해 실어놓은 
+				 int boardCode를 이용
+
+				 가령  <form th:action=1>로 바꾼 것과 똑같음 
+
+				 -->
 
 				<select name="key" id="searchKey">
 					<option value="t">제목</option>
@@ -393,12 +400,12 @@
 					<option value="tc">제목+내용</option>
 					<option value="w">작성자</option>
 				</select>
-
+				<!-- 제출되는 파라미터로 키와 벨류가 넘어감. name속성에 해당하는 변수가 key키, 값은 value에 해당하는 t / c / tc-->
 				<input type="text" name="query" id="searchQuery" placeholder="검색어를 입력해주세요.">
 
 				<button>검색</button>
 			</form>
-
+<!-- 한정된 boardList가 들어가야 함-->
 		</section>
 	</main>
 

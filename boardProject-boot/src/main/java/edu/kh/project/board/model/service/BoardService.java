@@ -43,6 +43,13 @@ public interface BoardService {
 		 * @param paramMap (boardNo, completionStatus)
 		 * @return 업데이트된 행의 개수 (성공 시 1)
 		 */
-		int updateCompletion(Map<String, Object> paramMap); 
+		int updateCompletion(Map<String, Object> paramMap);
+
+		/** 검색 서비스
+		 * @param paraMap
+		 * @param cp
+		 * @return
+		 */
+		Map<String, Object> searchList(Map<String, Object> paraMap, int cp); 
 
 }

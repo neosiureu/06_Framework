@@ -51,7 +51,10 @@ public class BoardController {
 	// @PathVariable은 "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
 	@GetMapping("{boardCode:[0-9]+}") // +가 없으면 한 칸에 한자리수의 숫자가 들어갈 수 있다.
 	public String selectBoardList(@PathVariable("boardCode") int boardCode
-			, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model)
+			, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model
+	/* ====================== 추가적으로 키와 쿼리를 얻어옴 ====================== */
+	,@RequestParam Map<String, Object> paraMap)
+	/* === paramMap안에는{"query" = "짱구", "key"="tc"} === */
 
 	{
 		// board이하 1레벨 하위에 어떤 숫자 주소 값이 들어오더라도 매핑하겠다
@@ -59,20 +62,68 @@ public class BoardController {
 
 		Map<String, Object> map = null;
 		
-		/* 조건에 따라 어떤 서비스의 메서드를 호출할지 가름.
-		 다만 반환되는 것을 Map으로
-
-		 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다
-		 board ?key=t & query = 1930; => key는 검색어에 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수
-		 있다
-
-		 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
-
-		 게시글 목록 조회 서비스 호출하기 */
 		
+		
+		
+		
+		/* ====================== 검색이 아닐 때  ====================== */
 
-		map = service.selectBoardList(boardCode, cp);
-		// 어떤 게시판 종류인지, 어떤 페이지를 요청했는지
+		
+		/* ========= 검색이 아니라면 paramMap은 {}라는 빈 맵 상태 ================ */
+
+		if(paraMap.get("key") == null){
+			
+
+			/* 조건에 따라 어떤 서비스의 메서드를 호출할지 가름.
+			 다만 반환되는 것을 Map으로
+
+			 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다
+			 board ?key=t & query = 1930; => key는 검색어에 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수
+			 있다
+
+			 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
+
+			 게시글 목록 조회 서비스 호출하기 */
+			
+
+			map = service.selectBoardList(boardCode, cp);
+			// 어떤 게시판 종류인지, 어떤 페이지를 요청했는지
+			
+			
+		}
+		
+		
+		
+		
+		else {
+			
+			/* ====================== 검색일 때 ====================== */
+			
+			
+
+			//boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에 boardCode를 넣어버려
+			
+			// boardCode를 paramMap에 추가
+			paraMap.put("boardCode", boardCode);
+			//paraMap = {"query"="짱구", "key"="tc", "boardCode"=1 }
+			
+			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
+			// cp로 검색서비스에서 페이지네이션을 만든다.
+			
+			// 검색 서비스 호출
+			
+			map = service.searchList(paraMap,cp);
+			//selectBoardList(boardCode, cp);가 아니라
+			//searchList(paraMap,cp)
+			
+			
+			
+		}
+
+		
+		
+		
+		
 
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("boardList", map.get("boardList"));
