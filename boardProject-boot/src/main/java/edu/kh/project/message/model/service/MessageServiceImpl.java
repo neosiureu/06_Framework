@@ -40,5 +40,11 @@ public class MessageServiceImpl implements MessageService {
         return messageMapper.selectSentMessages(memberNo);
     }
 
+	@Override
+	public List<Map<String, Object>> getConversationList(int memberNo) {
+		// TODO Auto-generated method stub
+		return messageMapper.getConversationList(memberNo);
+	}
+
     
 }

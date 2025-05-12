@@ -17,11 +17,11 @@ import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.mapper.EditBoardMapper;
 import edu.kh.project.common.util.Utility;
-import jakarta.mail.FolderClosedException;
+// import jakarta.mail.FolderClosedException; // 사용되지 않는 import문은 제거하는 것이 좋습니다.
 import lombok.extern.slf4j.Slf4j;
 
 @PropertySource("classpath:/config.properties")
-@Transactional(rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class) // 런타임 예외 발생 시 rollback
 @Service
 @Slf4j
 public class EditBoardServiceImpl implements EditBoardService {
@@ -29,308 +29,194 @@ public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private EditBoardMapper mapper;
 
-    @Value("${my.board.web-path}")
-	private String webPath;
+	@Value("${my.board.web-path}")
+	private String webPath; // /images/board/
 
-    @Value("${my.board.folder-path}")
-	private String folderPath;
+	@Value("${my.board.folder-path}")
+	private String folderPath; // C:/uploadFiles/board/
 
-	// 게시글부분을 일단 보드 테이블에 먼저 insert하기 (이미지는 따로)
-
+	// 게시글 작성 (기존 코드 그대로 유지)
 	@Override
 	public int boardInsert(Board inputBoard, List<MultipartFile> images) throws Exception {
-		// insert 결과로 작성된 게시글의 번호를 반환 받기 (두 테이블의 공통분모라서)
-		
-		
-		// 1. 삽입의 성패
+
+		// 1. 게시글 부분을 먼저 BOARD 테이블 INSERT 하기
 		int result = mapper.boardInsert(inputBoard);
-		
-		// 현재는 삽입 성공한 행의 개수로 0이나 1이 됨
-		// 반환은 inputBoard에 알아서 들어가있음
-		
-		if(result==0) {
+
+		if (result == 0) {
 			return 0;
 		}
-		
-		// 삽입 성공 시 
-		// 삽입된 현 게시글의 번호를 변수로 저장
-		int boardNo  = inputBoard.getBoardNo();
-		// 얕은복사 때문에 inputBoard에 주소를 이 안에 전달함
-		// map파일에서 inputbBoard역시 주소를 건들고 있고 그를 수정하므로 여기서 인자로 들어온것도 수정된다
-		// mapper.xml에서 <selectKey> 태그를 이용해서 생성된
-		// boardNo가 inputBoard에 저장된 상태 (얕은복사)
-		
-		
-		// 2. 업로드된 이미지가 실제로 존재할 경우
-		// 업로드된 이미지 한정으로 별도로 저장하여
-		// BOARD_IMG테이블에 삽입하는 코드를 작성한다
-		
-		
-		// 실제 업로드된 이미지의 정보를 모아둘 리스트를 생성
-		// 가령 리스트 내 1번과 3번에만 실제 multipart객체가 둘만 있다면 그 둘만 있는 새로운 리스트를 만든다 
-		
-		
+
+		int boardNo = inputBoard.getBoardNo();
+
+		// 2. 업로드된 이미지가 실제로 존재할 경우 BOARD_IMG 테이블에 삽입 준비
 		List<BoardImg> uploadList = new ArrayList<>();
-		
-		// 인자로 받은 images리스트에서 하나씩 꺼내어 파일이 있는지 없는지 검사
-		
-		
-		for(int i=0; i< images.size(); i++) {
-			
-			// 실제 선택된 파일이 존재하는 경우
-			
-			if(!images.get(i).isEmpty()) 
-			{
-				// 원본명을 꺼내 변경명을 만든다 => 모든 값들을 저장할 BoardImg DTO를 따로 만들어 저장
-				
-				// 원본명
-				
+
+		for (int i = 0; i < images.size(); i++) {
+			if (!images.get(i).isEmpty()) {
 				String originalName = images.get(i).getOriginalFilename();
-				
-				
-				// 변경명
 				String rename = Utility.fileRename(originalName);
-				
-				/*
-				 * public class BoardImg {
-	
-	
-					private int imgNo;
-	
-	
-					private String imgPath;
-					private String imgOriginalName;
-					private String imgRename;
-	
-					private int imgOrder;
-					private int boardNo;
 
-	
-	
-					// 게시글 이미지 삽입 및 수정 시 사용하는 필드를 미리 만들어 놓는다
-					private MultipartFile uploadFile;
-					}
-				 * */
-				
-				BoardImg img = BoardImg.builder()
-						.imgOriginalName(originalName)
-						.imgRename(rename)
-						.imgPath(webPath)
-						.boardNo(boardNo)
-						.imgOrder(i)
-						.uploadFile(images.get(i))
-						.build();
-						
+				BoardImg img = BoardImg.builder().imgOriginalName(originalName).imgRename(rename).imgPath(webPath)
+						.boardNo(boardNo).imgOrder(i).uploadFile(images.get(i)).build();
 
-				// 해당 BoardImg를 uploadList에 추가
-				
 				uploadList.add(img);
-				
-				/* List<MultipartFile> images에 만일 [O X X O O]이면
-				  BoardImg null null BoardImg BoardImg
-				  => uploadList라는 리스트에는  [BoardImg, BoardImg, BoardImg]
-				*/	
-				
 			}
-			
 		}
-		
-		// 선택한 파일이 아예없는 경우
-		
-		if(uploadList.isEmpty()) {
-			
-			return boardNo; // 컨트롤러 단으로 보드의 이름만 넘김
-			// 제목과 상세내용만을 삽입한 보드 자체의 넘버를 위로 넘기는 것
+
+		// 선택한 파일이 전부 없을 경우
+		if (uploadList.isEmpty()) {
+			return boardNo;
 		}
-		
-		// 선택한 파일이 하나라도 있는 경우
-		
-		// 다시 "BOARD_IMG" 테이블에 추가로 insert하고 실제로 서버에 파일을 저장하기로 한다
-		
-		
-		result  = mapper.insertUploadList(uploadList);
-		// result의 값은 삽입된 행의 개수가 넘어 옴
-		// 전부다 잘 삽입 됐다면 uploadList.size()와 result가 같다.
-		
-		
-		// 다중 insert가 전부 성공했는지 insertUploadList가 전부 정상적으로 잘 삽입됐나?
-		
-		if(result==uploadList.size()) {
-			// 전부 DB에 정상삽입 => 일단 서버에 해당 파일들을 전부 저장
-			for(BoardImg img : uploadList) {
-				img.getUploadFile().transferTo(new File(folderPath+img.getImgRename()) );
+
+		// 3. 선택한 파일이 존재할 경우 BOARD_IMG 테이블에 insert
+		result = mapper.insertUploadList(uploadList);
+
+		// 다중 INSERT 성공 확인 (uploadList의 모든 이미지가 정상 삽입되었는지)
+		if (result == uploadList.size()) {
+			// 서버에 파일 저장
+			for (BoardImg img : uploadList) {
+				img.getUploadFile().transferTo(new File(folderPath + img.getImgRename()));
 			}
-			
-			log.debug("디버깅 결과"+images);
-
+		} else {
+			// 부분적으로 삽입 실패 시 롤백
+			log.error("Failed to batch insert images. Expected: {}, Inserted: {}", uploadList.size(), result);
+			throw new RuntimeException("Failed to insert images.");
 		}
-		
-		else { // 부분적으로 또는 전부다 실패
-			
-			// 삽입된 것이 일부만 있을 때 
-			// uploadList에 2개저장 하려 했는데 1개 삽입 1개 실패여도 그냥 다 실패한거임
-			// 이전에 삽입된 내용을 전부 롤백한다
-			
-			
-			// 스스로 롤백이 되지 않기 때문에 강제로 예외를 발생시켜야 한다
-			// 발생만 시키면 @Transactional이 알아서 처리해줌
-			
-			throw new RuntimeException();
-			
 
-		}
-		
-		
 		return boardNo;
-
 	}
-	
-	
 
 	/**
-	 * 게시글 수정 서비스
+	 * 게시글 수정 서비스 (수정된 로직)
 	 */
 	@Override
 	public int boardUpdate(Board inputBoard, List<MultipartFile> images, String deleteOrderList) throws Exception {
-		// 1. Board에서의 게시글 부분 (제목과 내용) 수정
-		int result = mapper.boardUpdate(inputBoard);
-		
-		// 수정 실패 시 바로 리턴
-		
-		if(result ==0) return 0;
-		
-		// 2. 기존에 있었으나 삭제된 이미지가 있는 경우
-		
-		if(deleteOrderList != null && !deleteOrderList.equals("") ) {
-			// deleteOrderList 자체와 boardNo를 가지고 delete로 간다
-			Map<String, Object> map = new HashMap<>();
-			map.put("deleteOrderList",deleteOrderList);
-			map.put("boardNo", inputBoard.getBoardNo());
-			
-			result = mapper.deleteImage(map);
-			
-			// 삭제 실패될 경우 롤백
-			
-			if(result==0) 
-			{
-				throw new RuntimeException();
-				// 억지로 롤백시키기 위함
-			}
-			
-			
-			
-			// 3. 선택한 파일이 존재할 경우에 해당 파일 정보만 모아두는 List 생성
-			
-			// 어쨋든 MultipartFile타입의 List객체의 요소는 5개
-			
-			List <BoardImg> uploadList = new ArrayList<>();
-			// 왜 제한을 이렇게 함?
-			// for문을 이용해 images리스트에서 multipartFile객체가 실제로 null이 아닌지 검사할 것
-			// 있다면 BoardImg타입으로 빌더를 이용해 추가할 것임
-			
-			// images List에서 하나씩 꺼내어 파일이 있는지 검사
-			
-			for(int i=0; i<images.size(); i++) {
-				// 실제 선택된 파일이 비어있지 않은지 (존재는 하니?)
-				if(!images.get(i).isEmpty()) {
-					
-					// 원본명을 얻어서 rename한다
-					
-					String originalName = images.get(i).getOriginalFilename();
-					
-					// 변경명을 얻어온다 (현재 날짜 시간 .jpg)
-					
-					String rename = Utility.fileRename(originalName);
-					
-					
-					// 모든 값을 저장할 DTO 객체 생성 (BoardImg)
-					BoardImg img = BoardImg.builder()
-							.imgOriginalName(originalName)
-							.imgRename(rename)
-							.imgPath(webPath)
-							.boardNo(inputBoard.getBoardNo())
-							.imgOrder(i)
-							.uploadFile(images.get(i))
-							.build(); //업로드한 이미지들에 대한 모든 정보
-					
-					/*
-					private int imgNo;
-	
-					private String imgPath;
-					private String imgOriginalName;
-					private String imgRename;
-					private int imgOrder;
-					private int boardNo;
 
-	
-					// 게시글 이미지 삽입 및 수정 시 사용하는 필드를 미리 만들어 놓는다
-					private MultipartFile uploadFile; 
-					
-					 */
-					
-					uploadList.add(img);
-					
-					// 4. 업로드하려는 이미지 정보를 이용하여 수정하거나 삽입을 수행한다
-					
-					// 4-1 기존 이미지가 있었는데 새 이미지로 수정한 경우 => update 매퍼 호출
-					
-					result = mapper.updateImage(img); // 현재 만든 이미지 객체 하나만 전달
-					// for문을 돌면서 수정
-					
-					
-					
-					if(result==0) {
-						// 이미지가 변경이 안 됐다 = 해당 순서의 이미지번호에 해당하는 이미지가 비어있었다.
-						// =>기존 해당 순서 img_order에  이미지가 없으면  삽입해라.
-						
-						// 4-2) 기존에 없을 때 새 이미지를 추가
-						result = mapper.insertImg(img); // 현재 다루고있는 img 객체 하나만 전달
-						
-						
-					}
-					
-				}
-				if(result ==0) {
-					
-					throw new RuntimeException(); 
-					// 예외발생을 통한 롤백
-				}
-			} //for문 끝
-			
-			// 선택된 이미지 파일이 하나도 없을 경우
-			if(uploadList.isEmpty()) {
-				return result;
-			}
-			// 업로드 리스트가 비어있다 = for문 돌면서 update insert 없다
-			// 마지막으로 바꾼 delete를 했을 때 result 또는 그 위 제목이나 내용 수정 시의 result
-			
-			
-			
-			// 지금까지는 DB에만 했으니 
-			// 서버에 수정하거나 새로 삽입한 이미지를 저장한다
-			// C uploadFiles boardImg에 저장
-			
-			for(BoardImg img: uploadList) {
-				img.getUploadFile().transferTo(new File(
-						folderPath + img.getImgRename())
-						);
-			}
-			
-			
+		// 1. 게시글 부분(제목/내용) 수정
+		// 성공하면 result = 1
+		int result = mapper.boardUpdate(inputBoard);
+
+		// 수정 실패 시 바로 리턴 (Optimistic Lock 등을 사용하는 경우 0이 될 수 있음)
+		if (result == 0) {
+			log.warn("Board update (text) failed for boardNo: {}", inputBoard.getBoardNo());
+			return 0;
 		}
-		
-		return result;
+
+		// 2. 기존 O -> 삭제된 이미지(deleteOrderList)가 있는 경우
+		// 매퍼 XML에서 deleteOrder -> deleteOrderList로 수정되었다는 가정 하에 진행
+		if (deleteOrderList != null && !deleteOrderList.equals("")) {
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("deleteOrderList", deleteOrderList); // 매퍼 XML과 키 이름 일치 확인!
+			map.put("boardNo", inputBoard.getBoardNo());
+
+			// 실제로 삭제된 이미지 개수
+			int deleteCount = mapper.deleteImage(map);
+
+			// 삭제하려는 이미지가 있었는데 하나도 삭제되지 않았다면 문제 발생으로 간주하고 롤백
+			// (deleteOrderList가 비어있지 않은데 deleteCount가 0인 경우)
+			// 더 정확하게는 deleteOrderList의 개수와 deleteCount를 비교해야 할 수도 있으나,
+			// 여기서는 0이면 문제로 간주하여 롤백합니다.
+			// 만약 삭제할 대상 이미지들이 DB에 원래 없었다면 deleteCount는 0이 될 수 있습니다.
+			// 이 경우는 예외로 처리하지 않아야 할 수도 있으니 비즈니스 로직에 맞게 조정 필요.
+			// 현재 코드에서는 deleteOrderList가 있으면 최소 하나 이상 삭제되어야 정상으로 판단.
+			// if (deleteCount == 0) { // 이 체크는 deleteOrderList에 실제로 존재하는 순서가 없을 때도 발동함
+            //     log.warn("Image deletion attempted for boardNo {} but no images deleted with orders: {}", inputBoard.getBoardNo(), deleteOrderList);
+            //     // throw new RuntimeException("Failed to delete specified images."); // 엄격하게 하려면 롤백
+			// }
+             log.debug("Deleted {} images for boardNo {} with orders: {}", deleteCount, inputBoard.getBoardNo(), deleteOrderList);
+
+
+		}
+
+		// --- 이미지 수정/삽입 대상 목록 (uploadList) 생성 ---
+		// 이 루프는 파일이 비어있지 않은 경우에만 BoardImg 객체를 생성하여 uploadList에 추가하는 역할만 합니다.
+		List<BoardImg> uploadList = new ArrayList<>();
+
+		for (int i = 0; i < images.size(); i++) {
+			// 실제 선택된 파일이 존재하는 경우 (!= 비어있는 input type="file" )
+			if (!images.get(i).isEmpty()) {
+
+				// 원본명
+				String originalName = images.get(i).getOriginalFilename();
+
+				// 변경명
+				String rename = Utility.fileRename(originalName);
+
+				// 모든 값을 저장할 DTO 객체 생성 (BoardImg)
+				BoardImg img = BoardImg.builder().imgOriginalName(originalName).imgRename(rename).imgPath(webPath)
+						.boardNo(inputBoard.getBoardNo()).imgOrder(i) // 파일이 업로드된 인덱스 == 이미지 순서
+						.uploadFile(images.get(i)).build();
+
+				// 해당 BoardImg를 uploadList에 추가
+				uploadList.add(img);
+			}
+		}
+
+		// --- uploadList에 있는 이미지 정보들을 이용하여 DB 수정/삽입 수행 ---
+		// 이 루프는 DB에 실제로 반영하는 역할만 합니다.
+		if (!uploadList.isEmpty()) {
+			int insertUpdateCount = 0; // 성공적으로 DB에 반영된 이미지 수 카운트
+
+			for (BoardImg img : uploadList) {
+				// 해당 순서(imgOrder)의 이미지가 DB에 이미 있다면 수정(UPDATE), 없다면 삽입(INSERT) 수행
+
+				// 1) 기존 이미지가 있었는데 새 이미지로 수정한 경우 => update 매퍼 호출 시도
+				int imageResult = mapper.updateImage(img); // 해당 순서의 이미지 정보 업데이트 시도
+
+				if (imageResult == 0) {
+					// 2) update 실패 (해당 순서에 이미지가 없었거나 문제 발생). 삽입 시도.
+					// 기존에 해당 imgOrder에 이미지가 없었으므로 새로 삽입합니다.
+					imageResult = mapper.insertImg(img);
+				}
+
+				// update 또는 insert 둘 중 하나라도 성공했다면 카운트 증가
+				if (imageResult > 0) {
+					insertUpdateCount++;
+				} else {
+					// 만약 update도 실패하고 insert도 실패했다면 심각한 문제 -> 롤백
+					// 어떤 이미지 때문에 실패했는지 로그에 남기면 디버깅에 도움됨
+					log.error("Image DB operation failed (update or insert) for boardNo: {}, imgOrder: {}",
+							img.getBoardNo(), img.getImgOrder());
+					throw new RuntimeException("Image DB operation failed"); // 예외 발생 -> 롤백
+				}
+			} // end of uploadList DB loop
+
+			// DB 업데이트/삽입이 uploadList의 모든 이미지에 대해 성공했는지 최종 확인
+			// (위 루프에서 실패 시 즉시 예외를 던지므로 이 체크는 사실상 항상 true이거나 도달하지 않음)
+			if (insertUpdateCount != uploadList.size()) {
+				// 이 곳에 도달했다면 예상치 못한 로직 오류일 수 있음
+				log.error("Mismatch in successful image DB operations count. Expected: {}, Actual: {}", uploadList.size(), insertUpdateCount);
+				throw new RuntimeException("Mismatch in successful image DB operations count"); // 예외 발생 -> 롤백
+			}
+
+
+            // --- DB에 성공적으로 반영된 이미지 파일을 서버에 저장 ---
+            // DB 작업이 모두 성공한 후에 파일 저장 (DB 롤백 시 파일만 남는 것 방지)
+			for (BoardImg img : uploadList) {
+				try {
+					img.getUploadFile().transferTo(new File(folderPath + img.getImgRename()));
+				} catch (Exception e) {
+					// 파일 저장 실패 시 로그를 남기고 예외를 던져 DB 트랜잭션도 롤백되게 함
+					log.error("Failed to save file to server for boardNo: {}, imgRename: {}", img.getBoardNo(),
+							img.getImgRename(), e);
+					throw new RuntimeException("Failed to save image file"); // 예외 발생 -> 롤백
+				}
+			}
+		} // end of if (!uploadList.isEmpty())
+
+		// 게시글 부분 수정, 이미지 삭제, 이미지 수정/삽입, 파일 저장이
+		// 중간에 예외 발생 없이 모두 완료되었다면 게시글 수정은 성공으로 간주.
+		// 최초의 게시글 제목/내용 수정 결과를 반환하거나 단순히 성공 의미의 1을 반환.
+		// 최초 result (게시글 제목/내용 수정 결과)는 1이므로 result를 반환해도 무방합니다.
+		return result; // result는 최초 게시글 수정 성공 여부 (1)을 담고 있습니다.
 	}
 
-
-
+	// 게시글 삭제 (기존 코드 그대로 유지)
 	@Override
 	public int boardDelete(Map<String, Integer> map) {
 		// TODO Auto-generated method stub
 		return mapper.boardDelete(map);
 	}
-
-	
-	
 
 }

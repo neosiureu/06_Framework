@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>대화방 목록</title>
+  <link rel="stylesheet" href="/css/message/conversations.css"> <th:block th:replace="~{common/common}"></th:block>
+</head>
+<body>
+
+  <main>
+    <th:block th:replace="~{common/header}"></th:block> <h2>대화방 목록</h2>
+
+    <p th:if="${#lists.isEmpty(conversationList)}">참여 중인 대화방이 없습니다.</p>
+
+    <table border="1" th:unless="${#lists.isEmpty(conversationList)}">
+      <thead>
+        <tr>
+          <th>대화 상대</th>
+          <th>관련 게시글</th>
+          <th>마지막 메시지</th>
+          <th>마지막 메시지 시간</th>
+          <th>읽지 않은 메시지</th>
+          <th>바로가기</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="conversation : ${conversationList}">
+          <td th:text="${conversation.OTHERUSERNICKNAME}">상대방 닉네임</td>
+
+          <td>
+            <span th:if="${conversation.BOARDNO != 0}">
+              <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${conversation.BOARDCODE ?: 1}, boardNo=${conversation.BOARDNO})}" th:text="${conversation.BOARDNO + '번 글'}">게시글 번호번 글</a>
+            </span>
+            <span th:if="${conversation.BOARDNO == 0}" th:text="'관련 게시글 없음'"></span>
+          </td>
+
+          <td th:text="${#strings.abbreviate(conversation.LASTMESSAGECONTENT, 30)}">마지막 메시지 내용...</td>
+          <td th:text="${conversation.LASTMESSAGETIME}">YYYY-MM-DD HH:MI</td>
+          <td th:text="${conversation.NOTREADCOUNT}">N개</td>
+
+          <td>
+            <a th:href="@{/message/conversation/detail(senderNo=${conversation.SENDER_NO}, receiverNo=${conversation.RECEIVER_NO}, boardNo=${conversation.BOARDNO})}">대화 보기</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+    <a href="/">홈으로 돌아가기</a>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+  </main>
+
+  <script src="/js/message/conversations.js"></script>
+</body>
+</html>

@@ -116,6 +116,8 @@ const checkObj = {
   "memberTel": false
 };
 
+// 
+
 
 // 가입하기 버튼을 눌렀을 때 checkObj를 순회하며 전부 true일 때만 가입
 // memberEmail이 이메일 형식이 맞는지 => 이메일이 중복되지 않는지 매번 체크 => 인증번호 받고 인증번호가 맞는지 확인

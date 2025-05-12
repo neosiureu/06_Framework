@@ -62,8 +62,8 @@
                             and board.completionStatus != 'Y'}"
                     class="send-message">
                     
-                    <a th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo})}" title="쪽지 보내기">
-                      <i class="fa-regular fa-envelope"></i>
+ <a th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo}, boardNo=${board.boardNo}, boardCode=${board.boardCode}, cp=${cp})}" 
+ title="쪽지 보내기">                     <i class="fa-regular fa-envelope"></i>
                     </a>
                   </span>
 

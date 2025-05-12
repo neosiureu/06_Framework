@@ -423,15 +423,19 @@ AND MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 </choose>
 
 
-
-
-
-
 ORDER BY BOARD_NO DESC
 
+</select>
 
+<select id="selectDBImageList">
+
+SELECT SUBSTR(PROFILE_IMG, INSTR(PROFILE_IMG,'/',-1)+1) AS "RENAME" FROM "MEMBER" 
+WHERE PROFILE_IMG IS NOT NULL
+UNION
+SELECT CAST (IMG_RENAME AS VARCHAR2(300)) "rename" FROM "BOARD_IMG"
 
 </select>
+
 
 
 </mapper>

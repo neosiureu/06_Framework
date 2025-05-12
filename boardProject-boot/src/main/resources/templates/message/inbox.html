@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>받은 쪽지함</title>
   <link rel="stylesheet" href="/css/message/inbox.css"> <!-- 필요시 추가 -->
 </head>
+
 <body>
 
   <main>
@@ -17,25 +19,32 @@
           <th>제목</th>
           <th>보낸 날짜</th>
           <th colspan="2">읽음 여부</th>
-         
+
         </tr>
       </thead>
       <tbody>
         <tr th:each="message : ${messageList}">
           <td th:text="${message.senderNickname}">보낸사람 닉네임</td>
           <td>
-            <a th:href="@{/message/detail/{messageNo}(messageNo=${message.messageNo})}"
-               th:text="${message.content}">
+            <a th:href="@{/message/detail/{messageNo}(messageNo=${message.messageNo})}" th:text="${message.content}">
               제목
             </a>
           </td>
           <td th:text="${message.sendDate}">보낸시간</td>
           <td th:text="${message.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
           <td>
-            <a th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo})}">답장</a>
+            <a th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo})}"
+              title="답장">답장</a>
+          </td>
+          <td>
+            <span th:if="${message.boardNo != null}">
+              <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${message.boardNo})}"
+                th:text="${message.boardNo}">게시글 번호</a>
+            </span>
+            <span th:unless="${message.boardNo != null}" th:text="'없음'"></span>
           </td>
         </tr>
-      
+
         <tr th:if="${#lists.isEmpty(messageList)}">
           <td colspan="4">받은 쪽지가 없습니다.</td>
         </tr>
@@ -47,4 +56,5 @@
   </main>
 
 </body>
+
 </html>

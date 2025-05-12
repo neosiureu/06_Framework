@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>쪽지 보내기</title>
-    <link rel="stylesheet" href="/css/message/send.css"> <!-- 필요 시 CSS 연결 -->
+    <link rel="stylesheet" href="/css/message/send.css"> 
 </head>
 <body>
     <main>
         <h2 th:text="|${recipient.memberNickname} 님에게 쪽지 보내기|">쪽지 보내기</h2>
-
         <form th:action="@{/message/send}" method="post">
-            <!-- 받는 사람 번호를 hidden으로 넘김 -->
-            <input type="hidden" name="receiverNo" th:value="${recipient.memberNo}" />
-
+            <input type="hidden" name="receiverNo" th:value="${receiverNo}" />
+            <input type="hidden" name="boardNo" th:value="${boardNo}" th:if="${boardNo != null}" />
+            
             <label for="content">내용</label><br>
             <textarea id="content" name="content" rows="6" cols="50" placeholder="쪽지 내용을 입력하세요" required></textarea><br><br>
-
+            
             <button type="submit">보내기</button>
             <a href="javascript:history.back()">취소</a>
         </form>

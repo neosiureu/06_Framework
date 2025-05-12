@@ -189,10 +189,10 @@ public class BoardController {
 
 		if (board == null) {
 
-			path = "redircet:/board/";
+			path = "redirect:/board/";
 			// 해당 게시판의 목록으로 재요청 가령 자유게시판 목록으로
 			ra.addFlashAttribute("message", "게시글이 존재하지 않습니다");
-			return "path";
+			return path;
 
 		}
 

@@ -8,12 +8,14 @@
 		MESSAGE_NO,
 		SENDER_NO,
 		RECEIVER_NO,
-		CONTENT
+		CONTENT,
+		BOARD_NO
 		) VALUES (
 		SEQ_MESSAGE_NO.NEXTVAL,
 		#{senderNo},
 		#{receiverNo},
-		#{content}
+		#{content},
+		#{boardNo}
 		)
 	</insert>
 
@@ -23,8 +25,9 @@
            S.MEMBER_NICKNAME AS senderNickname,
            M.RECEIVER_NO,
            M.CONTENT,
-           TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
-           M.READ_FL
+           TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+           M.READ_FL,
+           M.BOARD_NO AS boardNo
     FROM MESSAGE M
     JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
     WHERE M.RECEIVER_NO = #{memberNo}
@@ -39,7 +42,8 @@
            R.MEMBER_NICKNAME AS receiverNickname,
            M.CONTENT,
            TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
-           M.READ_FL
+           M.READ_FL,
+           M.BOARD_NO AS boardNo
     FROM MESSAGE M
     JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
     JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
@@ -66,15 +70,66 @@
         M.RECEIVER_NO,
         R.MEMBER_NICKNAME AS receiverNickname,
         M.CONTENT,
-        TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS SEND_DATE,
-        M.READ_FL
+        TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+        M.READ_FL,
+        M.BOARD_NO AS boardNo
     FROM MESSAGE M
     JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO  
     JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
-    WHERE M.SENDER_NO = #{memberNo}
+    WHERE M.SENDER_NO = #{memberNo} AND M.MESSAGE_DEL_FL = 'N'
     ORDER BY M.SEND_DATE DESC
 </select>
+<select id="getConversationList" resultType="Map" parameterType="int">
+		SELECT
+			last_msg.MESSAGE_NO,
+			last_msg.SENDER_NO,
+			last_msg.RECEIVER_NO,
+			last_msg.CONTENT as lastMessageContent,
+			last_msg.SEND_DATE as lastMessageTime,
+			last_msg.BOARD_NO as boardNo,
+			last_msg.not_read_count_in_conv as notReadCount,
 
+            last_msg.BOARD_CODE as boardCode,
+
+			CASE
+				WHEN last_msg.SENDER_NO = #{memberNo} THEN last_msg.RECEIVER_NO
+				ELSE last_msg.SENDER_NO
+			END as otherUserNo,
+			(SELECT MEMBER_NICKNAME FROM MEMBER WHERE MEMBER_NO = CASE WHEN last_msg.SENDER_NO = #{memberNo} THEN last_msg.RECEIVER_NO ELSE last_msg.SENDER_NO END) as otherUserNickname
+
+		FROM (
+			SELECT
+				M.MESSAGE_NO, M.SENDER_NO, M.RECEIVER_NO, M.CONTENT, M.SEND_DATE, M.READ_FL,
+				M.BOARD_NO,
+                B.BOARD_CODE,
+
+				GREATEST(M.SENDER_NO, M.RECEIVER_NO) as user_max_no,
+				LEAST(M.SENDER_NO, M.RECEIVER_NO) as user_min_no,
+
+				ROW_NUMBER() OVER (PARTITION BY
+								   LEAST(M.SENDER_NO, M.RECEIVER_NO),
+                                   GREATEST(M.SENDER_NO, M.RECEIVER_NO),
+                                   M.BOARD_NO
+								   ORDER BY M.SEND_DATE DESC) as rn,
+
+				COUNT(CASE WHEN M.RECEIVER_NO = #{memberNo} AND M.READ_FL = 'N' THEN 1 END)
+					  OVER (PARTITION BY
+							LEAST(M.SENDER_NO, M.RECEIVER_NO),
+                            GREATEST(M.SENDER_NO, M.RECEIVER_NO),
+                            M.BOARD_NO) as not_read_count_in_conv
+
+			FROM MESSAGE M
+			JOIN BOARD B ON M.BOARD_NO = B.BOARD_NO
+
+			WHERE (M.SENDER_NO = #{memberNo}
+			   OR M.RECEIVER_NO = #{memberNo})
+			AND M.MESSAGE_DEL_FL = 'N'
+            -- AND B.BOARD_DEL_FL = 'N'
+
+		) last_msg
+		WHERE last_msg.rn = 1
+		ORDER BY last_msg.SEND_DATE DESC
+	</select>
 </mapper>
 
 

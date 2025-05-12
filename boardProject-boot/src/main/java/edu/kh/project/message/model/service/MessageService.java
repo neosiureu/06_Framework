@@ -15,5 +15,7 @@ public interface MessageService {
 
 	List<Message> getSentMessages(int memberNo);
 
+	List<Map<String, Object>> getConversationList(int memberNo);
+
 
 }

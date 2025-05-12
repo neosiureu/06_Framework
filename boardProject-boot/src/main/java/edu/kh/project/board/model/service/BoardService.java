@@ -50,6 +50,13 @@ public interface BoardService {
 		 * @param cp
 		 * @return
 		 */
-		Map<String, Object> searchList(Map<String, Object> paraMap, int cp); 
+		Map<String, Object> searchList(Map<String, Object> paraMap, int cp);
+
+		
+		
+		/** DB
+		 * @return
+		 */
+		List<String> selectDBImageList(); 
 
 }

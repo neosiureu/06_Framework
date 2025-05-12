@@ -149,7 +149,7 @@ public class BoardServiceImpl implements BoardService {
 		}
 		
 		
-		// 해제나 삽입 시 숫자가 변경되곤 함  
+		// 해제나 삽입 시 result의 숫자가 변경되곤 함  
 		//   <span th:text="*{likeCount}">1</span> ← 좋아요 개수      
 		// 3. 해당 게시글의 좋아요 개수를 조회해서 반환
 
@@ -247,6 +247,13 @@ public class BoardServiceImpl implements BoardService {
 			
 			
 			return map;
+		}
+
+
+		@Override
+		public List<String> selectDBImageList() {
+			// TODO Auto-generated method stub
+			return mapper.selectDBImageList();
 		}
 	
 	

@@ -1,271 +1,124 @@
-/* 뱃지 기본 스타일 */
-.badge {
-    display: inline-block; /* 인라인 블록 요소로 만들어 크기 및 패딩 적용 */
-    padding: 0.25em 0.5em; /* 상하 좌우 패딩 */
-    font-size: 0.75em; /* 폰트 크기 줄임 */
-    font-weight: bold; /* 글자 두껍게 */
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap; /* 줄 바꿈 방지 */
-    vertical-align: baseline; /* 세로 정렬 */
-    border-radius: 0.25rem; /* 모서리 둥글게 */
-    margin-left: 5px; /* 제목과의 간격 */
+/* ❶ 브랜드·중립 팔레트 ------------------------------------------------ */
+:root{
+  --primary        : #4CAF6E;   /* 주색 : 버튼·링크·표머리 */
+  --primary-strong : #3B8C55;   /* 주색 hover */
+  --secondary      : #FFEFD5;   /* 보조 배경 */
+  --accent         : #FFC845;   /* 강조 – 뱃지·알림 */
+
+  --neutral-100 : #FFFFFF;
+  --neutral-200 : #F6F6F6;
+  --neutral-400 : #D0D0D0;
+  --neutral-700 : #505050;
+  --neutral-900 : #212121;
+
+  --shadow-card  : 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* 나눔완료 뱃지 스타일 */
-.badge-complete {
-    color: white;
-    background-color: #6c757d;  /* 회색 */
+/* ❷ 공통 -------------------------------------------------------------- */
+*{ box-sizing:border-box; margin:0; padding:0; }
+a{ color:var(--neutral-900); text-decoration:none; }
+a:hover{ text-decoration:underline; }
 
+/* ❸ 뱃지 -------------------------------------------------------------- */
+.badge{
+  display:inline-block; padding:0.25em 0.6em; font-size:0.75em;
+  font-weight:bold; line-height:1; white-space:nowrap; border-radius:0.25rem; margin-left:6px;
 }
+.badge-complete{ background:var(--neutral-700); color:var(--neutral-100); } /* 나눔완료 */
+.badge-ongoing { background:var(--primary);     color:var(--neutral-100); } /* 나눔중   */
 
-/* 나눔중 뱃지 스타일 */
-.badge-ongoing {
-    color: white;
-    background-color: #28a745;  /* 초록색 */
-}
+/* ❹ 게시판 타이틀 ----------------------------------------------------- */
+.board-name      { font-size:2rem; margin:20px 0; }
 
-/* section, div{ border : 1px solid black;} */
+/* ❺ 게시글 목록 래퍼 --------------------------------------------------- */
+.board-list      { width:1000px; margin:50px auto; }
+.board-title     { margin-left:30px; font-size:2.5rem; }
+.list-wrapper    { min-height:670px; width:100%; }
 
-.board-name{
-	font-size : 2em;
-	margin : 20px 0;
-}
-
-a{
-    text-decoration: none;
-    color : black;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.board-list{
-    /* display: flex; */
-    width: 1000px;
-    /* height: 800px; */
-    margin : 50px auto;
-}
-
-.board-title{
-    margin-left : 30px;
-    font-size: 2.5em;
-}
-
-
-.list-wrapper{
-    min-height: 670px;
-    width: 100%;
-}
-
+/* ❻ 테이블 ----------------------------------------------------------- */
 .list-table{
-    width: 100%;
-    padding: 20px;
-    border-collapse: collapse;
+  width:100%; padding:20px; border-collapse:collapse;
+  background:var(--neutral-100); box-shadow:var(--shadow-card);
 }
+.list-table thead{ background:var(--primary); color:var(--neutral-100); }
+.list-table tr   { height:60px; }
+.list-table tbody tr{ border-bottom:1px solid var(--neutral-400); }
 
-.list-table > thead{ background-color: #455ba8; color: white;}
-
-
-.list-table tr{
-    height: 60px;
+.list-table tr>*{ text-align:center; }
+.list-table td:nth-of-type(2){
+  width:50%; text-align:left; padding-left:60px; position:relative;
 }
-
-.list-table > tbody > tr{
-    border-bottom: 1px solid gray;
-
-}
-
-
-.list-table tr > *{ text-align: center; }
-.list-table tr > *:nth-of-type(1){ width: 10%; }
-
-.list-table tr > td:nth-of-type(2){
-     width: 50%; 
-     text-align: left;
-     padding-left: 50px;
-     text-decoration: none;
-}
-
-.list-table tr > *:nth-of-type(3){ width: 13%; }
-.list-table tr > *:nth-of-type(4){ width: 10%; }
-.list-table tr > *:nth-of-type(5){ width: 8%; }
-.list-table tr > *:nth-of-type(6){ width: 8%; }
-
-
-.btn-area{
-    height: 50px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-
-.btn-area > button{
-    margin-right: 50px;
-    
-    width: 80px;
-    height: 40px;   
-    background-color: white;
-
-    font-weight: bold;
-    color: #455ba8;
-    border: 2px solid #455ba8;
-    border-radius: 5px;
-
-    cursor: pointer;
-
-}
-
-
-.pagination{
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-}
-
-.pagination li{
-    width: 20px;
-    margin: 0 5px;
-    text-align: center;
-}
-
-.pagination a{
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.current{
-    font-weight: bold;
-    background-color: #455ba8;
-    border-radius: 50%;
-    color: white !important;
-    letter-spacing: 0 !important;
-}
-
-#boardSearch{
-    text-align: center;
-    width: 500px;
-    height: 30px;
-    margin: 30px auto;
-
-    display: flex;
-    justify-content: space-between;
-}
-
-
-#boardSearch * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-#boardSearch select{
-    width: 100px;
-}
-
-#boardSearch input{
-    flex-grow: 1;
-    margin: 0 10px;
-    padding-left: 10px;
-}  
-
-#boardSearch button{
-    
-    width: 100px;
-
-    font-weight: bold;
-    background-color: #455ba8;
-    border: none;
-    color: white;
-
-    cursor: pointer;
-    
-
-}
-
+.list-table th:nth-of-type(1){ width:10%; }
+.list-table th:nth-of-type(3){ width:13%; }
+.list-table th:nth-of-type(4){ width:10%; }
+.list-table th:nth-of-type(5){ width:8%;  }
+.list-table th:nth-of-type(6){ width:8%;  }
 
 /* 썸네일 */
-.list-table .list-thumbnail{
-    position: absolute;
-    max-height: 30px;
-    max-width: 50px;
-    left: -15px;
-    top: 17px;
+.list-thumbnail{
+  position:absolute; left:-25px; top:15px; max-width:50px; max-height:32px;
+  border-radius:4px; object-fit:cover; border:1px solid var(--neutral-400);
 }
 
-.list-table tr > td:nth-of-type(2){
-    position: relative;
+/* ❼ 글쓰기 버튼 -------------------------------------------------------- */
+.btn-area{
+  display:flex; justify-content:flex-end; align-items:center; height:50px;
+}
+.btn-area button{
+  width:90px; height:42px; margin-right:40px; font-weight:bold;
+  border:2px solid var(--primary); border-radius:6px; background:var(--neutral-100); color:var(--primary);
+  transition:0.15s;
+}
+.btn-area button:hover{
+  background:var(--primary); color:var(--neutral-100);
 }
 
-/* 모달 */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-
-    display: none;
-    z-index: 50;
-
-    background-color: rgba(0, 0, 0, 0.4);
+/* ❽ 페이지네이션 ------------------------------------------------------ */
+.pagination{
+  list-style:none; display:flex; justify-content:center; padding:0; gap:6px;
+}
+.pagination li{ width:26px; text-align:center; }
+.pagination a{
+  display:block; width:100%; line-height:26px; border-radius:50%;
+  color:var(--neutral-900); transition:0.15s;
+}
+.pagination a:hover{ background:var(--neutral-200); }
+.current{
+  background:var(--primary); color:var(--neutral-100) !important; font-weight:bold;
 }
 
-.modal.show {
-    display: flex;
-    animation-name: show;
-    animation-duration: 0.5s;
-    z-index: 500;
-  }
-
-.modal.hide{
-    animation-name: hide;
-    animation-duration: 0.5s;
+/* ❾ 검색창 ------------------------------------------------------------ */
+#boardSearch{
+  width:500px; height:36px; margin:30px auto;
+  display:flex; justify-content:space-between; gap:10px;
 }
-
-  
-#modalImage {
-    background-color: white;
-    margin: auto;
-    border-radius: 10px;
-    max-width: 100%;
-    max-height: 100%;
+#boardSearch select{ width:110px; }
+#boardSearch input{
+  flex-grow:1; padding-left:10px; border:1px solid var(--neutral-400);
+  border-radius:4px; height:100%;
 }
-
-/* @keyframes : 
-애니메이션 중간중간의 특정 지점들을 거칠 수 있는 키프레임들을 설정함으로써 CSS 애니메이션 과정의 중간 절차를 제어할 수 있게 합니다.  */
-@keyframes show {
-    from {opacity: 0;}
-    to {opacity: 1;}
+#boardSearch button{
+  width:110px; font-weight:bold; background:var(--primary); color:var(--neutral-100);
+  border:none; border-radius:4px; transition:0.15s;
 }
+#boardSearch button:hover{ background:var(--primary-strong); }
 
-@keyframes hide {
-    from {opacity: 1;}
-    to {opacity: 0;}
+/* ❿ 모달 (썸네일 크게 보기) ------------------------------------------ */
+.modal{
+  position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; z-index:200;
 }
+.modal.show{ display:flex; animation:modal-show 0.4s; }
+.modal.hide{ animation:modal-hide 0.4s; }
 
- 
-/* 닫기 버튼 꾸미기 */
-#modalClose {
-    position: absolute;
-    top: 20px;
-    right: 40px;
-
-    color: white;
-    font-size: 50px;
-    font-weight: bold; 
-
-    transition-duration: 0.2s;
-    cursor: pointer;
+#modalImage{
+  margin:auto; max-width:90%; max-height:90%; border-radius:10px; background:var(--neutral-100);
+  box-shadow:var(--shadow-card);
 }
-
-#modalClose:hover{
-    transform: scale(1.2);
+#modalClose{
+  position:absolute; top:18px; right:38px; color:var(--neutral-100);
+  font-size:48px; font-weight:bold; cursor:pointer; transition:0.2s;
 }
+#modalClose:hover{ transform:scale(1.2); }
 
-
+@keyframes modal-show{ from{opacity:0;} to{opacity:1;} }
+@keyframes modal-hide { from{opacity:1;} to{opacity:0;} }

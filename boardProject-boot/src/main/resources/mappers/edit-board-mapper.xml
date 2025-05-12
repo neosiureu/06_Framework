@@ -56,8 +56,7 @@
 		<!-- 게시글 이미지 삭제  -->
 		
 		<delete id="deleteImage">
-		DELETE FROM "BOARD_IMG" WHERE BOARD_NO = #{boardNo} AND IMG_ORDER 
-		IN (${deleteOrder})
+		DELETE FROM "BOARD_IMG" WHERE BOARD_NO = #{boardNo} AND IMG_ORDER IN (${deleteOrderList})
 		</delete>
 	
 	<!-- "1,2,3"  => 따옴표가 있으면 안되기 때문 

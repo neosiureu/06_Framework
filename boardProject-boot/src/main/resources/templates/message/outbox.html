@@ -17,6 +17,7 @@
           <th>내용</th>
           <th>보낸 날짜</th>
           <th>읽음 여부</th>
+          <th>게시글 번호</th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +29,11 @@
           </td>
           <td th:text="${msg.sendDate}">보낸시간</td>
           <td th:text="${msg.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</td>
+          <td>
+            <span th:if="${msg.boardNo != 0}"> 
+              <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${msg.boardNo})}" th:text="${msg.boardNo}">게시글 번호</a>
+            </span>
+               <span th:if="${msg.boardNo == 0}" th:text="'없음'"></span> </td>
         </tr>
         <tr th:if="${#lists.isEmpty(sentList)}">
           <td colspan="4">보낸 쪽지가 없습니다.</td>

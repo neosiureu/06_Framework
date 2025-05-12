@@ -22,4 +22,5 @@ public class Message {
     private String readFl;      // 읽음 여부 (Y/N)
     private String senderNickname;   // 보낸 사람 닉네임
     private String receiverNickname; // 받은 사람 닉네임
+    private int boardNo;
 }

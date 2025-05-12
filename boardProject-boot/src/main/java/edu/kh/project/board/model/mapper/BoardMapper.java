@@ -100,6 +100,14 @@ public interface BoardMapper {
 	
 	
 	
+	/** DB 이미지 파일명 
+	 * @return
+	 */
+	List<String> selectDBImageList();
+
+	
+	
+	
 	
 	
 	

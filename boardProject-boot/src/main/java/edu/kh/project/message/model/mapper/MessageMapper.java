@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import edu.kh.project.message.model.dto.Message;
 
@@ -19,6 +20,8 @@ public interface MessageMapper {
 	Message selectMessageDetail(Map<String, Object> paramMap);
 
 	List<Message> selectSentMessages(int memberNo);
+
+	List<Map<String, Object>> getConversationList(@Param("memberNo") int memberNo);
 
 	
 
