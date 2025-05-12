@@ -77,4 +77,9 @@ public interface BoardMapper {
 	 */
 	List<Board> selectSearchList(Map<String, Object> paramMap, RowBounds rowBounds);
 
+	/** DB 에있는 파일명 조회
+	 * @return
+	 */
+	List<String> selectDbImageList();
+
 }
