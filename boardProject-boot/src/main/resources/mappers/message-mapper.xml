@@ -3,22 +3,24 @@
 <mapper
 	namespace="edu.kh.project.message.model.mapper.MessageMapper">
 
-	<insert id="insertMessage" parameterType="Message">
-		INSERT INTO MESSAGE (
-		MESSAGE_NO,
-		SENDER_NO,
-		RECEIVER_NO,
-		CONTENT,
-		BOARD_NO
-		) VALUES (
-		SEQ_MESSAGE_NO.NEXTVAL,
-		#{senderNo},
-		#{receiverNo},
-		#{content},
-		#{boardNo}
-		)
-	</insert>
-
+<insert id="insertMessage" parameterType="Message"
+        useGeneratedKeys="true"
+        keyProperty="messageNo"
+        keyColumn="MESSAGE_NO">
+    INSERT INTO MESSAGE (
+        MESSAGE_NO,
+        SENDER_NO,
+        RECEIVER_NO,
+        CONTENT,
+        BOARD_NO
+    ) VALUES (
+        SEQ_MESSAGE_NO.NEXTVAL,
+        #{senderNo},
+        #{receiverNo},
+        #{content},
+        #{boardNo}
+    )
+</insert>
 	<select id="selectInboxMessages" resultType="Message">
     SELECT M.MESSAGE_NO,
            M.SENDER_NO,
@@ -60,6 +62,14 @@
 		AND RECEIVER_NO = #{memberNo}
 		AND READ_FL = 'N'
 	</update>
+
+
+
+
+<delete id="deleteMessagePage">
+DELETE FROM "MESSAGE" WHERE MESSAGE_NO = #{messageNo}
+</delete>
+
 
 
 <select id="selectSentMessages" resultType="Message">
@@ -129,6 +139,35 @@
 		) last_msg
 		WHERE last_msg.rn = 1
 		ORDER BY last_msg.SEND_DATE DESC
+	</select>
+	
+	
+	<select id="selectMessageThread" resultType="Message" parameterType="Map">
+        SELECT
+            M.MESSAGE_NO as messageNo, 
+            M.SENDER_NO as senderNo, 
+            M.RECEIVER_NO as receiverNo, 
+            M.CONTENT as content, 
+            TO_CHAR(M.SEND_DATE, 'YYYY-MM-DD HH24:MI:SS') as sendDate, 
+            M.READ_FL as readFl, 
+            M.BOARD_NO as boardNo, 
+
+            S.MEMBER_NICKNAME AS senderNickname, 
+            R.MEMBER_NICKNAME AS receiverNickname 
+
+        FROM MESSAGE M 
+        JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+        JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO 
+
+        WHERE (
+            (M.SENDER_NO = #{loggedInUserNo} AND M.RECEIVER_NO = #{otherUserNo})
+            OR
+            (M.SENDER_NO = #{otherUserNo} AND M.RECEIVER_NO = #{loggedInUserNo})
+        )
+        AND M.BOARD_NO = #{boardNo}
+        AND M.MESSAGE_DEL_FL = 'N'
+
+        ORDER BY M.SEND_DATE ASC
 	</select>
 </mapper>
 

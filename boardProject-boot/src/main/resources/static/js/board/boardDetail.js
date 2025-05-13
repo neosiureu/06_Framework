@@ -58,7 +58,7 @@
 1) th:코드
 2) html코드
 
-*/ 
+*/
 
 
 /*
@@ -150,84 +150,65 @@
   */
 
 
-// 1단계: boardLike라는 하트를 얻어온다.
+// 1단계: 좋아요(하트) 아이콘 요소를 얻어온다
 
-document.querySelector('#boardLike').addEventListener('click',(e)=>{
-
-  // 2단계. 로그인이 아닐 때에 대한 NPE (클릭했을 때 서버로 제출 자체를 막아야 함)
-
-
-  if(loginMemberNo == null){
-    alert('로그인 후 이용해주세요');
+document.querySelector('#boardLike').addEventListener('click', (e) => {
+  // 2단계: 로그인하지 않은 사용자의 클릭을 방지한다 (NPE 방지용)
+  if (loginMemberNo == null) {
+    alert('로그인 후 이용해주세요.')
     return;
   }
 
+  // 3단계: 필요한 데이터들을 하나의 객체로 묶고, 서버에 보낼 JSON 형식으로 변환한다
+  // loginMemberNo => 현재 로그인한 사람에 대한 정보를 넘겨줘야 테이블 컬럼에 맞출 수 있음
+  // boardNo       => 현재 게시글 번호
+  // likeCheck     => 정적인 값이 아니므로 클릭 시마다 동적으로 설정해야 함
 
-  // 3. 준비된 3개의 변수를 객체로 저장한 후 json으로 변환하여 서버로 제출
 
   const obj = {
-    // loginMemberNo => 현재 로그인한 사람에 대한 정보를 넘겨줘야 테이블 컬럼에 맞출 수 있음
-    // boardNo  => 현재 게시글의 번호
-    // likeCheck => 정적 정보로는 얻어올 수 없음
+    "memberNo": loginMemberNo,
+    "boardNo": boardNo,
+    "likeCheck": likeCheck
+  }
 
-    "memberNo" : loginMemberNo, // 키를 약간 변경 (서버의 board필드에 맞게)
-    "boardNo" : boardNo,
-    "likeCheck" : likeCheck
-  };
+// 4단계: 서버로 좋아요(insert) 또는 좋아요 취소(delete) 요청을 보낸다
+fetch("/board/like",{
+  method:"POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify(obj)
+}).then(resp => resp.text()).then((count)=>{
 
-
-  // 4단계 좋아요를 insert하거나 delete하는 요청을 저 세변수를 담아 보낸다
-
-
-
-
-  /* 
-  
-
-
-
-
-
-
-  
-
-*/
-
-
-  fetch("/board/like",{ 
-    method :"POST",
-    headers : {"Content-Type": "application/json"},
-    body: JSON.stringify(obj)
-  })
-  .then(resp=> resp.text()) // count는 -1또는 총 좋아요의 개수
-  .then(count => {
-
-
-    if(count == -1){
-      console.log('좋아요 처리 실패');
+  if(count==-1) 
+    {console.log('좋아요 처리 실패');
       return;
     }
+likeCheck = likeCheck==1? 0 : 1;
+// 5단계: 서버 응답이 성공일 경우, 현재 likeCheck 값을 반대로 토글한다 (0 <-> 1)
+// 클릭될 때마다 insert와 delete가 번갈아 동작하도록 하기 위함
 
 
-      // 5단계: 가장먼저 likecheck값을 1 <-> 0으로 변환한다. 클릭할 때마다 변경이 되어야 하기 때문
-      // 클릭 될 때마다 insert와 delete동작을 번갈아가면서 하게 하려고
-      
-      likeCheck = likeCheck == 0? 1: 0; // 재호출을 고려
+// 6단계: 하트 아이콘 모양을 채워진 하트 ↔ 빈 하트로 시각적으로 전환한다
+e.target.classList.toggle("fa-regular"); // 빈 하트
+// 없으면 넣고 있으면 빼게 됨
+e.target.classList.toggle("fa-solid"); // 채워진 하트
 
-      // 6단계: 하트를 채웠다 비웠다 바꾸기
-      e.target.classList.toggle("fa-regular"); // 빈 하트
-      // 없으면 넣고 있으면 빼게 됨
-      e.target.classList.toggle("fa-solid"); // 채워진 하트
+e.target.nextElementSibling.innerText = count;
 
-      // 7단계: 좋아요 수를 화면상에서 수정
+// 7단계: 서버에서 전달받은 총 좋아요 수를 화면의 span 요소에 반영한다
+// e.target.nextElementSibling => 좋아요 수가 출력되는 요소
+})
 
-     //<i id="boardLike" class="fa-heart + (조건부 클래스)"> 의 nextElementSibling에 해당하는 span으로 가져옴
-
-     e.target.nextElementSibling.innerText = count; // 서버에서 온 값을 그대로 span에
-
-  });
+  
 
 })
+
+
+
+
+
+
+
+
 
 
 
@@ -236,10 +217,10 @@ document.querySelector('#boardLike').addEventListener('click',(e)=>{
 
 const updateBtn = document.querySelector('#updateBtn');
 
-if(updateBtn != null){
+if (updateBtn != null) {
   // <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">가 아니면 랜더링 자체가 안 되기 때문
 
-  updateBtn.addEventListener("click",()=>{
+  updateBtn.addEventListener("click", () => {
 
 
     if (completionStatus === 'Y') {
@@ -253,7 +234,7 @@ if(updateBtn != null){
 
     // /1/2004만 똑같고 앞만 board를 editBoard로
 
-    location.href = location.pathname.replace('board','editBoard') + "/update" + location.search ;
+    location.href = location.pathname.replace('board', 'editBoard') + "/update" + location.search;
 
     //   /editBoard/1/2004/update?cp=1 과 같이 변함
   })
@@ -398,9 +379,9 @@ completionToggleButtons.forEach((button) => {
     const urlParams = new URLSearchParams(location.search);
     let cp = urlParams.get('cp');
     if (cp === null || cp.trim() === '') {
-        cp = '1';
+      cp = '1';
     }
-   
+
     location.href = `/board/updateCompletionSync?boardCode=${boardCode}&boardNo=${boardNo}&completionStatus=${newStatus}&cp=${cp}`;
   });
 });
@@ -414,9 +395,9 @@ completionToggleButtons.forEach((button) => {
 
 const deleteBtn = document.querySelector('#deleteBtn');
 
-if(deleteBtn!=null){
-  deleteBtn.addEventListener('click',()=>{
-    if(!confirm("삭제하시겠습니까?")){
+if (deleteBtn != null) {
+  deleteBtn.addEventListener('click', () => {
+    if (!confirm("삭제하시겠습니까?")) {
       alert('취소됨!');
       return;
     }
@@ -425,7 +406,7 @@ if(deleteBtn!=null){
 
     // -> 목표: /editBoard/1/2009/delete?cp=1
 
-    const url = location.pathname.replace("board","editBoard")+"/delete";
+    const url = location.pathname.replace("board", "editBoard") + "/delete";
 
     const quertyString = location.search; // ?cp=1 라는 쿼리스트링 부분이 저장 됨
 
@@ -435,7 +416,7 @@ if(deleteBtn!=null){
   });
 }
 
-    
+
 
 // ----------------------- 게시글 삭제 버튼 POST방식--------------------
 
@@ -443,14 +424,14 @@ const deleteBtn2 = document.querySelector('#deleteBtn2');
 
 
 
-if(deleteBtn!=null){
-  deleteBtn2.addEventListener('click',()=>{
-    if(!confirm("삭제하시겠습니까?")){
+if (deleteBtn != null) {
+  deleteBtn2.addEventListener('click', () => {
+    if (!confirm("삭제하시겠습니까?")) {
       alert('취소됨!');
       return;
     }
 
-    const url = location.pathname.replace("board","editBoard")+"/delete";
+    const url = location.pathname.replace("board", "editBoard") + "/delete";
     // 목표: /editBoard/1/2004/delete?cp=1
 
 
@@ -473,7 +454,7 @@ if(deleteBtn!=null){
     // <input>
 
     input.type = "hidden";
-    input.name ="cp" 
+    input.name = "cp"
     // 직접 입력할 수 없으니 1이 들어있어야 함
     // input.value = location.search // 쿼리스트링에서 원하는 파라미터 값을 얻어오는 방버
 
@@ -488,7 +469,7 @@ if(deleteBtn!=null){
     form.append(input);
 
     // 아무데나 붙여라 => 화면에 폼 태그를 추가한 후 제출하기
-    
+
     document.querySelector('body').append(form); // 태그는 기호 없이 구해올 수 있음
 
     form.submit();

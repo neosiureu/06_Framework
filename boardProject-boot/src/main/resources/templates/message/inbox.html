@@ -19,14 +19,14 @@
           <th>제목</th>
           <th>보낸 날짜</th>
           <th colspan="2">읽음 여부</th>
-
+          <th colspan="2">어느 글에서 왔나요?</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="message : ${messageList}">
           <td th:text="${message.senderNickname}">보낸사람 닉네임</td>
           <td>
-            <a th:href="@{/message/detail/{messageNo}(messageNo=${message.messageNo})}" th:text="${message.content}">
+            <a th:href="@{/message/inboxDetail/{messageNo}(messageNo=${message.messageNo})}" th:text="${message.content}">
               제목
             </a>
           </td>

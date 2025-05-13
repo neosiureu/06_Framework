@@ -15,10 +15,6 @@
 
 
 
-
-
-console.log('잘 연결 되었어요');
-
 const insertBtn = document.querySelector("#insertBtn");
 
 // 글쓰기 버튼이 존재할 때

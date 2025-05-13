@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>대화 상세</title>
+  <link rel="stylesheet" href="/css/message/conversationDetail.css"> <th:block th:replace="~{common/common}"></th:block>
+</head>
+<body>
+
+  <main>
+    <th:block th:replace="~{common/header}"></th:block> <h2>대화 상세</h2>
+
+    <h2 th:if="${not #lists.isEmpty(conversationList)}"
+    th:text="'대화방 목록 : ' + ${conversationList[0].BOARDNO} + '번 글'">대화방 목록</h2>
+
+<h2 th:if="${#lists.isEmpty(conversationList)}">대화방 목록</h2>
+
+
+    <div class="message-list">
+      <div th:if="${#lists.isEmpty(messageList)}">
+        <p>아직 대화 내용이 없습니다.</p>
+      </div>
+
+      <div th:unless="${#lists.isEmpty(messageList)}">
+        <div th:each="message : ${messageList}">
+          <p>
+            <strong>
+              <span th:if="${message.senderNo == session.loginMember.memberNo}">나</span>
+              <span th:unless="${message.senderNo == session.loginMember.memberNo}" th:text="${message.senderNickname}"></span>
+              (<span th:text="${message.sendDate}"></span>) :
+            </strong>
+            <span th:text="${message.content}">메시지 내용</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input">
+        </div>
+
+
+    <br>
+    <a href="/message/conversations">← 대화방 목록으로</a>
+    <a href="/">홈으로 돌아가기</a>
+
+
+    <th:block th:replace="~{common/footer}"></th:block> </main>
+
+  <script src="/js/message/conversationDetail.js"></script> </body>
+</html>

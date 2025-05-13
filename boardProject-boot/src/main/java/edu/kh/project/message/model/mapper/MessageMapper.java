@@ -20,9 +20,18 @@ public interface MessageMapper {
 	Message selectMessageDetail(Map<String, Object> paramMap);
 
 	List<Message> selectSentMessages(int memberNo);
+	
+	
+	/** 메시지 삭제 쿼리
+	 * @return
+	 */
+	int deleteMessagePage(Message messages);
+
+	
 
 	List<Map<String, Object>> getConversationList(@Param("memberNo") int memberNo);
 
-	
+	List<Message> selectMessageThread(Map<String, Object> paramMap);
+
 
 }

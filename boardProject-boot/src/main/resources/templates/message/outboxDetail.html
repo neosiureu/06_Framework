@@ -11,6 +11,7 @@
     <h2>쪽지 상세보기</h2>
 
     <section>
+      <!-- <p><strong>쪽지 번호:</strong> <span th:text="${message.messageNo}">쪽지 번호</span></p> -->
       <p><strong>보낸 사람:</strong> <span th:text="${message.senderNickname}">보낸 사람</span></p>
       <p><strong>받은 사람:</strong> <span th:text="${message.receiverNickname}">받는 사람</span></p>
       <p><strong>관련 게시글 번호:</strong>
@@ -26,10 +27,15 @@
         <span th:text="${message.readFl == 'Y' ? '읽음' : '안읽음'}">읽음 여부</span>
       </p>
       <a th:href="@{/message/send/{memberNo}(memberNo=*{senderNo}, boardNo=*{boardNo})}" title="답장">답장</a>
+      <a th:href="@{
+        /message/outboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo = ${message.messageNo} ,boardNo=${message.boardNo})
+    }" title="쓰레기통" class="delete"><span>🗑️</span></a>
+
     </section>
 
     <a href="/">← 홈으로</a>
   </main>
 
+    <script src="/js/message/inbox.js"></script>
 </body>
 </html>

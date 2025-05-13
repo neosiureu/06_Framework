@@ -15,7 +15,30 @@ public interface MessageService {
 
 	List<Message> getSentMessages(int memberNo);
 
-	List<Map<String, Object>> getConversationList(int memberNo);
 
+	
+	
+	/** 쪽지 삭제
+	 * @param messages 
+	 * @return
+	 */
+	int deleteMessagePage(Message messages);
+
+	
+	
+	
+	/** 대화방 리스트
+	 * @param memberNo
+	 * @return
+	 */
+	List<Map<String, Object>> getConversationList(int memberNo);
+	
+	
+	
+	/** 대화방에서의 쪽지 모음을 상세조회
+	 * @param paramMap
+	 * @return
+	 */
+	List<Message> getMessageThread(Map<String, Object> paramMap);
 
 }

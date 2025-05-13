@@ -61,38 +61,42 @@ public class MessageController {
     @PostMapping("/send")
     public String sendMessage(@ModelAttribute Message message,
                               HttpSession session,
-                              Model model, RedirectAttributes ra, @RequestParam(value = "boardCode", defaultValue = "1") int boardCode,
-                              @RequestParam(value = "cp", defaultValue = "1") int cp) {
+                              Model model, RedirectAttributes ra,
+                              @RequestParam(required = false, value = "boardCode", defaultValue = "1") int boardCode,
+                              @RequestParam(required = false, value = "cp", defaultValue = "1") int cp) {
 
-        // 로그인 회원
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         if (loginMember == null) {
             model.addAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login"; // 예: 로그인 페이지로 리다이렉트
-
+            return "redirect:/member/login";
         }
 
-        // 보내는 사람 번호 설정
         message.setSenderNo(loginMember.getMemberNo());
 
-        // 쪽지 저장
         int result = messageService.sendMessage(message);
 
         if (result > 0) {
-        	return "redirect:/board/" + boardCode + "?cp=" + cp;
-        } else {
-//            model.addAttribute("errorMessage", "쪽지 전송 실패");
-        	ra.addFlashAttribute("message", "쪽지 전송 실패.");
-        	// 간단하게 받는 사람 번호와 boardNo를 URL에 다시 붙여서 sendForm으로 리다이렉트
-            String redirectPath = "redirect:/message/send/" + message.getReceiverNo();
+            //  성공 시 원래 글 상세 페이지로 이동
+        	  return "redirect:/message/detail/"+message.getMessageNo();        } else {
+            //  실패 시 다시 쪽지 작성 페이지로 이동 (boardNo, boardCode, cp 유지)
+            ra.addFlashAttribute("message", "쪽지 전송 실패.");
+
+            String redirectPath = "redirect:/message/detail/" + message.getMessageNo();
+            String queryParams = "?";
+
             if (message.getBoardNo() != 0) {
-                redirectPath += "?boardNo=" + message.getBoardNo();
+                queryParams += "boardNo=" + message.getBoardNo();
             }
-            redirectPath += "&boardCode=" + boardCode + "&cp=" + cp;
-        	return redirectPath;
+
+            queryParams += "&boardCode=" + boardCode + "&cp=" + cp;
+
+            //return "redirect:/message/outbox";
+             return redirectPath; //+ queryParams;
+            //  /message/detail/37
         }
     }
+
     
     @GetMapping("/inbox")
     public String viewInbox(HttpSession session, Model model) {
@@ -112,13 +116,14 @@ public class MessageController {
         return "message/inbox"; // templates/message/inbox.html
     }
     
-    /** 쪽지 상세 조회
+    /** 들어오는 쪽지 상세 조회
      *  URL: /message/detail/{messageNo}
      */
-    @GetMapping("/detail/{messageNo:[0-9]+}")
-    public String viewMessageDetail(@PathVariable("messageNo") int messageNo,
+    @GetMapping("/inboxDetail/{messageNo:[0-9]+}")
+    public String viewMessageInboxDetail(@PathVariable("messageNo") int messageNo,
                                      HttpSession session,
-                                     Model model) {
+                                     Model model
+                                    ) {
 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
@@ -140,7 +145,39 @@ public class MessageController {
         }
 
         model.addAttribute("message", message);
-        return "message/detail";
+        return "message/inboxDetail";
+    
+    }
+    
+    
+    /** 나가는 쪽지 상세 조회
+     *  URL: /message/detail/{messageNo}
+     */
+    @GetMapping("/outboxDetail/{messageNo:[0-9]+}")
+    public String viewMessageOutboxDetail(@PathVariable("messageNo") int messageNo,
+                                     HttpSession session,
+                                     Model model) {
+        Member loginMember = (Member) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+           return "redirect:/member/login";
+        }
+
+        // Map으로 파라미터 묶기
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("messageNo", messageNo);
+        paramMap.put("memberNo", loginMember.getMemberNo());
+
+        Message message = messageService.getMessageDetail(paramMap);
+
+        if (message == null) {
+            model.addAttribute("errorMessage", "쪽지를 찾을 수 없습니다.");
+            return "redirect:/message/outbox";
+        }
+
+        model.addAttribute("message", message);
+        return "message/outBoxDetail";
     
     }
     
@@ -161,6 +198,111 @@ public class MessageController {
 
         return "message/outbox"; // templates/message/outbox.html
     }
+    
+    
+    @GetMapping("/inboxDelete/{memberNo}/{messageNo}")
+    public String deleteMessageIn (@RequestParam (required = false, value = "boardNo", defaultValue = "1") int boardNo, Model model
+    		, @PathVariable("memberNo") int memberNo , @PathVariable("messageNo") int messageNo, @ModelAttribute Message messages
+    		){
+    	
+   
+    	messages.setBoardNo(boardNo);
+    	messages.setMessageNo(messageNo);
+    	
+    	int result = 0;
+    	String message= null;
+    	
+    	
+    	
+		result = messageService.deleteMessagePage(messages);
+
+		
+    	if(result==0) {
+    		
+    		message = "삭제 실패!";
+    		model.addAttribute("message", message);
+    		
+    		return "redirect:/message/inboxDetail";
+    	}
+    	
+    	else {
+    		message = "삭제 성공!";
+    		model.addAttribute("message", message);
+        	return "redirect:/message/inbox";
+
+    	}
+    	
+    	
+    }
+    
+    
+    @GetMapping("/outboxDelete/{memberNo}/{messageNo}")
+    public String deleteMessageOut (@RequestParam (required = false, value = "boardNo", defaultValue = "1") int boardNo, Model model
+    		, @PathVariable("memberNo") int memberNo , @PathVariable("messageNo") int messageNo, @ModelAttribute Message messages
+    		){
+    	
+   
+    	messages.setBoardNo(boardNo);
+    	messages.setMessageNo(messageNo);
+    	
+    	int result = 0;
+    	String message= null;
+    	
+    	
+    	
+		result = messageService.deleteMessagePage(messages);
+
+		
+    	if(result==0) {
+    		
+    		message = "삭제 실패!";
+    		model.addAttribute("message", message);
+    		
+    		return "redirect:/message/outboxDetail";
+    	}
+    	
+    	else {
+    		message = "삭제 성공!";
+    		model.addAttribute("message", message);
+        	return "redirect:/message/outbox";
+
+    	}
+    	
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -231,6 +373,65 @@ public class MessageController {
         // 4. 대화방 목록 View 이름 반환
         return "message/conversations"; // templates/message/conversations.html
     }
+    
+    
+    
+    
+    
+    /**URL: /message/conversation/detail
+     * 이 URL은 대화방 목록(conversations.html)에서 특정 대화방 클릭 시 이동하는 페이지.
+     * 대화방은 '로그인 회원 - 상대방 회원 - 관련 게시글' 조합으로 식별
+     * @param session
+     * @param otherUserNo
+     * @param boardNo
+     * @param model
+     * @param ra
+     * @return
+     */
+    @GetMapping("/conversation/detail") // <-- 이 매핑이 '/message/conversation/detail' GET 요청을 처리
+    public String getMessageThread(
+            HttpSession session,
+            @RequestParam("otherUserNo") int otherUserNo, // 대화 상대 회원 번호 (필수 파라미터)
+            @RequestParam("boardNo") int boardNo,         // 관련 게시글 번호 (필수 파라미터)
+            Model model,
+            RedirectAttributes ra
+        ) {
+
+        // 1. 로그인 여부 확인 (대화 상세 조회는 로그인 필수)
+        Member loginMember = (Member) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            ra.addFlashAttribute("message", "로그인이 필요합니다.");
+            return "redirect:/member/login";
+        }
+
+        // 2. 해당 대화방의 모든 메시지 조회 (새로운 서비스 메소드 호출)
+        // 파라미터: 로그인 회원 번호, 대화 상대 회원 번호, 관련 게시글 번호
+        // MessageService에 새로운 메소드 getMessageThread(Map<String, Object> paramMap) 정의 및 구현 필요
+        // 이 메소드는 List<Message>를 반환해야 합니다. Mapper에 해당 쿼리 작성 필요.
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("loggedInUserNo", loginMember.getMemberNo()); // 현재 사용자
+        paramMap.put("otherUserNo", otherUserNo); // 대화 상대
+        paramMap.put("boardNo", boardNo); // 관련 게시글
+
+        List<Message> messageList = messageService.getMessageThread(paramMap); // Assuming new service method
+
+        // 3. 조회된 메시지 목록을 모델에 담아 View로 전달
+        // View에서 메시지 목록을 시간 순서대로 표시할 것입니다.
+        model.addAttribute("messageList", messageList);
+
+        // 4. View에서 대화방 정보 표시를 위해 필요한 정보도 모델에 담아 전달
+        // 예: 대화 상대 닉네임, 관련 게시글 정보 등 (필요시 조회하여 추가)
+        // otherUserNo를 사용하여 MemberService에서 대화 상대 정보 조회 가능
+        // Member otherUser = memberService.selectMemberByNo(otherUserNo);
+        // if (otherUser != null) model.addAttribute("otherUserNickname", otherUser.getMemberNickname());
+        // model.addAttribute("boardNo", boardNo); // 게시글 번호 다시 전달 (View에서 사용)
+
+        // 5. 대화방 상세 View 이름 반환
+        // 이 View 파일 (templates/message/conversationDetail.html)은 새로 생성해야 합니다.
+        return "message/conversationDetail";
+    }
+    
     
     
 }
