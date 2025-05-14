@@ -53,6 +53,7 @@
   	            )
   </insert>
   
+  
   	<!-- 댓글 삭제 -->
   	<update id="delete">
   	UPDATE "COMMENT" SET
