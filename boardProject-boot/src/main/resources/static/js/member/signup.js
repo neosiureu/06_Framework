@@ -116,7 +116,7 @@ const checkObj = {
   "memberTel": false
 };
 
-// 
+// 전화번호 비밀번호(확인) 닉네임 이메일 인증키
 
 
 // 가입하기 버튼을 눌렀을 때 checkObj를 순회하며 전부 true일 때만 가입
