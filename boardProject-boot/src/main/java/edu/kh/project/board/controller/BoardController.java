@@ -101,7 +101,7 @@ public class BoardController {
 			
 			
 
-			//boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에 boardCode를 넣어버려
+			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에 boardCode를 넣어버려
 			
 			// boardCode를 paramMap에 추가
 			paraMap.put("boardCode", boardCode);

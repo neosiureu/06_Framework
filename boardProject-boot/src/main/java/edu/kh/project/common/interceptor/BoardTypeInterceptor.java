@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
  HandlerIntercpetor 인터페이스를 상속받아 해당 클래스를 구현
  
- 
+
  preHandle: 전처리 (DispatcherServlet이 요청 객체를 받아서 컨트롤러로 전달하는 그 사이에 3번에서)
  
  postHandle: 후처리 (컨트롤러에서 DispatcherServlet으로 돌려줄 때 5번에서 동작)

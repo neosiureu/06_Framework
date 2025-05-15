@@ -55,9 +55,9 @@ if (findPwForm) {
 
             // 서버 응답 (resultText) 값을 확인하여 성공/실패 판단
             // 서버에서 "NOT_FOUND" 또는 null 등을 반환한다고 가정
-            if (resultText && resultText !== 'null' && resultText !== 'NOT_FOUND') {
-                // **성공 또는 유효한 상태 메시지 반환 시**
+            if (resultText.trim() === 'EMAIL_SENT') {
 
+                alert("임시 비밀번호가 메일로 발송되었습니다. 이메일을 확인해주세요.");
                 // 결과 영역 (#findedResultTextElement) 내용 업데이트
                 if (findedResultTextElement) {
                     // <p id="findedResultText"> 태그의 내용을 전체 변경

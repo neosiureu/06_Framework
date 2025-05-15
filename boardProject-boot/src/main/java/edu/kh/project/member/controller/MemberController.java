@@ -301,7 +301,7 @@ public class MemberController {
    @GetMapping("selectPW")
    public String selectPw() {
          
-      return "member/findPw";
+      return "member/selectPw";
    }
    
    

@@ -32,7 +32,12 @@
 			<ul class="chatting-list">
 				<th:block th:each="room : ${roomList}">
 
-					<li class="chatting-item" th:chat-no="${room.chattingRoomNo}" th:target-no="${room.targetNo}">
+					<li class="chatting-item"
+    th:attr="chat-no=${room.chattingRoomNo},
+             target-no=${room.targetNo}">
+
+
+
 						<div class="item-header">
 
 							<img th:if="${room.targetProfile}" class="list-profile" th:src="${room.targetProfile}">
@@ -88,7 +93,9 @@
 		const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
 
 	</script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
 
-    <script src="/js/chatting/chatting.js"></script>
+
+<script src="/js/chatting/chatting.js"></script>
 </body>
 </html>

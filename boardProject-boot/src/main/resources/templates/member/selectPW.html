@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로그인 페이지</title>
+  <title>비밀번호 찾는 페이지</title>
   <th:block th:replace="~{common/common}"></th:block>
 
   <style>
@@ -40,7 +40,7 @@
 
     <section class="content">
 
-      <div id="hidden" class="hidden">
+      <!-- <div id="hidden" class="hidden"> -->
         <br><br><br><br>
 
         <p>비밀번호를 찾고싶으신가요?</p>
@@ -63,13 +63,9 @@
           <button type="submit" style="color: rgb(247, 0, 255);">비밀번호 찾기</button>
         </form>
         <div id="findPwMessage" style="color: red; margin-top: 10px;"></div>
-      </div>
+      <!-- </div> -->
 
-      <div id="finded" class="hidden">
-        <p id="findedResultText"></p>
-        <span id="closeFindIDPW" class="closeFindIDPW">&times;</span>
-      </div>
-
+    
     </section>
 
     <th:block th:replace="~{common/footer}"></th:block>

@@ -253,25 +253,32 @@ SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO = #{boardNo}
 
 
 
+
+<!--  조화수 변화 반영 쿼리  -->
+
 <update id="updateReadCount">
 
 UPDATE "BOARD" SET READ_COUNT = READ_COUNT+1 WHERE BOARD_NO = #{boardNo}
 
 </update>
 
+
+
+<!--  조회수 표시 쿼리  -->
 <select id="selectReadCount">
 
 SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
 
-
-
 </select>
 
+
+
+<!--  나눔완료  -->
 <update id="updateCompletion">
 		UPDATE "BOARD" SET
 		COMPLETION_STATUS = #{completionStatus}
 		WHERE BOARD_NO = #{boardNo}
-	</update>
+</update>
 
 
 
@@ -426,6 +433,9 @@ AND MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 ORDER BY BOARD_NO DESC
 
 </select>
+
+
+
 
 <select id="selectDBImageList">
 

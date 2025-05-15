@@ -12,56 +12,58 @@
 
   <th:block th:replace="~{common/common}"></th:block>
 
-  <style> 
-  .hidden{
-    display: none;
-  }
+  <style>
+    .hidden {
+      display: none;
+    }
 
 
-  .my-info {
-  width: 400px;
-  padding: 10px;
-  border: 1px solid #999;
-  border-radius: 10px;
-  background-color: #fefefe;
-  font-family: 'Noto Sans KR', sans-serif;
-}
+    .my-info {
+      width: 400px;
+      padding: 10px;
+      border: 1px solid #999;
+      border-radius: 10px;
+      background-color: #fefefe;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
 
-.nickname-email {
-  margin-bottom: 8px;
-}
+    .nickname-email {
+      margin-bottom: 8px;
+    }
 
-.nickname-email a {
-  font-weight: bold;
-  margin-right: 10px;
-  font-size: 16px;
-}
+    .nickname-email a {
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 16px;
+    }
 
-.nickname-email p {
-  margin: 4px 0 0 0;
-  font-size: 13px;
-  color: #666;
-}
+    .nickname-email p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: #666;
+    }
 
-.message-actions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+    .message-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
 
-.message-btn, .logout-btn {
-  padding: 5px 8px;
-  border-radius: 6px;
-  background-color: #e7f0ff;
-  text-decoration: none;
-  color: #333;
-  font-size: 13px;
-  border: 1px solid #ccc;
-}
+    .message-btn,
+    .logout-btn {
+      padding: 5px 8px;
+      border-radius: 6px;
+      background-color: #e7f0ff;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+      border: 1px solid #ccc;
+    }
 
-.message-btn:hover, .logout-btn:hover {
-  background-color: #cfe0ff;
-}
+    .message-btn:hover,
+    .logout-btn:hover {
+      background-color: #cfe0ff;
+    }
   </style>
 </head>
 
@@ -90,13 +92,13 @@
 
         <th:block th:if="${session.loginMember==null}">
 
-        <br> <br>
+          <br> <br>
           <!-- 로그인 박스 -->
           <form action="/member/login" method="POST" id="loginForm">
             <fieldset class="id-pw-area">
               <!-- 아이디/비밀번호 입력 -->
-              
-             
+
+
               <section>
                 <input type="text" name="memberEmail" placeholder="이메일" required>
 
@@ -111,7 +113,7 @@
 
             <label>
               <!-- label 태그 : input 태그의 제목을 나타내는 태그  -->
-              <input type="checkbox" name="saveId"> 
+              <input type="checkbox" name="saveId">
               <!-- value가 없는데 체크박스는 체크가 된 경우 on이라는 값으로 서버에 넘어감, 체크가 안 된 경우에는 null로 넘어온다. -->
               아이디 저장
             </label>
@@ -122,7 +124,7 @@
 
               <span> | </span>
 
-              <a href="/member/selectIDPW" id="findIDPw" >ID/PW 찾기</a>
+              <a href="/member/selectIDPW" id="findIDPw">ID/PW 찾기</a>
 
             </article>
 
@@ -145,19 +147,20 @@
               -->
 
               <!-- th:with는 변수 선언 -->
-              <img th:with="user=#{user.default.image}" th:src="${session.loginMember.profileImg ?: user}" id="memberProfile" alt="프로필 이미지">
+              <img th:with="user=#{user.default.image}" th:src="${session.loginMember.profileImg ?: user}"
+                id="memberProfile" alt="프로필 이미지">
             </a>
 
             <!-- 닉네임, 이메일, 로그아웃 버튼 영역 -->
             <div class="my-info" th:object="${session.loginMember}">
               <div>
-                <a href="/mypage/info" id="nickname" th:text = "*{memberNickname}">닉네임</a>
+                <a href="/mypage/info" id="nickname" th:text="*{memberNickname}">닉네임</a>
                 <a href="/message/inbox" id="messageBoxBtn"> 받은 쪽지함</a>
                 <a href="/message/outbox" id="messageBoxBtn"> 보낸 쪽지함</a>
                 <a href="/message/conversations" id="conversationsBtn"> 대화방</a>
                 <a href="/member/logout" id="logoutBtn">로그아웃</a>
               </div>
-              <p th:text = "*{memberEmail}">이메일</p>
+              <p th:text="*{memberEmail}">이메일</p>
 
             </div>
           </article>
@@ -169,56 +172,52 @@
       <div class="hidden" id="hidden">
         <br>
         <p>이메일을 찾고싶으신가요?</p>
-      
-        <!-- 아이디  비번 찾기 form -->
+
+        <!-- 아이디  찾기 form -->
         <form action="/member/selectID" method="get" th:if="${session.loginMember == null}">
           <label>
             닉네임:
             <input name="memberNickname" required>
           </label>
           <br>
-      
+
           <label>
             전화번호:
             <input name="memberTel" required>
           </label>
           <br><br>
-      
+
           <button type="submit" style="color: #f70aff">아이디 찾기</button>
+          <br><br><br><br>
+
+          <!-- 비밀번호 찾기 영역 -->
+
+
         </form>
-      
-    
-      
-        <br><br><br><br>
-      
-        <!-- 비밀번호 찾기 영역 -->
-        <p>비밀번호를 찾고싶으신가요?</p>
-        <label>
-          닉네임:
-          <input name="memberNickname">
-        </label>
-        <br>
-        <label>
-          이메일:
-          <input name="memberEmail">
-        </label>
-        <br>
-        <label>
-          전화번호:
-          <input name="memberTel">
-        </label>
-        <br><br>
-        <a href="/member/selectPW" style="color: rgb(247, 0, 255);">비밀번호찾기</a>
+
+
+
+
+
+        <!-- 아이디  비번 찾기 form -->
+        <form action="/member/selectPW" method="get" th:if="${session.loginMember == null}">
+          <p>비밀번호를 찾기 위한 페이지로 이동</p>
+
+
+          <!-- 비밀번호 찾기 영역 -->
+
+
+          <a href="/member/selectPW" style="color: rgb(247, 0, 255);">비밀번호찾기</a>
+        </form>
+
+
+
+
+
+
       </div>
-          <!-- 결과 메시지 -->
-          <div th:if="${findEmail != null}" id="finded">
-            <p>
-              찾으신 이메일은
-              <strong th:text="${findEmail}"></strong>
-              입니다.
-            </p>
-            <span id="closeFindIDPW" class="closeFindIDPW">&times;</span>
-          </div>
+
+      </div>
     </section>
   </main>
 
