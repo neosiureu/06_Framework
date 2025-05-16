@@ -2,36 +2,106 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>이메일 인증</title>
+    <title>FeatherWorld - 이메일 인증</title>
 </head>
 
-<!-- css / js 파일은 이메일 첨불가-->
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f6f6f6;">
-    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f6f6f6; padding: 40px 0;">
+<!-- 이메일 클라이언트에 최적화된 인라인 스타일 사용 -->
+<body style="margin: 0; padding: 0; font-family: 'Pretendard-Regular', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif; background-color: #f5f5f5;">
+    <table align="center" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 0;">
         <tr>
             <td>
-                <table align="center" width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 40px;">
+                <table align="center" width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); padding: 0; overflow: hidden;">
+                    <!-- 상단 헤더 영역 - 웹사이트 헤더와 유사하게 스타일링 -->
                     <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <!-- cid:logo 는 첨부 이미지로 처리 -->
-                            <img src="cid:logo" alt="로고" width="150" style="display: block;">
+                        <td style="background-color: white; padding: 15px 20px; border-bottom: 1px solid #e0e0e0;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <!-- 로고와 텍스트를 포함한 로고 영역 -->
+                                        <table cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>
+                                                    <img src="cid:logo" alt="FeatherWorld" width="50" height="50" style="display: inline-block;">
+                                                </td>
+                                                <td style="padding-left: 10px;">
+                                                    <span style="font-family: 'Pacifico', cursive; color: #9F2120; font-weight: 400; font-size: 28px;">FeatherWorld</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td align="right">
+                                        <span style="font-size: 18px; color: #555;">회원가입 인증</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
+                    
+                    <!-- 콘텐츠 영역 -->
                     <tr>
-                        <td align="center" style="font-size: 18px; color: #333333; padding-bottom: 20px;">
-                            아래 인증번호를 회원가입 페이지에 입력해 주세요.
+                        <td style="padding: 40px 30px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <!-- 인사말 -->
+                                <tr>
+                                    <td align="center" style="font-size: 24px; font-weight: bold; color: #333333; padding-bottom: 30px;">
+                                        회원가입을 환영합니다!
+                                    </td>
+                                </tr>
+                                
+                                <!-- 안내 메시지 -->
+                                <tr>
+                                    <td align="center" style="font-size: 16px; color: #555555; padding-bottom: 30px; line-height: 1.5;">
+                                        FeatherWorld 서비스 이용을 위해<br>
+                                        아래 인증번호를 회원가입 페이지에 입력해 주세요.
+                                    </td>
+                                </tr>
+                                
+                                <!-- 인증번호 표시 - 웹사이트 주요 색상 적용 -->
+                                <tr>
+                                    <td align="center" style="padding-bottom: 35px;">
+                                        <div style="display: inline-block; background-color: #f9f6f2; border: 2px solid #9F2120; border-radius: 5px; padding: 15px 40px;">
+                                            <span style="font-size: 32px; font-weight: bold; color: #9F2120; letter-spacing: 3px;" th:text="${authKey}">123456</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- 추가 안내 -->
+                                <tr>
+                                    <td align="center" style="padding-bottom: 20px;">
+                                        <table width="90%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                                            <tr>
+                                                <td align="center" style="font-size: 14px; color: #777777; line-height: 1.6;">
+                                                    <i style="color: #9F2120; margin-right: 5px;">⏱</i>
+                                                    이 인증번호는 <span style="color: #9F2120; font-weight: bold;">5분</span> 동안 유효합니다.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="font-size: 14px; color: #777777; padding-top: 10px; line-height: 1.6;">
+                                                    인증번호 요청을 하지 않으셨다면 이 이메일을 무시해 주세요.
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
+                    
+                    <!-- 푸터 영역 - 웹사이트 푸터와 유사하게 스타일링 -->
                     <tr>
-                        <td align="center">
-                            <div style="display: inline-block; font-size: 24px; font-weight: bold; color: #004aad; border: 2px dashed #004aad; padding: 15px 30px; border-radius: 6px;">
-                                <span th:text="${authKey}">인증번호</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="font-size: 14px; color: #777777; padding-top: 30px;">
-                            이 인증번호는 5분간 유효합니다.
+                        <td style="background-color: #ffffff; padding: 15px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="font-size: 14px; color: #777; line-height: 1.5;">
+                                        © 2025 FeatherWorld Social Platform - all rights reserved
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="font-size: 12px; color: #999999; padding-top: 10px;">
+                                        본 메일은 발신 전용으로 회신되지 않습니다.
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
