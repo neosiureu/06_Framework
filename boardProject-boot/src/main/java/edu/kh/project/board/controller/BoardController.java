@@ -57,6 +57,12 @@ public class BoardController {
 	/* === paramMap안에는{"query" = "짱구", "key"="tc"} === */
 
 	{
+		
+
+	    log.info("[GET] /board/{}", boardCode);
+	    log.debug("→ 현재 페이지(cp): {}", cp);
+	    log.debug("→ 파라미터(paraMap): {}", paraMap);
+	    
 		// board이하 1레벨 하위에 어떤 숫자 주소 값이 들어오더라도 매핑하겠다
 		// 조회 서비스 호출 후 결과를 맵으로 반환
 
@@ -72,6 +78,7 @@ public class BoardController {
 		/* ========= 검색이 아니라면 paramMap은 {}라는 빈 맵 상태 ================ */
 
 		if(paraMap.get("key") == null){
+			log.info("검색이 아닌 게시글 목록 조회 요청");
 			
 
 			/* 조건에 따라 어떤 서비스의 메서드를 호출할지 가름.
@@ -99,7 +106,7 @@ public class BoardController {
 			
 			/* ====================== 검색일 때 ====================== */
 			
-			
+			log.info("검색 기반 게시글 목록 요청");
 
 			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에 boardCode를 넣어버려
 			
@@ -111,7 +118,7 @@ public class BoardController {
 			// cp로 검색서비스에서 페이지네이션을 만든다.
 			
 			// 검색 서비스 호출
-			
+			log.debug("→ 검색 결과 목록: {}", map);
 			map = service.searchList(paraMap,cp);
 			//selectBoardList(boardCode, cp);가 아니라
 			//searchList(paraMap,cp)

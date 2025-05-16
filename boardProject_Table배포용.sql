@@ -1,4 +1,7 @@
 
+
+
+SELECT * FROM "MEMBER" m ; 
 CREATE TABLE "MEMBER" (
 	"MEMBER_NO"	NUMBER		NOT NULL,
 	"MEMBER_EMAIL"	NVARCHAR2(50)		NOT NULL,
@@ -1003,6 +1006,7 @@ COMMENT ON COLUMN "CHATTING_ROOM"."CREATE_DATE" IS '채팅방 생성일';
 COMMENT ON COLUMN "CHATTING_ROOM"."OPEN_MEMBER" IS '개설자 회원 번호';
 COMMENT ON COLUMN "CHATTING_ROOM"."PARTICIPANT" IS '참여자 회원 번호';
 
+
 -- 기존 'MESSAGE' 테이블의 이름을 'MESSAGES'로 변경합니다. (채팅 메시지 테이블)
 CREATE TABLE "MESSAGES" (
 	"MESSAGE_NO"	NUMBER		NOT NULL,
@@ -1073,9 +1077,10 @@ CREATE SEQUENCE SEQ_MESSAGES_NO NOCACHE;
 
 
 /* 로그인한 회원이 참여한 채팅방 목록 조회*/
--- 조회 쿼리에서도 'MESSAGE' 테이블이 사용된 부분을 'MESSAGES'로 변경합니다.
+-- 특정 사용자가 사용한 채팅방 목록 (각 채팅방의 최근 메시지, 관련 정보 등등이 있을텐데 그를 조회하는 용)
+-- 조회 쿼리에서도 'MESSAGE' 테이블이 사용된 부분을 'MESSAGES'로 변경.
 SELECT CHATTING_ROOM_NO
-	-- 서브쿼리 안의 'MESSAGE' 테이블 이름을 'MESSAGES'로 변경합니다.
+	-- 서브쿼리 안의 'MESSAGE' 테이블 이름을 'MESSAGES'로 변경.
 	,(SELECT MESSAGE_CONTENT FROM
 		(SELECT * FROM MESSAGES M2
 		WHERE M2.CHATTING_ROOM_NO = R.CHATTING_ROOM_NO
@@ -1083,14 +1088,14 @@ SELECT CHATTING_ROOM_NO
 		WHERE ROWNUM = 1) LAST_MESSAGE
 	-- 서브쿼리 안의 'MESSAGE' 테이블 이름을 'MESSAGES'로 변경합니다.
 	,TO_CHAR(NVL((SELECT MAX(SEND_TIME) SEND_TIME
-			FROM MESSAGES M
-			WHERE R.CHATTING_ROOM_NO  = M.CHATTING_ROOM_NO), CREATE_DATE),
+			FROM MESSAGES M -- 널 처리 함수 => 앞의 작성한 값이 null이면 뒤의 값으로 대체
+			WHERE R.CHATTING_ROOM_NO  = M.CHATTING_ROOM_NO), CREATE_DATE), -- 채팅방이 개설만 됐고 오간적이 없다.
 			'YYYY.MM.DD') SEND_TIME
-	,NVL2((SELECT OPEN_MEMBER FROM CHATTING_ROOM R2
+	,NVL2((SELECT OPEN_MEMBER FROM CHATTING_ROOM R2   -- 널 처리 함수 => null이라면 세번째 인자로 대입 null이 아니라면 두번째 인자로
 		WHERE R2.CHATTING_ROOM_NO = R.CHATTING_ROOM_NO
 		AND R2.OPEN_MEMBER = 1),
-		R.PARTICIPANT,
-		R.OPEN_MEMBER
+		R.PARTICIPANT, -- null이 아닌 경우 = 로그인한 사람이 내가 채팅을 오픈한 멤버일 때는 참가자가 이 메시지를 받는 타겟의 번호이다.
+		R.OPEN_MEMBER -- null인 경우 참가자인 내가 메시지를 보낸 타겟은 오픈 멤버
 		) TARGET_NO
 	,NVL2((SELECT OPEN_MEMBER FROM CHATTING_ROOM R2
 		WHERE R2.CHATTING_ROOM_NO = R.CHATTING_ROOM_NO
@@ -1107,7 +1112,7 @@ SELECT CHATTING_ROOM_NO
 	-- 서브쿼리 안의 'MESSAGE' 테이블 이름을 'MESSAGES'로 변경합니다.
 	,(SELECT COUNT(*) FROM MESSAGES M
 	WHERE M.CHATTING_ROOM_NO = R.CHATTING_ROOM_NO
-	AND READ_FL = 'N' AND SENDER_NO != 1) NOT_READ_COUNT
+	AND READ_FL = 'N' AND SENDER_NO != 1) NOT_READ_COUNT -- 내가 보낸 것을 제외한 것들 중 읽지 않은 메시지 수를 가져간다.
 	-- 서브쿼리 안의 'MESSAGE' 테이블 이름을 'MESSAGES'로 변경합니다.
 	,(SELECT MAX(MESSAGE_NO) SEND_TIME
 	FROM MESSAGES M
@@ -1116,13 +1121,7 @@ FROM CHATTING_ROOM R
 WHERE OPEN_MEMBER = 1
 OR PARTICIPANT = 1
 ORDER BY MAX_MESSAGE_NO DESC NULLS LAST;
-
-
-
-
-
-
-
+-- 채팅방 열어놓고 아무것도 안하는 경우 마지막에 두겠다.
 
 
 

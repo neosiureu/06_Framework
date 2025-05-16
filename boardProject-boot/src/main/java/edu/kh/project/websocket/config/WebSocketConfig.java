@@ -55,6 +55,12 @@ public class WebSocketConfig implements WebSocketConfigurer{
 		.withSockJS();
 		
 		
+		registry.addHandler(chattingWebsocketHandler,  "/chattingSock")
+		.addInterceptors(handshakeInterceptor)
+		.setAllowedOriginPatterns("http://localhost/",
+									"http://127.0.0.1/",
+									"http://192.168.50.229/")
+		.withSockJS();
 		
 	}
 	

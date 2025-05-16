@@ -28,7 +28,9 @@ DB의 MEMBER_NO가 memberNo라는 dto에 바로 세팅이 됐었다
 
 
 type=연결할 DTO의 경로 또는 mybatis상 경로 
-id= 해당 태그를 식별할 값 (이름)-->
+id= 해당 태그를 식별할 값 (이름)
+
+-->
 
 
 <resultMap type="Board" id="board_rm">

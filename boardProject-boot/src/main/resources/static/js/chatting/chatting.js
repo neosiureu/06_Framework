@@ -344,7 +344,10 @@ function selectChattingFn() {
 
 // ----------------------------------------------------------------------------------------------------------------
 
+
+
 // sockjs를 이용한 WebSocket 구현
+
 
 // 로그인이 되어 있을 경우에만
 // /chattingSock 이라는 요청 주소로 통신할 수 있는  WebSocket 객체 생성
@@ -392,6 +395,8 @@ inputChatting.addEventListener("keyup", e => {
 })
 
 
+
+// onmessage = addEventListner
 
 // WebSocket 객체 chattingSock이 서버로 부터 메세지를 통지 받으면 자동으로 실행될 콜백 함수
 chattingSock.onmessage = function(e) {
