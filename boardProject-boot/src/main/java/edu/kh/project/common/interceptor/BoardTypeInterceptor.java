@@ -18,16 +18,13 @@ import lombok.extern.slf4j.Slf4j;
  요청, 응답, 뷰 완성 후 가로채는 객체 (Spring 스펙에서 지원)
 
  HandlerIntercpetor 인터페이스를 상속받아 해당 클래스를 구현
- 
 
  preHandle: 전처리 (DispatcherServlet이 요청 객체를 받아서 컨트롤러로 전달하는 그 사이에 3번에서)
  
  postHandle: 후처리 (컨트롤러에서 DispatcherServlet으로 돌려줄 때 5번에서 동작)
  
  afterCompletion: 완성 후 = 뷰를 완성 후 forward의 코드를 다 해석한 다음 => view resolver가 응답에 맞춰 DispatcherServlet에 돌려줄 때 (6번에서 위로 갈 때)
- 
- 
- 
+
  */
 
 
@@ -50,13 +47,14 @@ public class BoardTypeInterceptor implements HandlerInterceptor {
 		
 	/*	
 	 
-	 page < request < session < application
-	 application scope는 서버 시작 시부터 서버 종료시까지 유지되는 서블릿 내장 객체
-	 서버 내에 오직 하나만 존재하여 모든 클라이언트가 공용으로 사용한다	
-
+	page < request < session < application
+	application scope는 서버 시작 시부터 서버 종료시까지 유지되는 서블릿 내장 객체
+	서버 내에 오직 하나만 존재하여 모든 클라이언트가 공용으로 사용한다	
 	
 	얻어오는 방법?
+	
 	request로부터 얻어옴 
+	
 	*/
 	
 	ServletContext application = request.getServletContext();
@@ -76,15 +74,15 @@ public class BoardTypeInterceptor implements HandlerInterceptor {
 		
 		application.setAttribute("boardTypeList", boardTypeList);
 		
-		//log.debug("boradTypeList의 내용:" + boardTypeList);
+		log.debug("boradTypeList의 내용:" + boardTypeList);
 		
 	}
 	
 	// 있으면 안가도 된다
-	
 
-		
-		
+	
+	// 스프링EL의 스택에서 뿌려주는 것이다. 어플리케이션 스코프는 반드시 명시적으로 application.을 붙여야만 접근할 수 있다. 
+	
 		return HandlerInterceptor.super.preHandle(request, response, handler); 	// true를 뱉어 줌
 	}
 	

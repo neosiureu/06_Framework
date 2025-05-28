@@ -97,7 +97,8 @@ public class MessageController {
         }
     }
 
-    
+    /** 들어오는 쪽지 
+     */
     @GetMapping("/inbox")
     public String viewInbox(HttpSession session, Model model) {
 
@@ -145,7 +146,7 @@ public class MessageController {
         }
 
         model.addAttribute("message", message);
-        return "message/inboxDetail";
+        return "message/inbox";
     
     }
     

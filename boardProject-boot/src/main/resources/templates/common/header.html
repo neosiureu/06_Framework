@@ -64,12 +64,30 @@
       </li>
       -->
       <th:block th:each="boardType: ${application.boardTypeList}">         <!-- for의 하나로 들어가는건 List--->
-        <li>
+        
+	  <li>
+		<a th:text="${boardType.boardName}"></a> 
+	</li>
+	  <li>
           <a th:text="${boardType.boardName}" 
           th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
           >게시판이름</a>
         </li>
       </th:block>
+	  
+	  <table>
+	  			<thead>
+	  				<tr>
+	  					<th>게시판이름</th>				
+	  				</tr>
+	  			</thead>
+	  			<tbody>
+	  				<tr th:each="boardType: ${application.boardTypeList}">
+	  					<td>[[${boardType.boardName}]]</td>
+	  				</tr>
+	  			</tbody>
+	  		</table>	
+			
  <!-- 주소를 조합시키는 방법-->
       <li class="chatting-li">
        <a th:href="@{/chatting/list}" th:text="채팅">채팅</a>

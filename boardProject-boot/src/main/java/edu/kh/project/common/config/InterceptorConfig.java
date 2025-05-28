@@ -10,10 +10,10 @@ import edu.kh.project.common.interceptor.BoardTypeInterceptor;
 // 인터셉터가 어떤 요청을 가로챌지를 설정한다
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer{
-	// fileConfig에서 리소스들간의 핸들링
+	// fileConfig에서 리소스들간의 핸들링 시에도 이걸 썼었음
 	
 	
-	// BoardTypeInterceptor를 자기가 객체로 만들어 Bean으로 등록
+	// BoardTypeInterceptor를  자기가 객체로 만들어 Bean으로 등록
 	@Bean
 	public BoardTypeInterceptor boardTypeInterceptor () {
 		return new BoardTypeInterceptor();

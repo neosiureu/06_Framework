@@ -200,7 +200,7 @@ public class BoardServiceImpl implements BoardService {
 		
 
 		/**
-		 * 검색서비스이나 게시글 목록 서비스를 배끼면 된다.
+		 * 검색서비스이지만 게시글 목록 서비스를 배끼면 된다.
 		 */
 		@Override
 		public Map<String, Object> searchList(Map<String, Object> paraMap, int cp) {

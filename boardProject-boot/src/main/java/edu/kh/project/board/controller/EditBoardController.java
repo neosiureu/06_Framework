@@ -122,6 +122,13 @@ public class EditBoardController {
 
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	/** 게시글 디테일에서 수정화면으로 전환하는 컨트롤러 메서드
 	 * @param boardCode: 게시판 종류 번호
 	 * @param boardNo: 게시글 번호
@@ -179,7 +186,6 @@ public class EditBoardController {
 			 
 			 model.addAttribute("board",board);
 		 }
-		 
 		 
 		 
 		return path;

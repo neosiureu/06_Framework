@@ -109,12 +109,14 @@ result태그는 일반 컬럼과 자바의 DTO필드를 연결할 떄 사용 -->
 
 
 
-
 <!--  게시판 종류 조회 -->
 <select id="selectBoardTypeList">
 SELECT BOARD_CODE "boardCode" , BOARD_NAME "boardName" 
 FROM "BOARD_TYPE" ORDER BY BOARD_CODE
 </select>
+
+
+
 
 <select id="getListCount">
 

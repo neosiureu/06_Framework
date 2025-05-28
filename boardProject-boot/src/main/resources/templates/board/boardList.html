@@ -227,11 +227,13 @@
 따라서 게시글 상세조회하는 a태그를 만들것을 알 수 있다. => 목록으로 버튼을 위함-->
 
 									<!-- 검색 O -->
-									<a th:if="${param.key}"
+									<a 
+{param.key}"
 										th:href="@{/board/{boardCode}/{boardNo} (boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
 										th:text="*{boardTitle}">게시글 제목</a>
 
-									<th:block th:if="${board.boardCode == 1}">
+									<th:block 
+{board.boardCode == 1}">
 										<span
 											th:classappend="${board.completionStatus == 'Y'} ? 'badge badge-complete' : 'badge badge-ongoing'"
 											th:text="${board.completionStatus == 'Y'} ? '나눔완료' : '나눔중'">
