@@ -1,11 +1,12 @@
 package edu.kh.project.member.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.member.model.service.MemberService;
-import jakarta.mail.Session;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,19 +29,6 @@ public class MemberController {
 	
 	@Autowired // Spring에서 제공하는 의존성 주입 어노테이션
 	private MemberService service;
-	
-	/* [로그인]
-	 * -특정 사이트에 아이디/ 비밀번호 입력 후
-	 *  해당 정보가 DB 에 있으면 조회/ 서비스 이용
-	 *  
-	 *  - 로그인 한 회원 정보는 session에 기록하여 
-	 *  로그아웃 또는 브라우저 종료 시 까지 
-	 *  해당 정보를 계속 이용할 수 잇게 함.
-	 * 
-	 * */
-	
-	
-	
 	
 	/** 로그인
 	 * @param inputMember : 커맨드 객체 (@ModelAttribute 생략)
@@ -57,11 +44,9 @@ public class MemberController {
 	public String login(Member inputMember , RedirectAttributes ra , Model model,
 						@RequestParam(value="saveId", required = false) String saveId,
 						 HttpServletResponse resp) {
-		
 		// 체크박스
 		// - 체크가 된경우 : "on"
 		// - 체크가 안된경우 : null
-		
 		
 		// 로그인 서비스 호출
 		Member loginMember = service.login(inputMember);
@@ -162,7 +147,7 @@ public class MemberController {
 	    }
 	}
 	
-	
+
 	
 	//비번 찾기
 	@GetMapping("findPw")
@@ -275,10 +260,7 @@ public class MemberController {
 		String path = null;
 		String message = null;
 		
-		if(result > 0) {// 성공
-			
-			
-			
+		if(result > 0) {// 성공	
 			
 			message = inputMember.getMemberNickname() + "님의 가입을 환영합니다!";
 			path = "/";
@@ -296,3 +278,41 @@ public class MemberController {
 	}
 	
 }
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

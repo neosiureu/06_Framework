@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.admin.model.mapper.AdminMapper">
+	
+	<select id="login">
+		SELECT MEMBER_NO, MEMBER_EMAIL , MEMBER_NICKNAME, MEMBER_PW, AUTHORITY
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{memberEmail}
+		AND MEMBER_DEL_FL ='N'
+		AND AUTHORITY = 2
+	</select>
+		
+		<!-- 최대 조회수 게시글 
+			 만약 최대 조회수가 똑같은 게시물이 여러개 존재한다면
+			 가장 최근에 작성된 게시글 기준(BOARD_NO가 큰순서)으로 하나만 조회-->
+		<select id="maxReadCount">
+			SELECT BOARD_NAME, BOARD_NO , BOARD_TITLE , MEMBER_NICKNAME , READ_COUNT
+	FROM BOARD
+	JOIN "MEMBER" USING(MEMBER_NO)
+	JOIN "BOARD_TYPE" USING(BOARD_CODE)
+	WHERE READ_COUNT = (SELECT MAX(READ_COUNT) FROM "BOARD")
+	ORDER BY BOARD_NO DESC
+	FETCH FIRST 1 ROWS ONLY
+		
+		</select>
+		
+		
+		<select id="maxCommentCount">
+		SELECT BT.BOARD_NAME, B.BOARD_NO, COUNT(*) AS COMMENT_COUNT, B.BOARD_TITLE, M.MEMBER_NICKNAME
+		FROM "COMMENT" C
+		JOIN "BOARD" B ON  B.BOARD_NO = C.BOARD_NO
+		JOIN "BOARD_TYPE" BT ON B.BOARD_CODE = BT.BOARD_CODE
+		JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+		GROUP BY BT.BOARD_NAME, B.BOARD_NO, B.BOARD_TITLE, M.MEMBER_NICKNAME
+		ORDER BY COMMENT_COUNT DESC, BOARD_NO DESC
+		FETCH FIRST 1 ROWS ONLY
+		
+		</select>
+	
+		
+		<select id="maxLikeCount">
+		
+		SELECT BT.BOARD_NAME, B.BOARD_NO, COUNT(*) AS LIKE_COUNT,
+		B.BOARD_TITLE, M.MEMBER_NICKNAME
+		FROM "BOARD_LIKE" BL
+		JOIN "BOARD" B ON BL.BOARD_NO = B.BOARD_NO
+		JOIN "BOARD_TYPE" BT ON B.BOARD_CODE = BT.BOARD_CODE
+		JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+		GROUP BY BT.BOARD_NAME, B.BOARD_NO, B.BOARD_TITLE, M.MEMBER_NICKNAME
+		ORDER BY LIKE_COUNT DESC, B.BOARD_NO DESC
+		FETCH FIRST 1 ROWS ONLY
+		</select>
+		
+		
+		<select id="getNewMember">
+		<![CDATA[
+		SELECT MEMBER_NO , MEMBER_EMAIL ,MEMBER_NECIKNAME ,ENROLL_DATE 
+		FROM "MEMBER"				
+		WHERE SYSDATE - ENROLL_DATE <=7
+		AND MEMBER_DEL_FL ='N'
+		AND AUTORITY = 1 
+		]]>
+		</select>
+		
+		<!--  탈퇴 회원 목록조회 -->
+		<select id="selectWithdrawnMemberList">
+			SELECT MEMBER_NO , MEMBER_EMAIL , MEMBER_NICKNAME
+			FROM MEMBER
+			WHERE MEMBER_DEL_FL ='Y'
+			ORDER BY MEMBER_NO DESC
+		</select>
+	  
+	  	
+	  	<!-- 삭제된 게시글 목록 조회 -->
+	  	<select id="selectWithdrawnboardList">
+  			SELECT BOARD_NO , BOARD_TITLE ,
+  			BOARD_NAME, MEMBER_NICKNAME
+  			FROM BOARD
+  			JOIN MEMBER USING(MEMBER_NO)
+  			JOIN BOARD_TYPE USING(BOARD_CODE)
+  			WHERE BOARD_DEL_FL = 'Y'
+  			ORDER BY BOARD_NO DESC
+	  	</select>
+	  	
+	  	
+	  	<update id="restoreMember">
+	  	UPDATE MEMBER SET 
+	  	MEMBER_DEL_FL = 'N'
+	  	WHERE MEMBER_NO = #{memberNo}
+	  	AND MEMBER_DEL_FL = 'Y' 
+	  		
+	  	</update>
+	  	
+	  	<update id="restoreBoard">
+	  	UPDATE BOARD SET 
+	  	BOARD_DEL_FL = 'N'
+	  	WHERE BOARD_NO = #{boardNo} 
+	  	AND BOARD_DEL_FL = 'Y'	
+	  	</update>
+	  	
+	  	<select id="checkEmail">
+	  	SELECT COUNT(*)
+	  	FROM MEMBER
+	  	WHERE MEMBER_EMAIL = #{memberEmail}
+	  	AND AUTHORITY = 2
+	  	</select>
+	  	
+	  	<insert id="createAdminAccount">
+	  	INSERT INTO MEMBER
+	  	VALUES(
+	  	SEQ_MEMBER_NO.NEXTVAL,
+	  	#{memberEmail},
+	  	#{memberPw},
+	  	#{memberNickname},
+	  	#{memberTel},
+	  	NULL ,
+	  	NULL ,
+	  	DEFAULT ,
+	  	DEFAULT ,
+	  	2
+	  	)
+	  	</insert>
+	  	
+	  	<select id="getadminList">
+	  	SELECT MEMBER_NO , MEMBER_EMAIL , MEMBER_NICKNAME
+	  	FROM MEMBER
+	  	WHERE AUTHORITY = 2
+	  	</select>
+	  	
+	  	
+	  
+	  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

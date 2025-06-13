@@ -1,11 +1,13 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.4'
+	id 'org.springframework.boot' version '3.4.4' // 처음 만들었을 때의 스프링 프로젝트 버전이므로 이거 하나는 반드시 체크한다
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'edu.kh'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1-SNAPSHOT' // 개발중인 0-0-1버전으로 처음 만들때  group version
+
+
 
 java {
 	toolchain {
@@ -13,16 +15,23 @@ java {
 	}
 }
 
+
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
-	}
+	} // 컴파일 당시에만 필요한 라이브러리 (아래 롬복이 의존성 있음)
 }
+
+
 
 repositories {
 	mavenCentral()
-}
+} //아래 라이브러리들이 오는 곳, 다운받는 곳
 
+
+// 추가적으로 maven repostitory -OJDBC를 선택하여 이 아래에 복붙 이후 
+// 프로젝트- gradle - refresh gradle project
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -33,6 +42,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+// 외부 연결된 사이트 (메이븐 레포지토리)에서 아래 위에 작성된 모듈, 라이브러리 등을 다운로드 받아서 프로젝트에 알아서 추가해준다
+// 위 dependencies 괄호 안 수정 시 저장 후 프로젝트 우클릭 후 gradle - refresh gradle project를 반드시 클릭해야 반영이 된다
 
 tasks.named('test') {
 	useJUnitPlatform()

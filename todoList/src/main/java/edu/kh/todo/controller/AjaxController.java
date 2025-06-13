@@ -1,17 +1,21 @@
 package edu.kh.todo.controller;
 
 import java.util.List;
-
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import edu.kh.todo.model.dto.Todo;
 import edu.kh.todo.model.service.TodoService;
@@ -58,11 +62,14 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
-
-@Controller //요청 /응답 제어하는 역할 명시 + bean 등록
+@RestController //요청 /응답 제어하는 역할 명시 + bean 등록
 @RequestMapping("ajax") // 요청 주소 시작이 "ajax"인 요청을 매핑
 @Slf4j
+@CrossOrigin(origins="http://localhost:5173")
 public class AjaxController {
+
+    private final SqlSessionFactory sessionFactory;
+
 	
 	//@Autowired
 	// - 등록된 Bean 중 같은 타입 또는 상속관계인 Bean을 찾아서
@@ -70,6 +77,10 @@ public class AjaxController {
 	
 	@Autowired // 의존성 주입(DI)
 	private TodoService service;
+
+    AjaxController(SqlSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 	
 	@GetMapping("main")
 	public String ajaxMain() {
@@ -85,7 +96,7 @@ public class AjaxController {
 	// -> 반환 되어야하는 결과값의 자료형을 반환형에 써야함!
 	       // 반환값을 HTTP 응답 본문으로 직접전송 
 	               // (값 그대로 돌려보낼거야!!)
-	@ResponseBody
+
 	@GetMapping("totalCount")
 	public int getTotalCount() {
 		
@@ -98,7 +109,7 @@ public class AjaxController {
 		return totalCount;
 		
 	}
-	@ResponseBody
+
 	@GetMapping("completeCount")
 	public int getCompleteCount() {
 		
@@ -110,7 +121,7 @@ public class AjaxController {
 	}
 	
 	//할일 추가
-	@ResponseBody
+
 	@PostMapping("add")
 	public int addTodo(@RequestBody Todo todo) { //요청 Body에 담긴 값을 Todo DTO에 저장
 		// @RequestParam은 일반적으로 쿼리파라미터나 URL 파라미터에 사용
@@ -124,7 +135,7 @@ public class AjaxController {
 		return result;
 	}
 	
-	@ResponseBody
+	
 	@GetMapping("selectList")
 	public List<Todo> selectList(){
 		
@@ -138,7 +149,7 @@ public class AjaxController {
 		
 	}
 	
-	@ResponseBody          //비동기 요청을 보낸 곳으로 데이터 (반환값) 돌려보냄
+         //비동기 요청을 보낸 곳으로 데이터 (반환값) 돌려보냄
 	@GetMapping("detail")
 	public Todo todoDetail(@RequestParam("todoNo") int todoNo) {
 		
@@ -151,21 +162,18 @@ public class AjaxController {
 	}
 	
 	// 할 일 삭제 요청 (DELETE)
-	@ResponseBody
-	@DeleteMapping("delete")
-	public int todoDelete(@RequestBody int todoNo) {
+
+	@DeleteMapping("delete/{todoNo:[0-9]+}")
+	public ResponseEntity<Integer> todoDelete(@PathVariable("todoNo") int todoNo) {
 		
-		return service.todoDelete(todoNo);
+		int result = service.todoDelete(todoNo);
 		
+		return ResponseEntity.ok(result);
 		
-		
-		 
-		
-		
-		
+			
 	}	
 	
-	@ResponseBody
+	
 	@PutMapping("changeComplete")
 	public int changeComplete(@RequestBody Todo todo) {
 		
@@ -176,7 +184,7 @@ public class AjaxController {
 		
 	}
 	
-	@ResponseBody
+
 	@PutMapping("update")
 	public int todoUpdate(@RequestBody Todo todo) {
 		

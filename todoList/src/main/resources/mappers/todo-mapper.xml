@@ -106,7 +106,7 @@
 	<update id="changeComplete" parameterType="Todo">
 		UPDATE TB_TODO 
 		SET COMPLETE =  #{complete}  <!-- '' 까지 포함하기위해 #을 사용함 -->
-		WHERE TODO_NO = ${todoNo}
+		WHERE TODO_NO = #{todoNo}
 	</update>  
   
   	<!-- 할 일 수정  -->
@@ -114,13 +114,13 @@
   		UPDATE TB_TODO SET
   		TODO_TITLE = #{todoTitle} ,
   		TODO_CONTENT = #{todoContent}
-  		WHERE TODO_NO = ${todoNo}
+  		WHERE TODO_NO = #{todoNo}
   	</update>
   
   	<!-- 할일 삭제 -->
   	<delete id="todoDelete" parameterType="_int">
   		DELETE FROM TB_TODO
-  		WHERE TODO_NO = ${todoNo}
+  		WHERE TODO_NO = #{todoNo}
   	</delete>
   		
   		<!--  전체 할일 개수 조회 -->
